@@ -1,0 +1,56 @@
+{
+  "@@locale": "en",
+
+  "appName": "Expense Tracker",
+
+  "home": "Home",
+  "charts": "Charts",
+  "categories": "Categories",
+  "settings": "Settings",
+
+  "all": "All",
+  "total": "Total",
+
+  "addExpense": "New Expense",
+  "amount": "Amount (₺)",
+  "amountRequired": "Please enter an amount",
+  "category": "Category",
+  "noCategories": "No categories found. Please add a category first.",
+  "note": "Note (optional)",
+  "date": "Date",
+  "add": "Add",
+
+  "delete": "Delete",
+  "deleted": "Deleted",
+
+  "emptyExpenses": "No expenses added yet",
+  "emptyExpensesHint": "Tap the + button below to add your first expense",
+
+  "newCategory": "Add New Category",
+  "categoryName": "Category Name",
+  "addCategory": "Add Category",
+  "categoryDeleted": "Category deleted",
+
+  "weekSpend": "Weekly Spending",
+  "noData": "No expense data available",
+  "noDataPeriod": "No expenses found for this period",
+
+  "today": "Today",
+  "thisWeek": "This Week",
+  "last7Days": "Last 7 Days",
+  "thisMonth": "This Month",
+  "prevMonth": "Previous Month",
+
+  "resetAll": "Reset All Data",
+  "resetConfirmation": "Delete all data?",
+
+  "food": "Food",
+  "transport": "Transport",
+  "bill": "Bill",
+  "market": "Groceries",
+
+  "sortDateDesc": "Date (Newer > Older)",
+  "sortDateAsc": "Date (Older > Newer)",
+  "sortAmountDesc": "Amount (High > Low)",
+  "sortAmountAsc": "Amount (Low > High)"
+}

@@ -7,10 +7,10 @@ import 'dart:ui' as ui;
 class CategoryService {
   static const _key = 'categories';
 
-  static Future<List<Category>> loadCategories() async {
+  static Future<List<Category>> loadCategories(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_key);
-    if (jsonString == null) return _defaultCategories();
+    if (jsonString == null) return _defaultCategories(context);
     final List decoded = jsonDecode(jsonString);
     return decoded.map((e) => Category.fromJson(e)).toList();
   }
@@ -21,7 +21,7 @@ class CategoryService {
     await prefs.setString(_key, jsonString);
   }
 
-  static List<Category> _defaultCategories() {
+  static List<Category> _defaultCategories(BuildContext context) {
     final lang = ui.PlatformDispatcher.instance.locale.languageCode;
     if (lang == "tr") {
       return [

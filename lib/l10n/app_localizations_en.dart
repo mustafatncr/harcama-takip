@@ -72,6 +72,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get buttonAdd => 'Add';
 
   @override
+  String get buttonCancel => 'Cancel';
+
+  @override
   String get filterAll => 'All';
 
   @override
@@ -100,4 +103,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryEmpty => 'No categories yet';
+
+  @override
+  String get expenseAdded => 'Added';
+
+  @override
+  String get chartNoDataForPeriod => 'No expenses for this period';
+
+  @override
+  String get categoryAddDialogTitle => 'Add New Category';
+
+  @override
+  String get categoryNameLabel => 'Category Name';
+
+  @override
+  String get totalLabel => 'Total';
+
+  @override
+  String get settingsClearDataTitle => 'Delete All Data';
+
+  @override
+  String get settingsClearDataMessage => 'All expenses will be permanently deleted. Are you sure?';
+
+  @override
+  String get settingsConfirmDelete => 'Yes, delete';
+
+  @override
+  String get settingsDataCleared => 'All data has been deleted';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsThemeTitle => 'Theme';
+
+  @override
+  String get settingsThemeSystem => 'System';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
+  String get settingsClearDataListTitle => 'Delete all data';
+
+  @override
+  String get settingsClearDataListSubtitle => 'Permanently deletes all expenses';
+
+  @override
+  String get sortTooltip => 'Sort';
+
+  @override
+  String get categoryDeleted => 'Category deleted';
 }

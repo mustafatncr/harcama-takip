@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:harcama_takip/l10n/app_localizations.dart';
 import '../services/storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,18 +40,16 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Tüm Verileri Sil"),
-        content: const Text(
-          "Tüm harcamalar kalıcı olarak silinecek. Emin misin?",
-        ),
+        title: Text(AppLocalizations.of(context)!.settingsClearDataTitle),
+        content: Text(AppLocalizations.of(context)!.settingsClearDataMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text("İptal"),
+            child: Text(AppLocalizations.of(context)!.buttonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text("Evet, sil"),
+            child: Text(AppLocalizations.of(context)!.settingsConfirmDelete),
           ),
         ],
       ),
@@ -60,7 +59,9 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
       await StorageService.clearAll();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Tüm veriler silindi")),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.settingsDataCleared),
+        ),
       );
     }
   }
@@ -69,7 +70,7 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Ayarlar"),
+        title: Text(AppLocalizations.of(context)!.settingsTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context), // ✅ Geri ana ekrana döner
@@ -78,30 +79,36 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text(
-            "Tema",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.of(context)!.settingsThemeTitle,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-
-          // 🔹 Tema seçimi butonları
           SegmentedButton<ThemeMode>(
-            segments: const [
-              ButtonSegment(value: ThemeMode.system, label: Text("Sistem")),
-              ButtonSegment(value: ThemeMode.light, label: Text("Açık")),
-              ButtonSegment(value: ThemeMode.dark, label: Text("Koyu")),
+            segments: [
+              ButtonSegment(
+                value: ThemeMode.system,
+                label: Text(AppLocalizations.of(context)!.settingsThemeSystem),
+              ),
+              ButtonSegment(
+                value: ThemeMode.light,
+                label: Text(AppLocalizations.of(context)!.settingsThemeLight),
+              ),
+              ButtonSegment(
+                value: ThemeMode.dark,
+                label: Text(AppLocalizations.of(context)!.settingsThemeDark),
+              ),
             ],
             selected: {_themeMode},
             onSelectionChanged: (value) => _changeTheme(value.first),
           ),
-
           const Divider(height: 32),
-
-          // 🔹 Tüm verileri silme
           ListTile(
             leading: const Icon(Icons.delete_forever),
-            title: const Text("Tüm Verileri Sıfırla"),
-            subtitle: const Text("Tüm harcamaları kalıcı olarak siler"),
+            title:
+                Text(AppLocalizations.of(context)!.settingsClearDataListTitle),
+            subtitle: Text(
+                AppLocalizations.of(context)!.settingsClearDataListSubtitle),
             onTap: _clearAllData,
           ),
         ],
@@ -110,7 +117,6 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
   }
 }
 
-/// 🔹 Uygulama genelinde tema değiştirmek için yardımcı InheritedWidget
 class MyAppThemeNotifier extends InheritedWidget {
   final void Function(ThemeMode) updateTheme;
 

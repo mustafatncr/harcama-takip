@@ -7,7 +7,6 @@ import '../models/expense.dart';
 import '../models/category.dart';
 import '../widgets/app_drawer.dart';
 import 'package:intl/intl.dart';
-import 'dart:ui' as ui;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,22 +15,29 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+enum SortField { date, amount }
+
+enum SortOrder { desc, asc }
+
 class _HomeScreenState extends State<HomeScreen> {
   final List<Expense> _items = [];
   List<Category> _categories = [];
-  String _selectedCategory =
-      ui.PlatformDispatcher.instance.locale.languageCode == "tr"
-          ? "Tümü"
-          : "All";
+  String _selectedCategory = "";
 
-  String _sortBy = "";
-  bool _isDescending = true;
+  SortField _sortField = SortField.date;
+  SortOrder _sortOrder = SortOrder.desc;
 
   @override
   void initState() {
     super.initState();
     _loadData();
-    _loadCategories();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _loadCategories(context);
+      setState(() {
+        _selectedCategory = AppLocalizations.of(context)!.filterAll;
+      });
+    });
   }
 
   Future<void> _loadData() async {
@@ -39,8 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _items.addAll(data));
   }
 
-  Future<void> _loadCategories() async {
-    final data = await CategoryService.loadCategories();
+  Future<void> _loadCategories(BuildContext context) async {
+    final data = await CategoryService.loadCategories(context);
     setState(() {
       _categories = data;
     });
@@ -94,7 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            "Eklendi: ${_formatTL(expense.amount)} • "
+            "${AppLocalizations.of(context)!.expenseAdded}: "
+            "${_formatTL(expense.amount)} • "
             "${expense.category} • ${_formatDate(expense.date)}",
           ),
           duration: const Duration(seconds: 2),
@@ -120,17 +127,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final sortedItems = [...filteredItems];
 
-    if (_sortBy.startsWith("Tarih")) {
-      sortedItems.sort(
-        (a, b) =>
-            _isDescending ? b.date.compareTo(a.date) : a.date.compareTo(b.date),
-      );
-    } else if (_sortBy.startsWith("Tutar")) {
-      sortedItems.sort(
-        (a, b) => _isDescending
-            ? b.amount.compareTo(a.amount)
-            : a.amount.compareTo(b.amount),
-      );
+    if (_sortField == SortField.date) {
+      sortedItems.sort((a, b) => _sortOrder == SortOrder.desc
+          ? b.date.compareTo(a.date)
+          : a.date.compareTo(b.date));
+    } else {
+      sortedItems.sort((a, b) => _sortOrder == SortOrder.desc
+          ? b.amount.compareTo(a.amount)
+          : a.amount.compareTo(b.amount));
     }
 
     return Scaffold(
@@ -138,48 +142,58 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(AppLocalizations.of(context)!.appName),
         centerTitle: true,
         actions: [
-          PopupMenuButton<String>(
+          PopupMenuButton<Map<String, dynamic>>(
+            tooltip: AppLocalizations.of(context)!.sortTooltip,
             onSelected: (value) {
               setState(() {
-                if (value == "Tarih" || value == "Tutar") {
-                  _sortBy = value == "Tarih"
-                      ? "Tarih (Yeni > Eski)"
-                      : "Tutar (Yüksek > Düşük)";
-                  _isDescending = true;
-                } else if (value == "Tarih (Eski > Yeni)") {
-                  _sortBy = "Tarih (Eski > Yeni)";
-                  _isDescending = false;
-                } else if (value == "Tutar (Düşük > Yüksek)") {
-                  _sortBy = "Tutar (Düşük > Yüksek)";
-                  _isDescending = false;
-                }
+                _sortField = value["field"] as SortField;
+                _sortOrder = value["order"] as SortOrder;
               });
             },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: "Tarih",
-                child: Text(AppLocalizations.of(context)!.sortDateDesc),
-              ),
-              PopupMenuItem(
-                value: "Tarih (Eski > Yeni)",
-                child: Text(AppLocalizations.of(context)!.sortDateAsc),
-              ),
-              const PopupMenuDivider(),
-              PopupMenuItem(
-                value: "Tutar",
-                child: Text(AppLocalizations.of(context)!.sortAmountDesc),
-              ),
-              PopupMenuItem(
-                value: "Tutar (Düşük > Yüksek)",
-                child: Text(AppLocalizations.of(context)!.sortAmountAsc),
-              ),
-            ],
+            itemBuilder: (context) {
+              final loc = AppLocalizations.of(context)!;
+
+              return [
+                PopupMenuItem(
+                  value: {
+                    "field": SortField.date,
+                    "order": SortOrder.desc,
+                  },
+                  child: Text(loc.sortDateDesc),
+                ),
+                PopupMenuItem(
+                  value: {
+                    "field": SortField.date,
+                    "order": SortOrder.asc,
+                  },
+                  child: Text(loc.sortDateAsc),
+                ),
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                  value: {
+                    "field": SortField.amount,
+                    "order": SortOrder.desc,
+                  },
+                  child: Text(loc.sortAmountDesc),
+                ),
+                PopupMenuItem(
+                  value: {
+                    "field": SortField.amount,
+                    "order": SortOrder.asc,
+                  },
+                  child: Text(loc.sortAmountAsc),
+                ),
+              ];
+            },
             icon: const Icon(Icons.sort),
-            tooltip: "Sıralama",
           ),
         ],
       ),
-      drawer: const AppDrawer(),
+      drawer: AppDrawer(
+        onCategoriesChanged: () {
+          _loadCategories(context);
+        },
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openAddSheet,
         icon: const Icon(Icons.add),
@@ -225,9 +239,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "Toplam",
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                        Text(
+                          AppLocalizations.of(context)!.totalLabel,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         Text(
                           _formatTL(_total),

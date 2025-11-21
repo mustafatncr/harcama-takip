@@ -22,11 +22,15 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
   @override
   void initState() {
     super.initState();
-    _loadCategories();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _loadCategories(context);
+      });
+    });
   }
 
-  Future<void> _loadCategories() async {
-    final data = await CategoryService.loadCategories();
+  Future<void> _loadCategories(BuildContext context) async {
+    final data = await CategoryService.loadCategories(context);
     setState(() {
       _categories = data;
       if (_categories.isNotEmpty) {

@@ -72,6 +72,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get buttonAdd => 'Ekle';
 
   @override
+  String get buttonCancel => 'İptal';
+
+  @override
   String get filterAll => 'Tümü';
 
   @override
@@ -100,4 +103,58 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get categoryEmpty => 'Henüz kategori yok';
+
+  @override
+  String get expenseAdded => 'Eklendi';
+
+  @override
+  String get chartNoDataForPeriod => 'Bu dönem için harcama bulunmuyor';
+
+  @override
+  String get categoryAddDialogTitle => 'Yeni Kategori Ekle';
+
+  @override
+  String get categoryNameLabel => 'Kategori Adı';
+
+  @override
+  String get totalLabel => 'Toplam';
+
+  @override
+  String get settingsClearDataTitle => 'Tüm Verileri Sil';
+
+  @override
+  String get settingsClearDataMessage => 'Tüm harcamalar kalıcı olarak silinecek. Emin misin?';
+
+  @override
+  String get settingsConfirmDelete => 'Evet, sil';
+
+  @override
+  String get settingsDataCleared => 'Tüm veriler silindi';
+
+  @override
+  String get settingsTitle => 'Ayarlar';
+
+  @override
+  String get settingsThemeTitle => 'Tema';
+
+  @override
+  String get settingsThemeSystem => 'Sistem';
+
+  @override
+  String get settingsThemeLight => 'Açık';
+
+  @override
+  String get settingsThemeDark => 'Koyu';
+
+  @override
+  String get settingsClearDataListTitle => 'Tüm verileri sil';
+
+  @override
+  String get settingsClearDataListSubtitle => 'Tüm harcamaları kalıcı olarak siler';
+
+  @override
+  String get sortTooltip => 'Sıralama';
+
+  @override
+  String get categoryDeleted => 'Kategori silindi';
 }

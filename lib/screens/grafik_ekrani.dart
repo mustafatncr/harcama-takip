@@ -231,9 +231,10 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
                   const SizedBox(height: 16),
 
                   if (data.isEmpty)
-                    const Expanded(
+                    Expanded(
                       child: Center(
-                        child: Text("Bu dönem için harcama bulunmuyor"),
+                        child: Text(
+                            AppLocalizations.of(context)!.chartNoDataForPeriod),
                       ),
                     )
                   else ...[

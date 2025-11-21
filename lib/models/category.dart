@@ -8,7 +8,7 @@ class Category {
 
   Map<String, dynamic> toJson() => {
         'name': name,
-        'icon': icon.codePoint, // iconu sayı olarak kaydedeceğiz
+        'icon': icon.codePoint,
       };
 
   static Category fromJson(Map<String, dynamic> json) => Category(

@@ -221,6 +221,12 @@ abstract class AppLocalizations {
   /// **'Add'**
   String get buttonAdd;
 
+  /// No description provided for @buttonCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get buttonCancel;
+
   /// No description provided for @filterAll.
   ///
   /// In en, this message translates to:
@@ -280,6 +286,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No categories yet'**
   String get categoryEmpty;
+
+  /// No description provided for @expenseAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get expenseAdded;
+
+  /// No description provided for @chartNoDataForPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses for this period'**
+  String get chartNoDataForPeriod;
+
+  /// No description provided for @categoryAddDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Category'**
+  String get categoryAddDialogTitle;
+
+  /// No description provided for @categoryNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Name'**
+  String get categoryNameLabel;
+
+  /// No description provided for @totalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get totalLabel;
+
+  /// No description provided for @settingsClearDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All Data'**
+  String get settingsClearDataTitle;
+
+  /// No description provided for @settingsClearDataMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'All expenses will be permanently deleted. Are you sure?'**
+  String get settingsClearDataMessage;
+
+  /// No description provided for @settingsConfirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, delete'**
+  String get settingsConfirmDelete;
+
+  /// No description provided for @settingsDataCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'All data has been deleted'**
+  String get settingsDataCleared;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsThemeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsThemeTitle;
+
+  /// No description provided for @settingsThemeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get settingsThemeSystem;
+
+  /// No description provided for @settingsThemeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get settingsThemeLight;
+
+  /// No description provided for @settingsThemeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get settingsThemeDark;
+
+  /// No description provided for @settingsClearDataListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all data'**
+  String get settingsClearDataListTitle;
+
+  /// No description provided for @settingsClearDataListSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently deletes all expenses'**
+  String get settingsClearDataListSubtitle;
+
+  /// No description provided for @sortTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sortTooltip;
+
+  /// No description provided for @categoryDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Category deleted'**
+  String get categoryDeleted;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

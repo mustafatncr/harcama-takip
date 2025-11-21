@@ -3,7 +3,9 @@ import 'package:harcama_takip/l10n/app_localizations.dart';
 import '../screens/grafik_ekrani.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+  final VoidCallback? onCategoriesChanged;
+
+  const AppDrawer({super.key, this.onCategoriesChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +60,15 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.category),
             title: Text(AppLocalizations.of(context)!.drawerCategories),
-            onTap: () {
+            onTap: () async {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/kategoriler');
+
+              final result = await Navigator.pushNamed(context, '/kategoriler');
+
+              // Kategoriler değiştiyse HomeScreen'e haber ver
+              if (result == true && onCategoriesChanged != null) {
+                onCategoriesChanged!();
+              }
             },
           ),
 
@@ -69,8 +77,8 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.settings),
             title: Text(AppLocalizations.of(context)!.drawerSettings),
             onTap: () {
-              Navigator.pop(context); // Drawer'ı kapat
-              Navigator.pushNamed(context, '/ayarlar'); // route üzerinden git
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/ayarlar');
             },
           ),
         ],

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:harcama_takip/l10n/app_localizations.dart';
 import '../models/expense.dart';
 import '../services/storage_service.dart';
+import 'package:intl/intl.dart';
 
 enum TimeFilter { last7, thisWeek, thisMonth, prevMonth }
 
@@ -106,37 +108,62 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
   // 🔹 TL formatı
   String _formatTL(num v) => "₺${v.toStringAsFixed(v % 1 == 0 ? 0 : 2)}";
 
-  String _formatDateRange(DateTimeRange range) {
-    final months = [
-      'Ocak',
-      'Şubat',
-      'Mart',
-      'Nisan',
-      'Mayıs',
-      'Haziran',
-      'Temmuz',
-      'Ağustos',
-      'Eylül',
-      'Ekim',
-      'Kasım',
-      'Aralık'
-    ];
+  // String _formatDateRange(DateTimeRange range) {
+  //   final months = [
+  //     'Ocak',
+  //     'Şubat',
+  //     'Mart',
+  //     'Nisan',
+  //     'Mayıs',
+  //     'Haziran',
+  //     'Temmuz',
+  //     'Ağustos',
+  //     'Eylül',
+  //     'Ekim',
+  //     'Kasım',
+  //     'Aralık'
+  //   ];
 
+  //   final start = range.start;
+  //   final end = range.end;
+
+  //   // Eğer aynı ay içindeyse: "1 - 7 Ekim 2025"
+  //   if (start.month == end.month && start.year == end.year) {
+  //     return "${start.day} - ${end.day} ${months[start.month - 1]} ${start.year}";
+  //   }
+
+  //   // Farklı ay: "25 Eylül - 1 Ekim 2025"
+  //   if (start.year == end.year) {
+  //     return "${start.day} ${months[start.month - 1]} - ${end.day} ${months[end.month - 1]} ${start.year}";
+  //   }
+
+  //   // Farklı yıl olursa (örneğin Aralık - Ocak geçişi)
+  //   return "${start.day} ${months[start.month - 1]} ${start.year} - ${end.day} ${months[end.month - 1]} ${end.year}";
+  // }
+
+  String _formatDateRange(DateTimeRange range) {
     final start = range.start;
     final end = range.end;
 
-    // Eğer aynı ay içindeyse: "1 - 7 Ekim 2025"
+    final dayFormat = DateFormat("d", Intl.getCurrentLocale());
+    final monthYearFormat = DateFormat("MMMM yyyy", Intl.getCurrentLocale());
+    final fullFormat = DateFormat("d MMMM yyyy", Intl.getCurrentLocale());
+
+    // Aynı ay → "1 - 7 Ekim 2025"
     if (start.month == end.month && start.year == end.year) {
-      return "${start.day} - ${end.day} ${months[start.month - 1]} ${start.year}";
+      return "${dayFormat.format(start)} - ${dayFormat.format(end)} "
+          "${monthYearFormat.format(start)}";
     }
 
-    // Farklı ay: "25 Eylül - 1 Ekim 2025"
+    // Farklı ay ama aynı yıl → "25 Eylül - 1 Ekim 2025"
     if (start.year == end.year) {
-      return "${start.day} ${months[start.month - 1]} - ${end.day} ${months[end.month - 1]} ${start.year}";
+      return "${fullFormat.format(start)} - "
+          "${fullFormat.format(end).replaceAll(" ${end.year}", "")} "
+          "${end.year}";
     }
 
-    // Farklı yıl olursa (örneğin Aralık - Ocak geçişi)
-    return "${start.day} ${months[start.month - 1]} ${start.year} - ${end.day} ${months[end.month - 1]} ${end.year}";
+    // Farklı yıl → "25 Aralık 2025 - 1 Ocak 2026"
+    return "${fullFormat.format(start)} - ${fullFormat.format(end)}";
   }
 
   @override
@@ -146,31 +173,37 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Grafikler"),
+        title: Text(AppLocalizations.of(context)!.chartTitle),
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: _expenses.isEmpty
-            ? const Center(
-                child: Text("Henüz harcama verisi bulunmuyor"),
+            ? Center(
+                child: Text(AppLocalizations.of(context)!.chartNoData),
               )
             : Column(
                 children: [
                   // 🔹 Zaman filtresi (SegmentedButton)
                   Center(
                     child: SegmentedButton<TimeFilter>(
-                      segments: const [
+                      segments: [
                         ButtonSegment(
-                            value: TimeFilter.last7, label: Text("Son 7 Gün")),
+                            value: TimeFilter.last7,
+                            label: Text(
+                                AppLocalizations.of(context)!.filterLast7Days)),
                         ButtonSegment(
                             value: TimeFilter.thisWeek,
-                            label: Text("Bu Hafta")),
+                            label: Text(
+                                AppLocalizations.of(context)!.filterThisWeek)),
                         ButtonSegment(
-                            value: TimeFilter.thisMonth, label: Text("Bu Ay")),
+                            value: TimeFilter.thisMonth,
+                            label: Text(
+                                AppLocalizations.of(context)!.filterThisMonth)),
                         ButtonSegment(
                             value: TimeFilter.prevMonth,
-                            label: Text("Geçen Ay")),
+                            label: Text(
+                                AppLocalizations.of(context)!.filterPrevMonth)),
                       ],
                       showSelectedIcon: false,
                       selected: {_filter},

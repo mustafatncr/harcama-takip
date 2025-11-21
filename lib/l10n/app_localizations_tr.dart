@@ -12,52 +12,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appName => 'Harcama Takip';
 
   @override
-  String get home => 'Ana Sayfa';
+  String get drawerTitle => '💰 Harcama Takip';
 
   @override
-  String get charts => 'Grafikler';
+  String get drawerSubtitle => 'Kişisel finansını kolayca yönet';
 
   @override
-  String get categories => 'Kategoriler';
+  String get drawerHome => 'Ana Sayfa';
 
   @override
-  String get settings => 'Ayarlar';
+  String get drawerCharts => 'Grafikler';
 
   @override
-  String get all => 'Tümü';
+  String get drawerCategories => 'Kategoriler';
 
   @override
-  String get total => 'Toplam';
-
-  @override
-  String get addExpense => 'Yeni Harcama';
-
-  @override
-  String get amount => 'Tutar (₺)';
-
-  @override
-  String get amountRequired => 'Tutar giriniz';
-
-  @override
-  String get category => 'Kategori';
-
-  @override
-  String get noCategories => 'Kategori bulunamadı. Lütfen önce kategori ekleyin.';
-
-  @override
-  String get note => 'Not (isteğe bağlı)';
-
-  @override
-  String get date => 'Tarih';
-
-  @override
-  String get add => 'Ekle';
-
-  @override
-  String get delete => 'Sil';
-
-  @override
-  String get deleted => 'Silindi';
+  String get drawerSettings => 'Ayarlar';
 
   @override
   String get emptyExpenses => 'Henüz harcama eklenmemiş';
@@ -66,58 +36,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get emptyExpensesHint => 'Aşağıdaki + butonuna dokunarak ilk harcamanı ekle';
 
   @override
-  String get newCategory => 'Yeni Kategori Ekle';
-
-  @override
-  String get categoryName => 'Kategori Adı';
-
-  @override
-  String get addCategory => 'Kategori Ekle';
-
-  @override
-  String get categoryDeleted => 'Kategori silindi';
-
-  @override
-  String get weekSpend => 'Haftalık Harcama';
-
-  @override
-  String get noData => 'Henüz harcama verisi bulunmuyor';
-
-  @override
-  String get noDataPeriod => 'Bu dönem için harcama bulunmuyor';
-
-  @override
-  String get today => 'Bugün';
-
-  @override
-  String get thisWeek => 'Bu Hafta';
-
-  @override
-  String get last7Days => 'Son 7 Gün';
-
-  @override
-  String get thisMonth => 'Bu Ay';
-
-  @override
-  String get prevMonth => 'Geçen Ay';
-
-  @override
-  String get resetAll => 'Tüm Verileri Sıfırla';
-
-  @override
-  String get resetConfirmation => 'Tüm veriler silinsin mi?';
-
-  @override
-  String get food => 'Yemek';
-
-  @override
-  String get transport => 'Ulaşım';
-
-  @override
-  String get bill => 'Fatura';
-
-  @override
-  String get market => 'Market';
+  String get homeAddExpense => 'Harcama Ekle';
 
   @override
   String get sortDateDesc => 'Tarih (Yeni > Eski)';
@@ -130,4 +49,55 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get sortAmountAsc => 'Tutar (Düşük > Yüksek)';
+
+  @override
+  String get addExpenseTitle => 'Yeni Harcama';
+
+  @override
+  String get amountLabel => 'Tutar (₺)';
+
+  @override
+  String get amountRequired => 'Tutar giriniz';
+
+  @override
+  String get noCategories => 'Kategori bulunamadı. Lütfen önce kategori ekleyin.';
+
+  @override
+  String get categoryLabel => 'Kategori';
+
+  @override
+  String get noteLabel => 'Not (isteğe bağlı)';
+
+  @override
+  String get buttonAdd => 'Ekle';
+
+  @override
+  String get filterAll => 'Tümü';
+
+  @override
+  String get chartNoData => 'Henüz harcama verisi bulunmuyor';
+
+  @override
+  String get chartTitle => 'Grafikler';
+
+  @override
+  String get filterLast7Days => 'Son 7 Gün';
+
+  @override
+  String get filterThisWeek => 'Bu Hafta';
+
+  @override
+  String get filterThisMonth => 'Bu Ay';
+
+  @override
+  String get filterPrevMonth => 'Geçen Ay';
+
+  @override
+  String get categoryTitle => 'Kategoriler';
+
+  @override
+  String get categoryAddButton => 'Kategori Ekle';
+
+  @override
+  String get categoryEmpty => 'Henüz kategori yok';
 }

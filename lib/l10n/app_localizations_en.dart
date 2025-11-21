@@ -12,52 +12,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'Expense Tracker';
 
   @override
-  String get home => 'Home';
+  String get drawerTitle => '💰 Expense Tracker';
 
   @override
-  String get charts => 'Charts';
+  String get drawerSubtitle => 'Manage your personal finance easily';
 
   @override
-  String get categories => 'Categories';
+  String get drawerHome => 'Home';
 
   @override
-  String get settings => 'Settings';
+  String get drawerCharts => 'Charts';
 
   @override
-  String get all => 'All';
+  String get drawerCategories => 'Categories';
 
   @override
-  String get total => 'Total';
-
-  @override
-  String get addExpense => 'New Expense';
-
-  @override
-  String get amount => 'Amount (₺)';
-
-  @override
-  String get amountRequired => 'Please enter an amount';
-
-  @override
-  String get category => 'Category';
-
-  @override
-  String get noCategories => 'No categories found. Please add a category first.';
-
-  @override
-  String get note => 'Note (optional)';
-
-  @override
-  String get date => 'Date';
-
-  @override
-  String get add => 'Add';
-
-  @override
-  String get delete => 'Delete';
-
-  @override
-  String get deleted => 'Deleted';
+  String get drawerSettings => 'Settings';
 
   @override
   String get emptyExpenses => 'No expenses added yet';
@@ -66,58 +36,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emptyExpensesHint => 'Tap the + button below to add your first expense';
 
   @override
-  String get newCategory => 'Add New Category';
-
-  @override
-  String get categoryName => 'Category Name';
-
-  @override
-  String get addCategory => 'Add Category';
-
-  @override
-  String get categoryDeleted => 'Category deleted';
-
-  @override
-  String get weekSpend => 'Weekly Spending';
-
-  @override
-  String get noData => 'No expense data available';
-
-  @override
-  String get noDataPeriod => 'No expenses found for this period';
-
-  @override
-  String get today => 'Today';
-
-  @override
-  String get thisWeek => 'This Week';
-
-  @override
-  String get last7Days => 'Last 7 Days';
-
-  @override
-  String get thisMonth => 'This Month';
-
-  @override
-  String get prevMonth => 'Previous Month';
-
-  @override
-  String get resetAll => 'Reset All Data';
-
-  @override
-  String get resetConfirmation => 'Delete all data?';
-
-  @override
-  String get food => 'Food';
-
-  @override
-  String get transport => 'Transport';
-
-  @override
-  String get bill => 'Bill';
-
-  @override
-  String get market => 'Groceries';
+  String get homeAddExpense => 'Add Expense';
 
   @override
   String get sortDateDesc => 'Date (Newer > Older)';
@@ -130,4 +49,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sortAmountAsc => 'Amount (Low > High)';
+
+  @override
+  String get addExpenseTitle => 'New Expense';
+
+  @override
+  String get amountLabel => 'Amount (₺)';
+
+  @override
+  String get amountRequired => 'Please enter an amount';
+
+  @override
+  String get noCategories => 'No categories found. Please add a category first.';
+
+  @override
+  String get categoryLabel => 'Category';
+
+  @override
+  String get noteLabel => 'Note (optional)';
+
+  @override
+  String get buttonAdd => 'Add';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get chartNoData => 'No expense data available yet';
+
+  @override
+  String get chartTitle => 'Charts';
+
+  @override
+  String get filterLast7Days => 'Last 7 Days';
+
+  @override
+  String get filterThisWeek => 'This Week';
+
+  @override
+  String get filterThisMonth => 'This Month';
+
+  @override
+  String get filterPrevMonth => 'Previous Month';
+
+  @override
+  String get categoryTitle => 'Categories';
+
+  @override
+  String get categoryAddButton => 'Add Category';
+
+  @override
+  String get categoryEmpty => 'No categories yet';
 }

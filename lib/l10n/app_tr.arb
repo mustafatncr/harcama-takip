@@ -1,56 +1,34 @@
 {
   "@@locale": "tr",
-
   "appName": "Harcama Takip",
-
-  "home": "Ana Sayfa",
-  "charts": "Grafikler",
-  "categories": "Kategoriler",
-  "settings": "Ayarlar",
-
-  "all": "Tümü",
-  "total": "Toplam",
-
-  "addExpense": "Yeni Harcama",
-  "amount": "Tutar (₺)",
-  "amountRequired": "Tutar giriniz",
-  "category": "Kategori",
-  "noCategories": "Kategori bulunamadı. Lütfen önce kategori ekleyin.",
-  "note": "Not (isteğe bağlı)",
-  "date": "Tarih",
-  "add": "Ekle",
-
-  "delete": "Sil",
-  "deleted": "Silindi",
-
+  "drawerTitle": "💰 Harcama Takip",
+  "drawerSubtitle": "Kişisel finansını kolayca yönet",
+  "drawerHome": "Ana Sayfa",
+  "drawerCharts": "Grafikler",
+  "drawerCategories": "Kategoriler",
+  "drawerSettings": "Ayarlar",
   "emptyExpenses": "Henüz harcama eklenmemiş",
   "emptyExpensesHint": "Aşağıdaki + butonuna dokunarak ilk harcamanı ekle",
-
-  "newCategory": "Yeni Kategori Ekle",
-  "categoryName": "Kategori Adı",
-  "addCategory": "Kategori Ekle",
-  "categoryDeleted": "Kategori silindi",
-
-  "weekSpend": "Haftalık Harcama",
-  "noData": "Henüz harcama verisi bulunmuyor",
-  "noDataPeriod": "Bu dönem için harcama bulunmuyor",
-
-  "today": "Bugün",
-  "thisWeek": "Bu Hafta",
-  "last7Days": "Son 7 Gün",
-  "thisMonth": "Bu Ay",
-  "prevMonth": "Geçen Ay",
-
-  "resetAll": "Tüm Verileri Sıfırla",
-  "resetConfirmation": "Tüm veriler silinsin mi?",
-
-  "food": "Yemek",
-  "transport": "Ulaşım",
-  "bill": "Fatura",
-  "market": "Market",
-
+  "homeAddExpense": "Harcama Ekle",
   "sortDateDesc": "Tarih (Yeni > Eski)",
   "sortDateAsc": "Tarih (Eski > Yeni)",
   "sortAmountDesc": "Tutar (Yüksek > Düşük)",
-  "sortAmountAsc": "Tutar (Düşük > Yüksek)"
+  "sortAmountAsc": "Tutar (Düşük > Yüksek)",
+  "addExpenseTitle": "Yeni Harcama",
+  "amountLabel": "Tutar (₺)",
+  "amountRequired": "Tutar giriniz",
+  "noCategories": "Kategori bulunamadı. Lütfen önce kategori ekleyin.",
+  "categoryLabel": "Kategori",
+  "noteLabel": "Not (isteğe bağlı)",
+  "buttonAdd": "Ekle",
+  "filterAll": "Tümü",
+  "chartNoData": "Henüz harcama verisi bulunmuyor",
+  "chartTitle": "Grafikler",
+  "filterLast7Days": "Son 7 Gün",
+  "filterThisWeek": "Bu Hafta",
+  "filterThisMonth": "Bu Ay",
+  "filterPrevMonth": "Geçen Ay",
+  "categoryTitle": "Kategoriler",
+  "categoryAddButton": "Kategori Ekle",
+  "categoryEmpty": "Henüz kategori yok"
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/category.dart';
+import 'dart:ui' as ui;
 
 class CategoryService {
   static const _key = 'categories';
@@ -21,11 +22,21 @@ class CategoryService {
   }
 
   static List<Category> _defaultCategories() {
+    final lang = ui.PlatformDispatcher.instance.locale.languageCode;
+    if (lang == "tr") {
+      return [
+        Category(name: "Yemek", icon: Icons.restaurant),
+        Category(name: "Yakıt", icon: Icons.directions_car),
+        Category(name: "Fatura", icon: Icons.receipt_long),
+        Category(name: "Market", icon: Icons.shopping_cart),
+      ];
+    }
+
     return [
-      Category(name: "Yemek", icon: Icons.restaurant),
-      Category(name: "Ulaşım", icon: Icons.directions_car),
-      Category(name: "Fatura", icon: Icons.receipt_long),
-      Category(name: "Market", icon: Icons.shopping_cart),
+      Category(name: "Food", icon: Icons.restaurant),
+      Category(name: "Fuel", icon: Icons.directions_car),
+      Category(name: "Bill", icon: Icons.receipt_long),
+      Category(name: "Groceries", icon: Icons.shopping_cart),
     ];
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:harcama_takip/l10n/app_localizations.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
 
@@ -40,7 +41,6 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       initialDate: _selectedDate,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
-      locale: const Locale('tr', 'TR'),
     );
     if (picked != null) setState(() => _selectedDate = picked);
   }
@@ -53,7 +53,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       'category': _selectedCategory?.name ?? "Diğer",
       'note': _noteController.text,
       'date': _selectedDate,
-      'icon': _selectedCategory?.icon.codePoint, // 🔹 eklendi
+      'icon': _selectedCategory?.icon.codePoint,
     };
 
     Navigator.pop(context, expense);
@@ -71,8 +71,8 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Yeni Harcama",
+              Text(
+                AppLocalizations.of(context)!.addExpenseTitle,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -81,23 +81,23 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: "Tutar (₺)",
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.amountLabel,
                   border: OutlineInputBorder(),
                 ),
                 validator: (v) =>
-                    v == null || v.isEmpty ? "Tutar giriniz" : null,
+                    v == null || v.isEmpty ? AppLocalizations.of(context)!.amountRequired : null,
               ),
               const SizedBox(height: 12),
 
               // 📂 Kategori seçimi
               _categories.isEmpty
-                  ? const Text(
-                      "Kategori bulunamadı. Lütfen önce kategori ekleyin.")
+                  ? Text(
+                      AppLocalizations.of(context)!.noCategories)
                   : DropdownButtonFormField<Category>(
                       value: _selectedCategory,
-                      decoration: const InputDecoration(
-                        labelText: "Kategori",
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.categoryLabel,
                         border: OutlineInputBorder(),
                       ),
                       items: _categories
@@ -123,8 +123,8 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
               // 🗒️ Not alanı
               TextFormField(
                 controller: _noteController,
-                decoration: const InputDecoration(
-                  labelText: "Not (isteğe bağlı)",
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.noteLabel,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -150,7 +150,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                 child: FilledButton.icon(
                   onPressed: _submit,
                   icon: const Icon(Icons.check),
-                  label: const Text("Ekle"),
+                  label: Text(AppLocalizations.of(context)!.buttonAdd),
                 ),
               ),
             ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:harcama_takip/l10n/app_localizations.dart';
 import '../widgets/add_expense_sheet.dart';
 import '../services/storage_service.dart';
 import '../services/category_service.dart';
@@ -6,24 +7,7 @@ import '../models/expense.dart';
 import '../models/category.dart';
 import '../widgets/app_drawer.dart';
 import 'package:intl/intl.dart';
-
-(IconData, Color) getCategoryStyle(BuildContext context, String category) {
-  final scheme = Theme.of(context).colorScheme;
-  switch (category) {
-    case "Yemek":
-      return (Icons.fastfood, Colors.orange);
-    case "Ulaşım":
-      return (Icons.directions_car, Colors.blue);
-    case "Fatura":
-      return (Icons.lightbulb, Colors.amber);
-    case "Market":
-      return (Icons.local_grocery_store, Colors.green);
-    case "Eğlence":
-      return (Icons.movie, Colors.purple);
-    default:
-      return (Icons.category, scheme.primary);
-  }
-}
+import 'dart:ui' as ui;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,9 +19,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final List<Expense> _items = [];
   List<Category> _categories = [];
-  String _selectedCategory = "Tümü";
+  String _selectedCategory =
+      ui.PlatformDispatcher.instance.locale.languageCode == "tr"
+          ? "Tümü"
+          : "All";
 
-  String _sortBy = "Tarih (Yeni > Eski)";
+  String _sortBy = "";
   bool _isDescending = true;
 
   @override
@@ -76,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   num get _total {
-    final list = _selectedCategory == "Tümü"
+    final list = _selectedCategory == AppLocalizations.of(context)!.filterAll
         ? _items
         : _items.where((e) => e.category == _selectedCategory);
     return list.fold<num>(0, (sum, e) => sum + e.amount);
@@ -121,11 +108,15 @@ class _HomeScreenState extends State<HomeScreen> {
     final hasData = _items.isNotEmpty;
 
     // 🔹 Dinamik kategori listesi
-    final categoryNames = ["Tümü", ..._categories.map((c) => c.name)];
+    final categoryNames = [
+      AppLocalizations.of(context)!.filterAll,
+      ..._categories.map((c) => c.name)
+    ];
 
-    final filteredItems = _selectedCategory == "Tümü"
-        ? _items
-        : _items.where((e) => e.category == _selectedCategory).toList();
+    final filteredItems =
+        _selectedCategory == AppLocalizations.of(context)!.filterAll
+            ? _items
+            : _items.where((e) => e.category == _selectedCategory).toList();
 
     final sortedItems = [...filteredItems];
 
@@ -144,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Harcama Takip'),
+        title: Text(AppLocalizations.of(context)!.appName),
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
@@ -165,22 +156,22 @@ class _HomeScreenState extends State<HomeScreen> {
               });
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: "Tarih",
-                child: Text("Tarih (Yeni > Eski)"),
+                child: Text(AppLocalizations.of(context)!.sortDateDesc),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: "Tarih (Eski > Yeni)",
-                child: Text("Tarih (Eski > Yeni)"),
+                child: Text(AppLocalizations.of(context)!.sortDateAsc),
               ),
               const PopupMenuDivider(),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: "Tutar",
-                child: Text("Tutar (Yüksek > Düşük)"),
+                child: Text(AppLocalizations.of(context)!.sortAmountDesc),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: "Tutar (Düşük > Yüksek)",
-                child: Text("Tutar (Düşük > Yüksek)"),
+                child: Text(AppLocalizations.of(context)!.sortAmountAsc),
               ),
             ],
             icon: const Icon(Icons.sort),
@@ -192,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openAddSheet,
         icon: const Icon(Icons.add),
-        label: const Text("Harcama Ekle"),
+        label: Text(AppLocalizations.of(context)!.homeAddExpense),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -308,13 +299,13 @@ class _EmptyState extends StatelessWidget {
         children: [
           const Text("📭"),
           const SizedBox(height: 8),
-          const Text(
-            "Henüz harcama eklenmemiş",
+          Text(
+            AppLocalizations.of(context)!.emptyExpenses,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 6),
           Text(
-            "Aşağıdaki + butonuna dokunarak ilk harcamanı ekle",
+            AppLocalizations.of(context)!.emptyExpensesHint,
             style: TextStyle(color: Theme.of(context).hintColor),
             textAlign: TextAlign.center,
           ),

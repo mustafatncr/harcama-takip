@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:harcama_takip/l10n/app_localizations.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
 
@@ -111,18 +112,18 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Kategoriler"),
+        title: Text(AppLocalizations.of(context)!.categoryTitle),
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addCategoryDialog,
         icon: const Icon(Icons.add),
-        label: const Text("Kategori Ekle"),
+        label: Text(AppLocalizations.of(context)!.categoryAddButton),
       ),
       body: _categories.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
-                "Henüz kategori yok",
+                AppLocalizations.of(context)!.categoryEmpty,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
             )

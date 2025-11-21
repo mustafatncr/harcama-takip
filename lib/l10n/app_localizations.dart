@@ -101,101 +101,41 @@ abstract class AppLocalizations {
   /// **'Expense Tracker'**
   String get appName;
 
-  /// No description provided for @home.
+  /// No description provided for @drawerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'💰 Expense Tracker'**
+  String get drawerTitle;
+
+  /// No description provided for @drawerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your personal finance easily'**
+  String get drawerSubtitle;
+
+  /// No description provided for @drawerHome.
   ///
   /// In en, this message translates to:
   /// **'Home'**
-  String get home;
+  String get drawerHome;
 
-  /// No description provided for @charts.
+  /// No description provided for @drawerCharts.
   ///
   /// In en, this message translates to:
   /// **'Charts'**
-  String get charts;
+  String get drawerCharts;
 
-  /// No description provided for @categories.
+  /// No description provided for @drawerCategories.
   ///
   /// In en, this message translates to:
   /// **'Categories'**
-  String get categories;
+  String get drawerCategories;
 
-  /// No description provided for @settings.
+  /// No description provided for @drawerSettings.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
-  String get settings;
-
-  /// No description provided for @all.
-  ///
-  /// In en, this message translates to:
-  /// **'All'**
-  String get all;
-
-  /// No description provided for @total.
-  ///
-  /// In en, this message translates to:
-  /// **'Total'**
-  String get total;
-
-  /// No description provided for @addExpense.
-  ///
-  /// In en, this message translates to:
-  /// **'New Expense'**
-  String get addExpense;
-
-  /// No description provided for @amount.
-  ///
-  /// In en, this message translates to:
-  /// **'Amount (₺)'**
-  String get amount;
-
-  /// No description provided for @amountRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter an amount'**
-  String get amountRequired;
-
-  /// No description provided for @category.
-  ///
-  /// In en, this message translates to:
-  /// **'Category'**
-  String get category;
-
-  /// No description provided for @noCategories.
-  ///
-  /// In en, this message translates to:
-  /// **'No categories found. Please add a category first.'**
-  String get noCategories;
-
-  /// No description provided for @note.
-  ///
-  /// In en, this message translates to:
-  /// **'Note (optional)'**
-  String get note;
-
-  /// No description provided for @date.
-  ///
-  /// In en, this message translates to:
-  /// **'Date'**
-  String get date;
-
-  /// No description provided for @add.
-  ///
-  /// In en, this message translates to:
-  /// **'Add'**
-  String get add;
-
-  /// No description provided for @delete.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete'**
-  String get delete;
-
-  /// No description provided for @deleted.
-  ///
-  /// In en, this message translates to:
-  /// **'Deleted'**
-  String get deleted;
+  String get drawerSettings;
 
   /// No description provided for @emptyExpenses.
   ///
@@ -209,113 +149,11 @@ abstract class AppLocalizations {
   /// **'Tap the + button below to add your first expense'**
   String get emptyExpensesHint;
 
-  /// No description provided for @newCategory.
+  /// No description provided for @homeAddExpense.
   ///
   /// In en, this message translates to:
-  /// **'Add New Category'**
-  String get newCategory;
-
-  /// No description provided for @categoryName.
-  ///
-  /// In en, this message translates to:
-  /// **'Category Name'**
-  String get categoryName;
-
-  /// No description provided for @addCategory.
-  ///
-  /// In en, this message translates to:
-  /// **'Add Category'**
-  String get addCategory;
-
-  /// No description provided for @categoryDeleted.
-  ///
-  /// In en, this message translates to:
-  /// **'Category deleted'**
-  String get categoryDeleted;
-
-  /// No description provided for @weekSpend.
-  ///
-  /// In en, this message translates to:
-  /// **'Weekly Spending'**
-  String get weekSpend;
-
-  /// No description provided for @noData.
-  ///
-  /// In en, this message translates to:
-  /// **'No expense data available'**
-  String get noData;
-
-  /// No description provided for @noDataPeriod.
-  ///
-  /// In en, this message translates to:
-  /// **'No expenses found for this period'**
-  String get noDataPeriod;
-
-  /// No description provided for @today.
-  ///
-  /// In en, this message translates to:
-  /// **'Today'**
-  String get today;
-
-  /// No description provided for @thisWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'This Week'**
-  String get thisWeek;
-
-  /// No description provided for @last7Days.
-  ///
-  /// In en, this message translates to:
-  /// **'Last 7 Days'**
-  String get last7Days;
-
-  /// No description provided for @thisMonth.
-  ///
-  /// In en, this message translates to:
-  /// **'This Month'**
-  String get thisMonth;
-
-  /// No description provided for @prevMonth.
-  ///
-  /// In en, this message translates to:
-  /// **'Previous Month'**
-  String get prevMonth;
-
-  /// No description provided for @resetAll.
-  ///
-  /// In en, this message translates to:
-  /// **'Reset All Data'**
-  String get resetAll;
-
-  /// No description provided for @resetConfirmation.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete all data?'**
-  String get resetConfirmation;
-
-  /// No description provided for @food.
-  ///
-  /// In en, this message translates to:
-  /// **'Food'**
-  String get food;
-
-  /// No description provided for @transport.
-  ///
-  /// In en, this message translates to:
-  /// **'Transport'**
-  String get transport;
-
-  /// No description provided for @bill.
-  ///
-  /// In en, this message translates to:
-  /// **'Bill'**
-  String get bill;
-
-  /// No description provided for @market.
-  ///
-  /// In en, this message translates to:
-  /// **'Groceries'**
-  String get market;
+  /// **'Add Expense'**
+  String get homeAddExpense;
 
   /// No description provided for @sortDateDesc.
   ///
@@ -340,6 +178,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Amount (Low > High)'**
   String get sortAmountAsc;
+
+  /// No description provided for @addExpenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Expense'**
+  String get addExpenseTitle;
+
+  /// No description provided for @amountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount (₺)'**
+  String get amountLabel;
+
+  /// No description provided for @amountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an amount'**
+  String get amountRequired;
+
+  /// No description provided for @noCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories found. Please add a category first.'**
+  String get noCategories;
+
+  /// No description provided for @categoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get categoryLabel;
+
+  /// No description provided for @noteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get noteLabel;
+
+  /// No description provided for @buttonAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get buttonAdd;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterAll;
+
+  /// No description provided for @chartNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No expense data available yet'**
+  String get chartNoData;
+
+  /// No description provided for @chartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Charts'**
+  String get chartTitle;
+
+  /// No description provided for @filterLast7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 Days'**
+  String get filterLast7Days;
+
+  /// No description provided for @filterThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get filterThisWeek;
+
+  /// No description provided for @filterThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get filterThisMonth;
+
+  /// No description provided for @filterPrevMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Month'**
+  String get filterPrevMonth;
+
+  /// No description provided for @categoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categoryTitle;
+
+  /// No description provided for @categoryAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Category'**
+  String get categoryAddButton;
+
+  /// No description provided for @categoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories yet'**
+  String get categoryEmpty;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

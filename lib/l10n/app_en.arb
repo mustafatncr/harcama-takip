@@ -1,56 +1,34 @@
 {
   "@@locale": "en",
-
   "appName": "Expense Tracker",
-
-  "home": "Home",
-  "charts": "Charts",
-  "categories": "Categories",
-  "settings": "Settings",
-
-  "all": "All",
-  "total": "Total",
-
-  "addExpense": "New Expense",
-  "amount": "Amount (₺)",
-  "amountRequired": "Please enter an amount",
-  "category": "Category",
-  "noCategories": "No categories found. Please add a category first.",
-  "note": "Note (optional)",
-  "date": "Date",
-  "add": "Add",
-
-  "delete": "Delete",
-  "deleted": "Deleted",
-
+  "drawerTitle": "💰 Expense Tracker",
+  "drawerSubtitle": "Manage your personal finance easily",
+  "drawerHome": "Home",
+  "drawerCharts": "Charts",
+  "drawerCategories": "Categories",
+  "drawerSettings": "Settings",
   "emptyExpenses": "No expenses added yet",
   "emptyExpensesHint": "Tap the + button below to add your first expense",
-
-  "newCategory": "Add New Category",
-  "categoryName": "Category Name",
-  "addCategory": "Add Category",
-  "categoryDeleted": "Category deleted",
-
-  "weekSpend": "Weekly Spending",
-  "noData": "No expense data available",
-  "noDataPeriod": "No expenses found for this period",
-
-  "today": "Today",
-  "thisWeek": "This Week",
-  "last7Days": "Last 7 Days",
-  "thisMonth": "This Month",
-  "prevMonth": "Previous Month",
-
-  "resetAll": "Reset All Data",
-  "resetConfirmation": "Delete all data?",
-
-  "food": "Food",
-  "transport": "Transport",
-  "bill": "Bill",
-  "market": "Groceries",
-
+  "homeAddExpense": "Add Expense",
   "sortDateDesc": "Date (Newer > Older)",
   "sortDateAsc": "Date (Older > Newer)",
   "sortAmountDesc": "Amount (High > Low)",
-  "sortAmountAsc": "Amount (Low > High)"
+  "sortAmountAsc": "Amount (Low > High)",
+  "addExpenseTitle": "New Expense",
+  "amountLabel": "Amount (₺)",
+  "amountRequired": "Please enter an amount",
+  "noCategories": "No categories found. Please add a category first.",
+  "categoryLabel": "Category",
+  "noteLabel": "Note (optional)",
+  "buttonAdd": "Add",
+  "filterAll": "All",
+  "chartNoData": "No expense data available yet",
+  "chartTitle": "Charts",
+  "filterLast7Days": "Last 7 Days",
+  "filterThisWeek": "This Week",
+  "filterThisMonth": "This Month",
+  "filterPrevMonth": "Previous Month",
+  "categoryTitle": "Categories",
+  "categoryAddButton": "Add Category",
+  "categoryEmpty": "No categories yet"
 }

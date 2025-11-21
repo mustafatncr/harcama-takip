@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/ayarlar_ekrani.dart';
+import 'package:harcama_takip/l10n/app_localizations.dart';
 import '../screens/grafik_ekrani.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -17,16 +17,16 @@ class AppDrawer extends StatelessWidget {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
-                  "💰 Harcama Takip",
+                  AppLocalizations.of(context)!.drawerTitle,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 8),
-                Text("Kişisel finansını kolayca yönet"),
+                Text(AppLocalizations.of(context)!.drawerSubtitle),
               ],
             ),
           ),
@@ -34,7 +34,7 @@ class AppDrawer extends StatelessWidget {
           // 🔹 Ana Sayfa
           ListTile(
             leading: const Icon(Icons.home),
-            title: const Text("Ana Sayfa"),
+            title: Text(AppLocalizations.of(context)!.drawerHome),
             onTap: () {
               Navigator.pop(context);
               Navigator.popUntil(context, (route) => route.isFirst);
@@ -44,7 +44,7 @@ class AppDrawer extends StatelessWidget {
           // 🔹 Grafikler
           ListTile(
             leading: const Icon(Icons.bar_chart),
-            title: const Text("Grafikler"),
+            title: Text(AppLocalizations.of(context)!.drawerCharts),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -57,7 +57,7 @@ class AppDrawer extends StatelessWidget {
           // 🔹 Kategoriler
           ListTile(
             leading: const Icon(Icons.category),
-            title: const Text("Kategoriler"),
+            title: Text(AppLocalizations.of(context)!.drawerCategories),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/kategoriler');
@@ -67,7 +67,7 @@ class AppDrawer extends StatelessWidget {
           // 🔹 Ayarlar
           ListTile(
             leading: const Icon(Icons.settings),
-            title: const Text("Ayarlar"),
+            title: Text(AppLocalizations.of(context)!.drawerSettings),
             onTap: () {
               Navigator.pop(context); // Drawer'ı kapat
               Navigator.pushNamed(context, '/ayarlar'); // route üzerinden git

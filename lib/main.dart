@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:harcama_takip/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/home_screen.dart';
 import 'screens/ayarlar_ekrani.dart';
@@ -76,16 +77,22 @@ class _HarcamaTakipAppState extends State<HarcamaTakipApp> {
         brightness: Brightness.dark,
       ),
 
-      // 🌍 Yerelleştirme (TR + EN)
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('tr', 'TR'),
-        Locale('en', 'US'),
-      ],
+      supportedLocales: const [Locale('tr'), Locale('en')],
+
+      localeResolutionCallback: (locale, supportedLocales) {
+        for (final supportedLocale in supportedLocales) {
+          if (supportedLocale.languageCode == locale?.languageCode) {
+            return supportedLocale;
+          }
+        }
+        return const Locale('en');
+      },
 
       // 🔹 Route yapılandırması
       routes: {

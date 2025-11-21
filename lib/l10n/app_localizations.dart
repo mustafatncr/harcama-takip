@@ -394,6 +394,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Category deleted'**
   String get categoryDeleted;
+
+  /// No description provided for @categoryEditDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Category'**
+  String get categoryEditDialogTitle;
+
+  /// No description provided for @buttonSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get buttonSave;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -157,4 +157,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryDeleted => 'Category deleted';
+
+  @override
+  String get categoryEditDialogTitle => 'Edit Category';
+
+  @override
+  String get buttonSave => 'Save';
 }

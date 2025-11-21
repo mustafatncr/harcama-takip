@@ -157,4 +157,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get categoryDeleted => 'Kategori silindi';
+
+  @override
+  String get categoryEditDialogTitle => 'Kategoriyi Düzenle';
+
+  @override
+  String get buttonSave => 'Kaydet';
 }

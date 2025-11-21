@@ -49,5 +49,7 @@
   "settingsClearDataListTitle": "Delete all data",
   "settingsClearDataListSubtitle": "Permanently deletes all expenses",
   "sortTooltip": "Sort",
-  "categoryDeleted": "Category deleted"
+  "categoryDeleted": "Category deleted",
+  "categoryEditDialogTitle": "Edit Category",
+  "buttonSave": "Save"
 }

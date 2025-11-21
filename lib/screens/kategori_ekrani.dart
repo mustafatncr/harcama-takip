@@ -30,16 +30,20 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
     await CategoryService.saveCategories(_categories);
   }
 
-  Future<void> _addCategoryDialog() async {
-    final nameController = TextEditingController();
-    IconData? selectedIcon = Icons.category;
+  Future<void> _openCategoryDialog({Category? edit, int? editIndex}) async {
+    final nameController = TextEditingController(text: edit?.name ?? "");
+    IconData selectedIcon = edit?.icon ?? Icons.category;
 
-    await showDialog(
+    await showDialog<bool>(
       context: context,
       builder: (_) => StatefulBuilder(
         builder: (context, setStateDialog) {
           return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.categoryAddDialogTitle),
+            title: Text(
+              edit == null
+                  ? AppLocalizations.of(context)!.categoryAddDialogTitle
+                  : AppLocalizations.of(context)!.categoryEditDialogTitle,
+            ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -77,7 +81,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(context, false),
                 child: Text(AppLocalizations.of(context)!.buttonCancel),
               ),
               FilledButton(
@@ -86,13 +90,20 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                   if (name.isEmpty) return;
 
                   setState(() {
-                    _categories.add(Category(name: name, icon: selectedIcon!));
+                    if (edit != null) {
+                      _categories[editIndex!] =
+                          Category(name: name, icon: selectedIcon);
+                    } else {
+                      _categories.add(Category(name: name, icon: selectedIcon));
+                    }
                   });
-                  _saveCategories();
 
-                  Navigator.pop(context, true); // → Önemli
+                  _saveCategories();
+                  Navigator.pop(context, true);
                 },
-                child: Text(AppLocalizations.of(context)!.buttonAdd),
+                child: Text(edit == null
+                    ? AppLocalizations.of(context)!.buttonAdd
+                    : AppLocalizations.of(context)!.buttonSave),
               ),
             ],
           );
@@ -117,10 +128,13 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pop(context, true); // ← En kritik satır
-        return false;
+    return PopScope(
+      canPop: false, // Geri tuşunu biz kontrol edeceğiz
+      onPopInvokedWithResult: (didPop, result) {
+        // Kullanıcı geri tuşuna bastıysa
+        if (!didPop) {
+          Navigator.pop(context, true);
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -128,7 +142,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
           centerTitle: true,
         ),
         floatingActionButton: FloatingActionButton.extended(
-          onPressed: _addCategoryDialog,
+          onPressed: () => _openCategoryDialog(),
           icon: const Icon(Icons.add),
           label: Text(AppLocalizations.of(context)!.categoryAddButton),
         ),
@@ -151,9 +165,20 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     title: Text(c.name),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => _deleteCategory(i),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            _openCategoryDialog(edit: c, editIndex: i);
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline),
+                          onPressed: () => _deleteCategory(i),
+                        ),
+                      ],
                     ),
                   );
                 },

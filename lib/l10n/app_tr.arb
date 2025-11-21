@@ -49,5 +49,7 @@
   "settingsClearDataListTitle": "Tüm verileri sil",
   "settingsClearDataListSubtitle": "Tüm harcamaları kalıcı olarak siler",
   "sortTooltip": "Sıralama",
-  "categoryDeleted": "Kategori silindi"
+  "categoryDeleted": "Kategori silindi",
+  "categoryEditDialogTitle": "Kategoriyi Düzenle",
+  "buttonSave": "Kaydet"
 }

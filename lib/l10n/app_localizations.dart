@@ -188,7 +188,7 @@ abstract class AppLocalizations {
   /// No description provided for @amountLabel.
   ///
   /// In en, this message translates to:
-  /// **'Amount (₺)'**
+  /// **'Amount'**
   String get amountLabel;
 
   /// No description provided for @amountRequired.
@@ -406,6 +406,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get buttonSave;
+
+  /// No description provided for @settingsCurrencyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get settingsCurrencyTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

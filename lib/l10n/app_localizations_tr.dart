@@ -54,7 +54,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get addExpenseTitle => 'Yeni Harcama';
 
   @override
-  String get amountLabel => 'Tutar (₺)';
+  String get amountLabel => 'Tutar';
 
   @override
   String get amountRequired => 'Tutar giriniz';
@@ -163,4 +163,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get buttonSave => 'Kaydet';
+
+  @override
+  String get settingsCurrencyTitle => 'Para Birimi';
 }

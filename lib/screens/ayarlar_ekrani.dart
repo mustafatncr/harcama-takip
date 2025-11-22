@@ -19,11 +19,28 @@ class AyarlarEkrani extends StatefulWidget {
 
 class _AyarlarEkraniState extends State<AyarlarEkrani> {
   late ThemeMode _themeMode;
+  String _currency = "TRY"; // Varsayılan
 
   @override
   void initState() {
     super.initState();
     _themeMode = widget.currentThemeMode;
+    _loadCurrency();
+  }
+
+  Future<void> _loadCurrency() async {
+    final code = await StorageService.loadCurrency();
+    setState(() {
+      _currency = code;
+    });
+  }
+
+  Future<void> _changeCurrency(String code) async {
+    await StorageService.saveCurrency(code);
+
+    setState(() {
+      _currency = code;
+    });
   }
 
   // 🔹 Tema değiştiğinde kaydet + uygulamayı güncelle
@@ -103,6 +120,37 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
             onSelectionChanged: (value) => _changeTheme(value.first),
           ),
           const Divider(height: 32),
+          ListTile(
+            leading: const Icon(Icons.attach_money),
+            title: Text(AppLocalizations.of(context)!.settingsCurrencyTitle),
+            trailing: DropdownButton<String>(
+              value: _currency,
+              underline: const SizedBox(),
+              items: const [
+                DropdownMenuItem(
+                  value: "TRY",
+                  child: Text("TRY  (₺)"),
+                ),
+                DropdownMenuItem(
+                  value: "USD",
+                  child: Text("USD  (\$)"),
+                ),
+                DropdownMenuItem(
+                  value: "EUR",
+                  child: Text("EUR  (€)"),
+                ),
+                DropdownMenuItem(
+                  value: "GBP",
+                  child: Text("GBP  (£)"),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  _changeCurrency(value);
+                }
+              },
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.delete_forever),
             title:

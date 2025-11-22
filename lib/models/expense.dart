@@ -5,6 +5,11 @@ class Expense {
   final String category;
   final String? note;
   final DateTime date;
+
+  /// 🔥 Harcamanın para birimi (TRY, USD, EUR, GBP)
+  final String currency;
+
+  /// 🔹 Harcama ikon bilgisi
   final IconData? icon;
 
   Expense({
@@ -12,6 +17,7 @@ class Expense {
     required this.category,
     this.note,
     required this.date,
+    required this.currency, // ⭐ zorunlu hale geldi
     this.icon,
   });
 
@@ -21,9 +27,13 @@ class Expense {
       'category': category,
       'note': note,
       'date': date.toIso8601String(),
-      // 🔹 İkonu 2 parçalı kaydet
+
+      // 🔹 İkon kaydı
       'iconCode': icon?.codePoint,
       'iconFamily': icon?.fontFamily,
+
+      // 🔥 Para birimi kaydı
+      'currency': currency,
     };
   }
 
@@ -33,10 +43,14 @@ class Expense {
       category: map['category'] ?? '',
       note: map['note'],
       date: DateTime.parse(map['date']),
-      // 🔹 İkonu 2 parça veriden geri oluştur
+
+      // 🔹 İkon geri oluşturma
       icon: (map['iconCode'] != null && map['iconFamily'] != null)
           ? IconData(map['iconCode'], fontFamily: map['iconFamily'])
           : null,
+
+      // 🔥 Para birimi – eski kayıtlarda yoksa TRY kullan
+      currency: map['currency'] ?? 'TRY',
     );
   }
 }

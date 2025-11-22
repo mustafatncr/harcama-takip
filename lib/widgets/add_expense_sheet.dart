@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:harcama_takip/l10n/app_localizations.dart';
+import 'package:harcama_takip/services/storage_service.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
 
 class AddExpenseSheet extends StatefulWidget {
-  const AddExpenseSheet({super.key});
+  final String currencyCode;
+  const AddExpenseSheet({
+    super.key,
+    required this.currencyCode, // ⭐ EKLENECEK
+  });
 
   @override
   State<AddExpenseSheet> createState() => _AddExpenseSheetState();
@@ -18,15 +23,32 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
 
   List<Category> _categories = [];
   Category? _selectedCategory;
+  String _currencySymbol = "₺"; // default
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final currency = await StorageService.loadCurrency();
+
       setState(() {
+        _currencySymbol = _symbolForCurrency(currency);
         _loadCategories(context);
       });
     });
+  }
+
+  String _symbolForCurrency(String code) {
+    switch (code) {
+      case "USD":
+        return "\$";
+      case "EUR":
+        return "€";
+      case "GBP":
+        return "£";
+      default:
+        return "₺";
+    }
   }
 
   Future<void> _loadCategories(BuildContext context) async {
@@ -49,8 +71,10 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
     if (picked != null) setState(() => _selectedDate = picked);
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+
+    final currency = await StorageService.loadCurrency(); // ← doğru kaynak
 
     final expense = {
       'amount': double.tryParse(_amountController.text) ?? 0,
@@ -58,7 +82,10 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       'note': _noteController.text,
       'date': _selectedDate,
       'icon': _selectedCategory?.icon.codePoint,
+      'currency': currency, // ← artık her kayıt doğru currency ile kaydedilir
     };
+
+    if (!context.mounted) return;
 
     Navigator.pop(context, expense);
   }
@@ -86,18 +113,19 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                 controller: _amountController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.amountLabel,
+                  labelText:
+                      "${AppLocalizations.of(context)!.amountLabel} ($_currencySymbol)",
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) =>
-                    v == null || v.isEmpty ? AppLocalizations.of(context)!.amountRequired : null,
+                validator: (v) => v == null || v.isEmpty
+                    ? AppLocalizations.of(context)!.amountRequired
+                    : null,
               ),
               const SizedBox(height: 12),
 
               // 📂 Kategori seçimi
               _categories.isEmpty
-                  ? Text(
-                      AppLocalizations.of(context)!.noCategories)
+                  ? Text(AppLocalizations.of(context)!.noCategories)
                   : DropdownButtonFormField<Category>(
                       value: _selectedCategory,
                       decoration: InputDecoration(

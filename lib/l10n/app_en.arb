@@ -15,7 +15,7 @@
   "sortAmountDesc": "Amount (High > Low)",
   "sortAmountAsc": "Amount (Low > High)",
   "addExpenseTitle": "New Expense",
-  "amountLabel": "Amount (₺)",
+  "amountLabel": "Amount",
   "amountRequired": "Please enter an amount",
   "noCategories": "No categories found. Please add a category first.",
   "categoryLabel": "Category",
@@ -51,5 +51,6 @@
   "sortTooltip": "Sort",
   "categoryDeleted": "Category deleted",
   "categoryEditDialogTitle": "Edit Category",
-  "buttonSave": "Save"
+  "buttonSave": "Save",
+  "settingsCurrencyTitle": "Currency"
 }

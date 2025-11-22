@@ -1,9 +1,40 @@
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/expense.dart';
 
 class StorageService {
   static const String _key = "expenses";
+  static const String _currencyKey = "currencyCode";
+
+  /// Para birimini kaydet
+  static Future<void> saveCurrency(String code) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_currencyKey, code);
+  }
+
+  /// Para birimini yükle
+  static Future<String> loadCurrency() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString(_currencyKey);
+
+    if (saved != null) return saved;
+
+    // Eğer kullanıcı daha önce para birimi seçmediyse, cihaz diline göre default atayalım.
+    final deviceLang =
+        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+
+    switch (deviceLang) {
+      case "tr":
+        return "TRY";
+      case "en":
+        return "USD";
+      case "de":
+        return "EUR";
+      default:
+        return "USD";
+    }
+  }
 
   /// Verileri kaydet
   static Future<void> saveExpenses(List<Expense> expenses) async {

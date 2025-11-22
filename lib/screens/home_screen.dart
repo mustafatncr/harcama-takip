@@ -22,7 +22,9 @@ enum SortOrder { desc, asc }
 class _HomeScreenState extends State<HomeScreen> {
   final List<Expense> _items = [];
   List<Category> _categories = [];
+
   String _selectedCategory = "";
+  String _currencyCode = "TRY"; // Seçili varsayılan
 
   SortField _sortField = SortField.date;
   SortOrder _sortOrder = SortOrder.desc;
@@ -34,12 +36,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _loadCategories(context);
+      await _loadCurrency();
       setState(() {
         _selectedCategory = AppLocalizations.of(context)!.filterAll;
       });
     });
   }
 
+  Future<void> _loadCurrency() async {
+    final saved = await StorageService.loadCurrency();
+    setState(() {
+      _currencyCode = saved;
+    });
+  }
+
+  // --------------------- DATA LOAD ---------------------
   Future<void> _loadData() async {
     final data = await StorageService.loadExpenses();
     setState(() => _items.addAll(data));
@@ -56,30 +67,63 @@ class _HomeScreenState extends State<HomeScreen> {
     await StorageService.saveExpenses(_items);
   }
 
+  // --------------------- FORMATTERS ---------------------
   String _formatDate(DateTime d) =>
       "${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}";
 
-  String _formatTL(num v) {
-    final dp = v % 1 == 0 ? 0 : 2; // tam sayıysa .00 gösterme
+  String _currencySymbol(String code) {
+    switch (code) {
+      case "USD":
+        return "\$";
+      case "EUR":
+        return "€";
+      case "GBP":
+        return "£";
+      case "TRY":
+      default:
+        return "₺";
+    }
+  }
+
+  String _formatCurrency(num value, String code) {
+    final symbol = _currencySymbol(code);
+    final digits = value % 1 == 0 ? 0 : 2;
     return NumberFormat.currency(
-      locale: 'tr_TR',
-      symbol: '₺',
-      decimalDigits: dp,
-    ).format(v);
+      locale: "en_US",
+      symbol: symbol,
+      decimalDigits: digits,
+    ).format(value);
   }
 
-  num get _total {
-    final list = _selectedCategory == AppLocalizations.of(context)!.filterAll
-        ? _items
-        : _items.where((e) => e.category == _selectedCategory);
-    return list.fold<num>(0, (sum, e) => sum + e.amount);
+  // --------------------- TOTAL CALC ---------------------
+  Map<String, num> get _totalsByCurrency {
+    final filtered =
+        _selectedCategory == AppLocalizations.of(context)!.filterAll
+            ? _items
+            : _items.where((e) => e.category == _selectedCategory).toList();
+
+    final Map<String, num> result = {};
+
+    for (var e in filtered) {
+      result[e.currency] = (result[e.currency] ?? 0) + e.amount;
+    }
+
+    return result;
   }
 
+  String get _formattedTotal {
+    final parts = _totalsByCurrency.entries.map(
+      (e) => _formatCurrency(e.value, e.key),
+    );
+    return parts.join("  +  ");
+  }
+
+  // --------------------- SHEET ---------------------
   Future<void> _openAddSheet() async {
     final result = await showModalBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
-      builder: (_) => const AddExpenseSheet(),
+      builder: (_) => AddExpenseSheet(currencyCode: _currencyCode),
     );
 
     if (result != null) {
@@ -88,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
         category: result['category'] as String,
         note: result['note'] as String?,
         date: result['date'] as DateTime,
+        currency: result['currency'],
         icon: result['icon'] != null
             ? IconData(result['icon'] as int, fontFamily: 'MaterialIcons')
             : null,
@@ -101,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
         SnackBar(
           content: Text(
             "${AppLocalizations.of(context)!.expenseAdded}: "
-            "${_formatTL(expense.amount)} • "
+            "${_formatCurrency(expense.amount, expense.currency)} • "
             "${expense.category} • ${_formatDate(expense.date)}",
           ),
           duration: const Duration(seconds: 2),
@@ -110,14 +155,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // --------------------- UI ---------------------
   @override
   Widget build(BuildContext context) {
     final hasData = _items.isNotEmpty;
 
-    // 🔹 Dinamik kategori listesi
     final categoryNames = [
       AppLocalizations.of(context)!.filterAll,
-      ..._categories.map((c) => c.name)
+      ..._categories.map((c) => c.name),
     ];
 
     final filteredItems =
@@ -155,32 +200,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
               return [
                 PopupMenuItem(
-                  value: {
-                    "field": SortField.date,
-                    "order": SortOrder.desc,
-                  },
+                  value: {"field": SortField.date, "order": SortOrder.desc},
                   child: Text(loc.sortDateDesc),
                 ),
                 PopupMenuItem(
-                  value: {
-                    "field": SortField.date,
-                    "order": SortOrder.asc,
-                  },
+                  value: {"field": SortField.date, "order": SortOrder.asc},
                   child: Text(loc.sortDateAsc),
                 ),
                 const PopupMenuDivider(),
                 PopupMenuItem(
-                  value: {
-                    "field": SortField.amount,
-                    "order": SortOrder.desc,
-                  },
+                  value: {"field": SortField.amount, "order": SortOrder.desc},
                   child: Text(loc.sortAmountDesc),
                 ),
                 PopupMenuItem(
-                  value: {
-                    "field": SortField.amount,
-                    "order": SortOrder.asc,
-                  },
+                  value: {"field": SortField.amount, "order": SortOrder.asc},
                   child: Text(loc.sortAmountAsc),
                 ),
               ];
@@ -204,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: hasData
             ? Column(
                 children: [
-                  // 🔹 Dinamik kategori menüsü
+                  // --------------------- CATEGORIES ---------------------
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -226,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // 🔹 Toplam kutusu
+                  // --------------------- TOTAL ---------------------
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -241,10 +274,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Text(
                           AppLocalizations.of(context)!.totalLabel,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         Text(
-                          _formatTL(_total),
+                          _formattedTotal,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
@@ -253,9 +288,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 12),
 
-                  // 🔹 Harcama listesi
+                  // --------------------- LIST ---------------------
                   Expanded(
                     child: ListView.separated(
                       itemCount: sortedItems.length,
@@ -267,14 +303,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             backgroundColor: Theme.of(context)
                                 .colorScheme
                                 .primary
-                                .withValues(alpha: 0.15),
+                                .withOpacity(0.15),
                             child: Icon(
                               e.icon ?? Icons.receipt_long,
                               color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                           title: Text(
-                            "${_formatTL(e.amount)} • ${e.category}",
+                            "${_formatCurrency(e.amount, e.currency)} • ${e.category}",
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                           subtitle: Text(
@@ -315,7 +351,7 @@ class _EmptyState extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             AppLocalizations.of(context)!.emptyExpenses,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 6),
           Text(

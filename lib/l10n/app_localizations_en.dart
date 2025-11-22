@@ -54,7 +54,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addExpenseTitle => 'New Expense';
 
   @override
-  String get amountLabel => 'Amount (₺)';
+  String get amountLabel => 'Amount';
 
   @override
   String get amountRequired => 'Please enter an amount';
@@ -163,4 +163,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buttonSave => 'Save';
+
+  @override
+  String get settingsCurrencyTitle => 'Currency';
 }

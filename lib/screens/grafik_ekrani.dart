@@ -16,20 +16,22 @@ class GrafikEkrani extends StatefulWidget {
 
 class _GrafikEkraniState extends State<GrafikEkrani> {
   List<Expense> _expenses = [];
-  TimeFilter _filter = TimeFilter.thisMonth; // Varsayılan: Bu Ay
+  TimeFilter _filter = TimeFilter.thisMonth;
 
-  // 🌈 Sabit renk paleti (ilk 10 kategori için)
+  // Yeni: para birimi filtresi
+  String _selectedCurrency = "TRY";
+
   final List<Color> chartColors = [
-    const Color(0xFF4CAF50), // yeşil
-    const Color(0xFF2196F3), // mavi
-    const Color(0xFFFFC107), // amber
-    const Color(0xFFFF5722), // turuncu
-    const Color(0xFF9C27B0), // mor
-    const Color(0xFF009688), // teal
-    const Color(0xFFE91E63), // pembe
-    const Color(0xFF795548), // kahverengi
-    const Color(0xFF607D8B), // mavi-gri
-    const Color(0xFF8BC34A), // açık yeşil
+    const Color(0xFF4CAF50),
+    const Color(0xFF2196F3),
+    const Color(0xFFFFC107),
+    const Color(0xFFFF5722),
+    const Color(0xFF9C27B0),
+    const Color(0xFF009688),
+    const Color(0xFFE91E63),
+    const Color(0xFF795548),
+    const Color(0xFF607D8B),
+    const Color(0xFF8BC34A),
   ];
 
   @override
@@ -43,13 +45,11 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     setState(() => _expenses = data);
   }
 
-  // 🎨 Dinamik renk üretici (kategoriye göre pastel tonlar)
   Color _generatePastelColor(String key) {
     final hue = (key.hashCode % 360).toDouble();
     return HSLColor.fromAHSL(1, hue, 0.5, 0.65).toColor();
   }
 
-  // 🎨 Kategorilere göre renk atama
   Color getColorForCategory(String key) {
     if (key.hashCode % chartColors.length < chartColors.length) {
       return chartColors[key.hashCode % chartColors.length];
@@ -58,7 +58,6 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     }
   }
 
-  // 🗓 Tarih aralığı hesaplama
   DateTimeRange get _dateRange {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -70,8 +69,8 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
           end: today,
         );
       case TimeFilter.thisWeek:
-        final start = today.subtract(Duration(days: today.weekday - 1)); // Pzt
-        final end = start.add(const Duration(days: 6)); // Paz
+        final start = today.subtract(Duration(days: today.weekday - 1));
+        final end = start.add(const Duration(days: 6));
         return DateTimeRange(start: start, end: end);
       case TimeFilter.thisMonth:
         final start = DateTime(today.year, today.month, 1);
@@ -84,7 +83,7 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     }
   }
 
-  // 🔹 Seçili tarih aralığına göre filtreleme
+  // Tarihle filtrele
   List<Expense> get _filteredExpenses {
     final range = _dateRange;
     return _expenses.where((e) {
@@ -93,76 +92,60 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     }).toList();
   }
 
-  // 🔹 Kategoriye göre toplam hesapla
+  // Yeni → Para birimine göre filtrele
+  List<Expense> get _currencyFiltered {
+    return _filteredExpenses
+        .where((e) => e.currency == _selectedCurrency)
+        .toList();
+  }
+
+  // Yeni → Para birimine göre kategori toplamları
   Map<String, double> get _categoryTotals {
     final map = <String, double>{};
-    for (final e in _filteredExpenses) {
+    for (final e in _currencyFiltered) {
       map[e.category] = (map[e.category] ?? 0) + e.amount;
     }
     return map;
   }
 
+  // Yeni → toplam
   double get _totalSpending =>
-      _filteredExpenses.fold(0, (sum, e) => sum + e.amount);
+      _currencyFiltered.fold(0, (sum, e) => sum + e.amount);
 
-  // 🔹 TL formatı
-  String _formatTL(num v) => "₺${v.toStringAsFixed(v % 1 == 0 ? 0 : 2)}";
-
-  // String _formatDateRange(DateTimeRange range) {
-  //   final months = [
-  //     'Ocak',
-  //     'Şubat',
-  //     'Mart',
-  //     'Nisan',
-  //     'Mayıs',
-  //     'Haziran',
-  //     'Temmuz',
-  //     'Ağustos',
-  //     'Eylül',
-  //     'Ekim',
-  //     'Kasım',
-  //     'Aralık'
-  //   ];
-
-  //   final start = range.start;
-  //   final end = range.end;
-
-  //   // Eğer aynı ay içindeyse: "1 - 7 Ekim 2025"
-  //   if (start.month == end.month && start.year == end.year) {
-  //     return "${start.day} - ${end.day} ${months[start.month - 1]} ${start.year}";
-  //   }
-
-  //   // Farklı ay: "25 Eylül - 1 Ekim 2025"
-  //   if (start.year == end.year) {
-  //     return "${start.day} ${months[start.month - 1]} - ${end.day} ${months[end.month - 1]} ${start.year}";
-  //   }
-
-  //   // Farklı yıl olursa (örneğin Aralık - Ocak geçişi)
-  //   return "${start.day} ${months[start.month - 1]} ${start.year} - ${end.day} ${months[end.month - 1]} ${end.year}";
-  // }
+  // Yeni → Çoklu para birimi formatı
+  String _formatCurrency(num v, String code) {
+    switch (code) {
+      case "USD":
+        return "\$${v.toStringAsFixed(v % 1 == 0 ? 0 : 2)}";
+      case "EUR":
+        return "€${v.toStringAsFixed(v % 1 == 0 ? 0 : 2)}";
+      case "GBP":
+        return "£${v.toStringAsFixed(v % 1 == 0 ? 0 : 2)}";
+      default:
+        return "₺${v.toStringAsFixed(v % 1 == 0 ? 0 : 2)}";
+    }
+  }
 
   String _formatDateRange(DateTimeRange range) {
+    final locale = Localizations.localeOf(context).toString();
     final start = range.start;
     final end = range.end;
 
-    final dayFormat = DateFormat("d", Intl.getCurrentLocale());
-    final monthYearFormat = DateFormat("MMMM yyyy", Intl.getCurrentLocale());
-    final fullFormat = DateFormat("d MMMM yyyy", Intl.getCurrentLocale());
+    final dayFormat = DateFormat("d", locale);
+    final monthYearFormat = DateFormat("MMMM yyyy", locale);
+    final fullFormat = DateFormat("d MMMM yyyy", locale);
 
-    // Aynı ay → "1 - 7 Ekim 2025"
     if (start.month == end.month && start.year == end.year) {
       return "${dayFormat.format(start)} - ${dayFormat.format(end)} "
           "${monthYearFormat.format(start)}";
     }
 
-    // Farklı ay ama aynı yıl → "25 Eylül - 1 Ekim 2025"
     if (start.year == end.year) {
       return "${fullFormat.format(start)} - "
           "${fullFormat.format(end).replaceAll(" ${end.year}", "")} "
           "${end.year}";
     }
 
-    // Farklı yıl → "25 Aralık 2025 - 1 Ocak 2026"
     return "${fullFormat.format(start)} - ${fullFormat.format(end)}";
   }
 
@@ -179,12 +162,21 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: _expenses.isEmpty
-            ? Center(
-                child: Text(AppLocalizations.of(context)!.chartNoData),
-              )
+            ? Center(child: Text(AppLocalizations.of(context)!.chartNoData))
             : Column(
                 children: [
-                  // 🔹 Zaman filtresi (SegmentedButton)
+                  // 🔹 Para birimi seçici
+                  DropdownButton<String>(
+                    value: _selectedCurrency,
+                    onChanged: (v) => setState(() => _selectedCurrency = v!),
+                    items: ["TRY", "USD", "EUR", "GBP"]
+                        .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                        .toList(),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // 🔹 Zaman filtresi
                   Center(
                     child: SegmentedButton<TimeFilter>(
                       segments: [
@@ -212,8 +204,9 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
                     ),
                   ),
 
-                  // 🔹 🗓 Tarih aralığı etiketi
                   const SizedBox(height: 8),
+
+                  // Tarih etiketi
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -228,17 +221,18 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 16),
 
                   if (data.isEmpty)
                     Expanded(
                       child: Center(
                         child: Text(
-                            AppLocalizations.of(context)!.chartNoDataForPeriod),
+                            "${AppLocalizations.of(context)!.chartNoDataForPeriod} ($_selectedCurrency)"),
                       ),
                     )
                   else ...[
-                    // 🔹 Pasta grafiği
+                    // Pasta grafiği
                     Expanded(
                       child: PieChart(
                         PieChartData(
@@ -266,17 +260,18 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
                     ),
                     const SizedBox(height: 20),
 
-                    // 🔹 Kategori detay listesi
+                    // Liste
                     Expanded(
                       child: ListView(
                         children: data.entries.map((entry) {
                           final color = getColorForCategory(entry.key);
                           final percent = (entry.value / total) * 100;
+
                           return ListTile(
                             leading: CircleAvatar(backgroundColor: color),
                             title: Text(entry.key),
                             subtitle: Text(
-                              "${_formatTL(entry.value)} • %${percent.toStringAsFixed(1)}",
+                              "${_formatCurrency(entry.value, _selectedCurrency)} • %${percent.toStringAsFixed(1)}",
                             ),
                           );
                         }).toList(),

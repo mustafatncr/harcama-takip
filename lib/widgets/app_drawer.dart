@@ -10,7 +10,6 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Drawer(
       backgroundColor: const Color(0xFF071312), // Premium dark
       child: Column(
@@ -35,6 +34,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 // Blur efekti
                 BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -42,6 +42,7 @@ class AppDrawer extends StatelessWidget {
                     color: Colors.white.withOpacity(0.05),
                   ),
                 ),
+
                 // İçerik
                 Positioned(
                   left: 20,
@@ -69,18 +70,20 @@ class AppDrawer extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
 
           // -------------------------------------------------------
-          // MENU ITEMS
+          // MENU ITEMS (UPDATED)
           // -------------------------------------------------------
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
+                const SizedBox(height: 20), // 🔥 Premium boşluk eklendi!
+
                 _drawerItem(
                   context,
                   icon: Icons.home,
@@ -90,6 +93,7 @@ class AppDrawer extends StatelessWidget {
                     Navigator.popUntil(context, (route) => route.isFirst);
                   },
                 ),
+
                 _drawerItem(
                   context,
                   icon: Icons.bar_chart,
@@ -102,19 +106,22 @@ class AppDrawer extends StatelessWidget {
                     );
                   },
                 ),
+
                 _drawerItem(
                   context,
                   icon: Icons.category,
                   label: AppLocalizations.of(context)!.drawerCategories,
                   onTap: () async {
                     Navigator.pop(context);
-                    final result = await Navigator.pushNamed(context, '/kategoriler');
+                    final result =
+                        await Navigator.pushNamed(context, '/kategoriler');
 
                     if (result == true && onCategoriesChanged != null) {
                       onCategoriesChanged!();
                     }
                   },
                 ),
+
                 _drawerItem(
                   context,
                   icon: Icons.settings,

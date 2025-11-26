@@ -38,27 +38,30 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
     IconData selectedIcon = edit?.icon ?? Icons.category;
     final primary = Theme.of(context).colorScheme.primary;
 
-    await showDialog(
+    await showModalBottomSheet(
       context: context,
-      barrierDismissible: true,
-      builder: (_) => StatefulBuilder(
-        builder: (context, setStateDialog) {
-          return Dialog(
-            backgroundColor: const Color(0xFF0F2624),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: SafeArea(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.8,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF0F2624),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
                 ),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ------- TITLE -------
+                    Center(
+                      child: Text(
                         edit == null
                             ? AppLocalizations.of(context)!
                                 .categoryAddDialogTitle
@@ -70,141 +73,138 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(height: 18),
+                    ),
+                    const SizedBox(height: 22),
 
-                      // PREMIUM INPUT
-                      TextField(
-                        controller: nameController,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: const Color(0xFF071312),
-                          labelText:
-                              AppLocalizations.of(context)!.categoryNameLabel,
-                          labelStyle: const TextStyle(color: Colors.white70),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 1.4,
-                            ),
+                    // ------- PREMIUM INPUT -------
+                    TextField(
+                      controller: nameController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color(0xFF071312),
+                        hintText:
+                            AppLocalizations.of(context)!.categoryNameLabel,
+                        hintStyle: const TextStyle(color: Colors.white54),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(color: Colors.white12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: primary,
+                            width: 2,
                           ),
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 20),
 
-                      const SizedBox(height: 22),
-
-                      // "Ikon Seç" başlık
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          AppLocalizations.of(context)!.categorySelectIcon,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                    // ------- LABEL -------
+                    Text(
+                      AppLocalizations.of(context)!.categorySelectIcon,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
-                      const SizedBox(height: 10),
+                    ),
+                    const SizedBox(height: 10),
 
-                      // ICON GRID
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: [
-                          for (final icon in _iconList)
-                            GestureDetector(
-                              onTap: () {
-                                setStateDialog(() => selectedIcon = icon);
-                              },
-                              child: Container(
-                                width: 52,
-                                height: 52,
-                                decoration: BoxDecoration(
-                                  color: selectedIcon == icon
-                                      ? Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withOpacity(0.18)
-                                      : const Color(0xFF071312),
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: selectedIcon == icon
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Colors.white12,
-                                    width: 1.2,
-                                  ),
-                                ),
-                                child: Icon(
-                                  icon,
-                                  color: selectedIcon == icon
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Colors.white54,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // BUTTONS
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text(
-                              AppLocalizations.of(context)!.buttonCancel,
-                              style: const TextStyle(color: Colors.white70),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          FilledButton(
-                            style: FilledButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                            onPressed: () {
-                              final name = nameController.text.trim();
-                              if (name.isEmpty) return;
-
-                              setState(() {
-                                if (edit != null) {
-                                  _categories[editIndex!] =
-                                      Category(name: name, icon: selectedIcon);
-                                } else {
-                                  _categories.add(
-                                      Category(name: name, icon: selectedIcon));
-                                }
-                              });
-
-                              _saveCategories();
-                              Navigator.pop(context);
+                    // ------- ICON GRID -------
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        for (final icon in _iconList)
+                          GestureDetector(
+                            onTap: () {
+                              setStateDialog(() => selectedIcon = icon);
                             },
-                            child: Text(
-                              edit == null
-                                  ? AppLocalizations.of(context)!.buttonAdd
-                                  : AppLocalizations.of(context)!.buttonSave,
+                            child: Container(
+                              width: 52,
+                              height: 52,
+                              decoration: BoxDecoration(
+                                color: selectedIcon == icon
+                                    ? primary.withOpacity(0.18)
+                                    : const Color(0xFF071312),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: selectedIcon == icon
+                                      ? primary
+                                      : Colors.white12,
+                                ),
+                              ),
+                              child: Icon(
+                                icon,
+                                color: selectedIcon == icon
+                                    ? primary
+                                    : Colors.white54,
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 26),
+
+                    // ------- BUTTONS -------
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(
+                            AppLocalizations.of(context)!.buttonCancel,
+                            style: const TextStyle(color: Colors.white70),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          onPressed: () {
+                            final name = nameController.text.trim();
+                            if (name.isEmpty) return;
+
+                            setState(() {
+                              if (edit != null) {
+                                _categories[editIndex!] = Category(
+                                  name: name,
+                                  icon: selectedIcon,
+                                );
+                              } else {
+                                _categories.add(
+                                  Category(name: name, icon: selectedIcon),
+                                );
+                              }
+                            });
+
+                            _saveCategories();
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            edit == null
+                                ? AppLocalizations.of(context)!.buttonAdd
+                                : AppLocalizations.of(context)!.buttonSave,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+                  ],
                 ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        );
+      },
     );
   }
 

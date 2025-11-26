@@ -17,22 +17,7 @@ class GrafikEkrani extends StatefulWidget {
 class _GrafikEkraniState extends State<GrafikEkrani> {
   List<Expense> _expenses = [];
   TimeFilter _filter = TimeFilter.thisMonth;
-
-  // Yeni: para birimi filtresi
   String _selectedCurrency = "TRY";
-
-  final List<Color> chartColors = [
-    const Color(0xFF4CAF50),
-    const Color(0xFF2196F3),
-    const Color(0xFFFFC107),
-    const Color(0xFFFF5722),
-    const Color(0xFF9C27B0),
-    const Color(0xFF009688),
-    const Color(0xFFE91E63),
-    const Color(0xFF795548),
-    const Color(0xFF607D8B),
-    const Color(0xFF8BC34A),
-  ];
 
   @override
   void initState() {
@@ -45,19 +30,13 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     setState(() => _expenses = data);
   }
 
+  // Pastel renk üretici
   Color _generatePastelColor(String key) {
     final hue = (key.hashCode % 360).toDouble();
-    return HSLColor.fromAHSL(1, hue, 0.5, 0.65).toColor();
+    return HSLColor.fromAHSL(1, hue, 0.55, 0.55).toColor();
   }
 
-  Color getColorForCategory(String key) {
-    if (key.hashCode % chartColors.length < chartColors.length) {
-      return chartColors[key.hashCode % chartColors.length];
-    } else {
-      return _generatePastelColor(key);
-    }
-  }
-
+  // Tarih aralığı hesaplama
   DateTimeRange get _dateRange {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -70,20 +49,22 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
         );
       case TimeFilter.thisWeek:
         final start = today.subtract(Duration(days: today.weekday - 1));
-        final end = start.add(const Duration(days: 6));
-        return DateTimeRange(start: start, end: end);
+        return DateTimeRange(
+            start: start, end: start.add(const Duration(days: 6)));
       case TimeFilter.thisMonth:
-        final start = DateTime(today.year, today.month, 1);
-        final end = DateTime(today.year, today.month + 1, 0);
-        return DateTimeRange(start: start, end: end);
+        return DateTimeRange(
+          start: DateTime(today.year, today.month, 1),
+          end: DateTime(today.year, today.month + 1, 0),
+        );
       case TimeFilter.prevMonth:
-        final start = DateTime(today.year, today.month - 1, 1);
-        final end = DateTime(today.year, today.month, 0);
-        return DateTimeRange(start: start, end: end);
+        return DateTimeRange(
+          start: DateTime(today.year, today.month - 1, 1),
+          end: DateTime(today.year, today.month, 0),
+        );
     }
   }
 
-  // Tarihle filtrele
+  // Tarihe göre filtre
   List<Expense> get _filteredExpenses {
     final range = _dateRange;
     return _expenses.where((e) {
@@ -92,14 +73,10 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     }).toList();
   }
 
-  // Yeni → Para birimine göre filtrele
-  List<Expense> get _currencyFiltered {
-    return _filteredExpenses
-        .where((e) => e.currency == _selectedCurrency)
-        .toList();
-  }
+  // Para birimine göre filtre
+  List<Expense> get _currencyFiltered =>
+      _filteredExpenses.where((e) => e.currency == _selectedCurrency).toList();
 
-  // Yeni → Para birimine göre kategori toplamları
   Map<String, double> get _categoryTotals {
     final map = <String, double>{};
     for (final e in _currencyFiltered) {
@@ -108,179 +85,304 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     return map;
   }
 
-  // Yeni → toplam
   double get _totalSpending =>
       _currencyFiltered.fold(0, (sum, e) => sum + e.amount);
 
-  // Yeni → Çoklu para birimi formatı
-  String _formatCurrency(num v, String code) {
-    switch (code) {
-      case "USD":
-        return "\$${v.toStringAsFixed(v % 1 == 0 ? 0 : 2)}";
-      case "EUR":
-        return "€${v.toStringAsFixed(v % 1 == 0 ? 0 : 2)}";
-      case "GBP":
-        return "£${v.toStringAsFixed(v % 1 == 0 ? 0 : 2)}";
-      default:
-        return "₺${v.toStringAsFixed(v % 1 == 0 ? 0 : 2)}";
-    }
+  String _formatDateRange(DateTimeRange r) {
+    final locale = Localizations.localeOf(context).toString();
+    final f = DateFormat("d MMM yyyy", locale);
+    return "${f.format(r.start)}  -  ${f.format(r.end)}";
   }
 
-  String _formatDateRange(DateTimeRange range) {
-    final locale = Localizations.localeOf(context).toString();
-    final start = range.start;
-    final end = range.end;
-
-    final dayFormat = DateFormat("d", locale);
-    final monthYearFormat = DateFormat("MMMM yyyy", locale);
-    final fullFormat = DateFormat("d MMMM yyyy", locale);
-
-    if (start.month == end.month && start.year == end.year) {
-      return "${dayFormat.format(start)} - ${dayFormat.format(end)} "
-          "${monthYearFormat.format(start)}";
+  String _currencySymbol(String code) {
+    switch (code) {
+      case "USD":
+        return "\$";
+      case "EUR":
+        return "€";
+      case "GBP":
+        return "£";
+      default:
+        return "₺";
     }
-
-    if (start.year == end.year) {
-      return "${fullFormat.format(start)} - "
-          "${fullFormat.format(end).replaceAll(" ${end.year}", "")} "
-          "${end.year}";
-    }
-
-    return "${fullFormat.format(start)} - ${fullFormat.format(end)}";
   }
 
   @override
   Widget build(BuildContext context) {
-    final data = _categoryTotals;
+    final cs = Theme.of(context).colorScheme;
+    final totals = _categoryTotals;
     final total = _totalSpending;
+    final primary = cs.primary;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.chartTitle),
+        title: Text(
+          AppLocalizations.of(context)!.chartTitle,
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 22),
+        ),
         centerTitle: true,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: _expenses.isEmpty
-            ? Center(child: Text(AppLocalizations.of(context)!.chartNoData))
-            : Column(
-                children: [
-                  // 🔹 Para birimi seçici
-                  DropdownButton<String>(
-                    value: _selectedCurrency,
-                    onChanged: (v) => setState(() => _selectedCurrency = v!),
-                    items: ["TRY", "USD", "EUR", "GBP"]
-                        .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                        .toList(),
-                  ),
+        child: Column(
+          children: [
+            // 🔹 Para Birimi Seçimi
+            _buildCurrencySelector(primary),
+            const SizedBox(height: 20),
 
-                  const SizedBox(height: 8),
+            // 🔹 Zaman Filtresi
+            _buildSegmentedTimeline(primary),
+            const SizedBox(height: 20),
 
-                  // 🔹 Zaman filtresi
-                  Center(
-                    child: SegmentedButton<TimeFilter>(
-                      segments: [
-                        ButtonSegment(
-                            value: TimeFilter.last7,
-                            label: Text(
-                                AppLocalizations.of(context)!.filterLast7Days)),
-                        ButtonSegment(
-                            value: TimeFilter.thisWeek,
-                            label: Text(
-                                AppLocalizations.of(context)!.filterThisWeek)),
-                        ButtonSegment(
-                            value: TimeFilter.thisMonth,
-                            label: Text(
-                                AppLocalizations.of(context)!.filterThisMonth)),
-                        ButtonSegment(
-                            value: TimeFilter.prevMonth,
-                            label: Text(
-                                AppLocalizations.of(context)!.filterPrevMonth)),
-                      ],
-                      showSelectedIcon: false,
-                      selected: {_filter},
-                      onSelectionChanged: (set) =>
-                          setState(() => _filter = set.first),
-                    ),
-                  ),
+            // 🔹 Tarih Aralığı
+            _buildDateCapsule(),
+            const SizedBox(height: 28),
 
-                  const SizedBox(height: 8),
-
-                  // Tarih etiketi
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.calendar_today, size: 16),
-                      const SizedBox(width: 6),
-                      Text(
-                        _formatDateRange(_dateRange),
+            // 🔹 Grafik + Liste Alanı (UI HER ZAMAN KALIR)
+            Expanded(
+              child: _currencyFiltered.isEmpty
+                  ? Center(
+                      child: Text(
+                        AppLocalizations.of(context)!.chartNoData,
                         style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                          color: Colors.white70,
+                          fontSize: 16,
                         ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  if (data.isEmpty)
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                            "${AppLocalizations.of(context)!.chartNoDataForPeriod} ($_selectedCurrency)"),
                       ),
                     )
-                  else ...[
-                    // Pasta grafiği
-                    Expanded(
-                      child: PieChart(
-                        PieChartData(
-                          sectionsSpace: 2,
-                          centerSpaceRadius: 45,
-                          sections: data.entries.map((entry) {
-                            final percent = ((entry.value / total) * 100)
-                                .toStringAsFixed(1);
-                            final color = getColorForCategory(entry.key);
+                  : Column(
+                      children: [
+                        // Donut Chart
+                        _buildDonutChart(primary, totals, total),
+                        const SizedBox(height: 16),
 
-                            return PieChartSectionData(
-                              color: color,
-                              value: entry.value,
-                              title: "$percent%",
-                              radius: 85,
-                              titleStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          }).toList(),
+                        // Liste
+                        Expanded(
+                          child: _buildLegendList(primary, totals, total),
                         ),
-                      ),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-
-                    // Liste
-                    Expanded(
-                      child: ListView(
-                        children: data.entries.map((entry) {
-                          final color = getColorForCategory(entry.key);
-                          final percent = (entry.value / total) * 100;
-
-                          return ListTile(
-                            leading: CircleAvatar(backgroundColor: color),
-                            title: Text(entry.key),
-                            subtitle: Text(
-                              "${_formatCurrency(entry.value, _selectedCurrency)} • %${percent.toStringAsFixed(1)}",
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // PREMIUM: Currency Selector
+  // ---------------------------------------------------------------------------
+  Widget _buildCurrencySelector(Color primary) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: primary.withOpacity(0.4), width: 1.4),
+        color: const Color(0xFF0F2624),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: _selectedCurrency,
+          icon: Icon(Icons.expand_more, color: primary),
+          items: ["TRY", "USD", "EUR", "GBP"]
+              .map((c) => DropdownMenuItem(
+                    value: c,
+                    child: Text(
+                      c,
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ))
+              .toList(),
+          onChanged: (v) => setState(() => _selectedCurrency = v!),
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // PREMIUM: Segmented Button (Time Filter)
+  // ---------------------------------------------------------------------------
+  Widget _buildSegmentedTimeline(Color primary) {
+    return SegmentedButton<TimeFilter>(
+      segments: [
+        ButtonSegment(
+          value: TimeFilter.last7,
+          label: Text(AppLocalizations.of(context)!.filterLast7Days),
+        ),
+        ButtonSegment(
+          value: TimeFilter.thisWeek,
+          label: Text(AppLocalizations.of(context)!.filterThisWeek),
+        ),
+        ButtonSegment(
+          value: TimeFilter.thisMonth,
+          label: Text(AppLocalizations.of(context)!.filterThisMonth),
+        ),
+        ButtonSegment(
+          value: TimeFilter.prevMonth,
+          label: Text(AppLocalizations.of(context)!.filterPrevMonth),
+        ),
+      ],
+      selected: {_filter},
+      showSelectedIcon: false,
+      onSelectionChanged: (s) => setState(() => _filter = s.first),
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? primary.withOpacity(0.25)
+              : const Color(0xFF071312);
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? primary
+              : Colors.white70;
+        }),
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // PREMIUM: Date Capsule
+  // ---------------------------------------------------------------------------
+  Widget _buildDateCapsule() {
+    final r = _dateRange;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: Colors.white.withOpacity(0.06),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.calendar_today, size: 16, color: Colors.white70),
+          const SizedBox(width: 8),
+          Text(
+            _formatDateRange(r),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // PREMIUM: Donut Chart
+  // ---------------------------------------------------------------------------
+  Widget _buildDonutChart(
+    Color primary,
+    Map<String, double> totals,
+    double total,
+  ) {
+    return SizedBox(
+      height: 260, // <<< TAŞMAYI ÖNLEYEN SABİT BOY
+      child: PieChart(
+        PieChartData(
+          sectionsSpace: 4,
+          centerSpaceRadius: 55, // daha dengeli
+          startDegreeOffset: -90,
+          borderData: FlBorderData(show: false),
+          sections: totals.entries.map((entry) {
+            final percent = (entry.value / total) * 100;
+            final color = _generatePastelColor(entry.key);
+
+            return PieChartSectionData(
+              color: color,
+              value: entry.value,
+              radius: 70, // <<< 95 çok büyüktü, artık taşmıyor
+              title: "${percent.toStringAsFixed(1)}%",
+              titleStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // PREMIUM: Legend List
+  // ---------------------------------------------------------------------------
+  Widget _buildLegendList(
+    Color primary,
+    Map<String, double> totals,
+    double total,
+  ) {
+    return ListView.separated(
+      padding: const EdgeInsets.only(top: 10),
+      itemCount: totals.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, i) {
+        final e = totals.entries.elementAt(i);
+        final percent = (e.value / total) * 100;
+        final color = _generatePastelColor(e.key);
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0F2624),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: color.withOpacity(0.55),
+              width: 1.2,
+            ),
+          ),
+          child: Row(
+            children: [
+              CircleAvatar(radius: 10, backgroundColor: color),
+              const SizedBox(width: 14),
+
+              // Kategori adı
+              Expanded(
+                child: Text(
+                  e.key,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+
+              // Tutar
+              Text(
+                "${_currencySymbol(_selectedCurrency)}${e.value.toStringAsFixed(0)}",
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+
+              const SizedBox(width: 12),
+
+              // Yüzde
+              Text(
+                "%${percent.toStringAsFixed(1)}",
+                style: TextStyle(
+                  color: primary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

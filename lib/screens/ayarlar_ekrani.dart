@@ -1,72 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:harcama_takip/l10n/app_localizations.dart';
 import '../services/storage_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AyarlarEkrani extends StatefulWidget {
-  final ThemeMode currentThemeMode;
-  final Function(ThemeMode) onThemeChange;
-
-  const AyarlarEkrani({
-    super.key,
-    required this.currentThemeMode,
-    required this.onThemeChange,
-  });
+  const AyarlarEkrani({super.key});
 
   @override
   State<AyarlarEkrani> createState() => _AyarlarEkraniState();
 }
 
 class _AyarlarEkraniState extends State<AyarlarEkrani> {
-  late ThemeMode _themeMode;
   String _currency = "TRY"; // Varsayılan
 
   @override
   void initState() {
     super.initState();
-    _themeMode = widget.currentThemeMode;
     _loadCurrency();
   }
 
   Future<void> _loadCurrency() async {
     final code = await StorageService.loadCurrency();
-    setState(() {
-      _currency = code;
-    });
+    setState(() => _currency = code);
   }
 
   Future<void> _changeCurrency(String code) async {
     await StorageService.saveCurrency(code);
-
-    setState(() {
-      _currency = code;
-    });
+    setState(() => _currency = code);
   }
 
-  // 🔹 Tema değiştiğinde kaydet + uygulamayı güncelle
-  Future<void> _changeTheme(ThemeMode mode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('themeMode', mode.toString().split('.').last);
-
-    setState(() => _themeMode = mode);
-    widget.onThemeChange(mode); // 🔸 Ana uygulamaya bildir
-  }
-
-  // 🔹 Tüm verileri temizleme işlemi
   Future<void> _clearAllData() async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.settingsClearDataTitle),
-        content: Text(AppLocalizations.of(context)!.settingsClearDataMessage),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: Text(
+          AppLocalizations.of(context)!.settingsClearDataTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          AppLocalizations.of(context)!.settingsClearDataMessage,
+        ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
             child: Text(AppLocalizations.of(context)!.buttonCancel),
+            onPressed: () => Navigator.pop(context, false),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(context, true),
             child: Text(AppLocalizations.of(context)!.settingsConfirmDelete),
+            onPressed: () => Navigator.pop(context, true),
           ),
         ],
       ),
@@ -75,6 +56,7 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
     if (confirm == true) {
       await StorageService.clearAll();
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.settingsDataCleared),
@@ -90,94 +72,47 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
         title: Text(AppLocalizations.of(context)!.settingsTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context), // ✅ Geri ana ekrana döner
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(
-            AppLocalizations.of(context)!.settingsThemeTitle,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          SegmentedButton<ThemeMode>(
-            segments: [
-              ButtonSegment(
-                value: ThemeMode.system,
-                label: Text(AppLocalizations.of(context)!.settingsThemeSystem),
-              ),
-              ButtonSegment(
-                value: ThemeMode.light,
-                label: Text(AppLocalizations.of(context)!.settingsThemeLight),
-              ),
-              ButtonSegment(
-                value: ThemeMode.dark,
-                label: Text(AppLocalizations.of(context)!.settingsThemeDark),
-              ),
-            ],
-            selected: {_themeMode},
-            onSelectionChanged: (value) => _changeTheme(value.first),
-          ),
-          const Divider(height: 32),
+          // Para Birimi
           ListTile(
             leading: const Icon(Icons.attach_money),
             title: Text(AppLocalizations.of(context)!.settingsCurrencyTitle),
             trailing: DropdownButton<String>(
               value: _currency,
+              dropdownColor: Theme.of(context).colorScheme.surface,
               underline: const SizedBox(),
               items: const [
-                DropdownMenuItem(
-                  value: "TRY",
-                  child: Text("TRY  (₺)"),
-                ),
-                DropdownMenuItem(
-                  value: "USD",
-                  child: Text("USD  (\$)"),
-                ),
-                DropdownMenuItem(
-                  value: "EUR",
-                  child: Text("EUR  (€)"),
-                ),
-                DropdownMenuItem(
-                  value: "GBP",
-                  child: Text("GBP  (£)"),
-                ),
+                DropdownMenuItem(value: "TRY", child: Text("TRY  (₺)")),
+                DropdownMenuItem(value: "USD", child: Text("USD  (\$)")),
+                DropdownMenuItem(value: "EUR", child: Text("EUR  (€)")),
+                DropdownMenuItem(value: "GBP", child: Text("GBP  (£)")),
               ],
               onChanged: (value) {
-                if (value != null) {
-                  _changeCurrency(value);
-                }
+                if (value != null) _changeCurrency(value);
               },
             ),
           ),
+
+          const Divider(height: 32),
+
+          // Veri Temizleme
           ListTile(
             leading: const Icon(Icons.delete_forever),
-            title:
-                Text(AppLocalizations.of(context)!.settingsClearDataListTitle),
+            title: Text(
+              AppLocalizations.of(context)!.settingsClearDataListTitle,
+            ),
             subtitle: Text(
-                AppLocalizations.of(context)!.settingsClearDataListSubtitle),
+              AppLocalizations.of(context)!.settingsClearDataListSubtitle,
+            ),
             onTap: _clearAllData,
           ),
         ],
       ),
     );
   }
-}
-
-class MyAppThemeNotifier extends InheritedWidget {
-  final void Function(ThemeMode) updateTheme;
-
-  const MyAppThemeNotifier({
-    super.key,
-    required this.updateTheme,
-    required super.child,
-  });
-
-  static MyAppThemeNotifier? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<MyAppThemeNotifier>();
-  }
-
-  @override
-  bool updateShouldNotify(MyAppThemeNotifier oldWidget) => false;
 }

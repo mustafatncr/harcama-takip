@@ -23,7 +23,7 @@
   "buttonAdd": "Ekle",
   "buttonCancel": "İptal",
   "filterAll": "Tümü",
-  "chartNoData": "Henüz harcama verisi bulunmuyor",
+  "chartNoData": "Bu para birimi için veri bulunmuyor",
   "chartTitle": "Grafikler",
   "filterLast7Days": "Son 7 Gün",
   "filterThisWeek": "Bu Hafta",
@@ -52,5 +52,6 @@
   "categoryDeleted": "Kategori silindi",
   "categoryEditDialogTitle": "Kategoriyi Düzenle",
   "buttonSave": "Kaydet",
-  "settingsCurrencyTitle": "Para Birimi"
+  "settingsCurrencyTitle": "Para Birimi",
+  "categorySelectIcon": "İkon Seç"
 }

@@ -6,9 +6,10 @@ import '../services/category_service.dart';
 
 class AddExpenseSheet extends StatefulWidget {
   final String currencyCode;
+
   const AddExpenseSheet({
     super.key,
-    required this.currencyCode, // ⭐ EKLENECEK
+    required this.currencyCode,
   });
 
   @override
@@ -17,20 +18,21 @@ class AddExpenseSheet extends StatefulWidget {
 
 class _AddExpenseSheetState extends State<AddExpenseSheet> {
   final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
 
+  DateTime _selectedDate = DateTime.now();
   List<Category> _categories = [];
   Category? _selectedCategory;
-  String _currencySymbol = "₺"; // default
+
+  String _currencySymbol = "₺";
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final currency = await StorageService.loadCurrency();
-
       setState(() {
         _currencySymbol = _symbolForCurrency(currency);
         _loadCategories(context);
@@ -67,6 +69,18 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       initialDate: _selectedDate,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            dialogBackgroundColor: const Color(0xFF0F2624),
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  primary: const Color(0xFF00C6A9),
+                  onSurface: Colors.white,
+                ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) setState(() => _selectedDate = picked);
   }
@@ -74,7 +88,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final currency = await StorageService.loadCurrency(); // ← doğru kaynak
+    final currency = await StorageService.loadCurrency();
 
     final expense = {
       'amount': double.tryParse(_amountController.text) ?? 0,
@@ -82,7 +96,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       'note': _noteController.text,
       'date': _selectedDate,
       'icon': _selectedCategory?.icon.codePoint,
-      'currency': currency, // ← artık her kayıt doğru currency ile kaydedilir
+      'currency': currency,
     };
 
     if (!context.mounted) return;
@@ -92,100 +106,221 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
     return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.addExpenseTitle,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-
-              // 💰 Tutar alanı
-              TextFormField(
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText:
-                      "${AppLocalizations.of(context)!.amountLabel} ($_currencySymbol)",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (v) => v == null || v.isEmpty
-                    ? AppLocalizations.of(context)!.amountRequired
-                    : null,
-              ),
-              const SizedBox(height: 12),
-
-              // 📂 Kategori seçimi
-              _categories.isEmpty
-                  ? Text(AppLocalizations.of(context)!.noCategories)
-                  : DropdownButtonFormField<Category>(
-                      value: _selectedCategory,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.categoryLabel,
-                        border: OutlineInputBorder(),
-                      ),
-                      items: _categories
-                          .map((c) => DropdownMenuItem(
-                                value: c,
-                                child: Row(
-                                  children: [
-                                    Icon(c.icon,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary),
-                                    const SizedBox(width: 8),
-                                    Text(c.name),
-                                  ],
-                                ),
-                              ))
-                          .toList(),
-                      onChanged: (val) =>
-                          setState(() => _selectedCategory = val),
-                    ),
-              const SizedBox(height: 12),
-
-              // 🗒️ Not alanı
-              TextFormField(
-                controller: _noteController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.noteLabel,
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // 📅 Tarih seçimi
-              Row(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF0F2624),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(36),
+            topRight: Radius.circular(36),
+          ),
+          border: Border.all(
+            color: const Color(0xFF1C3A37),
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.45),
+              blurRadius: 30,
+              offset: const Offset(0, -6),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 32),
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  TextButton.icon(
-                    onPressed: _selectDate,
-                    icon: const Icon(Icons.calendar_today),
-                    label: Text(
-                      "${_selectedDate.day.toString().padLeft(2, '0')}.${_selectedDate.month.toString().padLeft(2, '0')}.${_selectedDate.year}",
+                  // ⭐ Başlık
+                  Text(
+                    AppLocalizations.of(context)!.addExpenseTitle,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
                     ),
                   ),
+                  const SizedBox(height: 28),
+
+                  // ⭐ Tutar
+                  _buildLabel(
+                    "${AppLocalizations.of(context)!.amountLabel} ($_currencySymbol)",
+                  ),
+                  _buildTextField(
+                    controller: _amountController,
+                    hint: "0.00",
+                    primary: primary,
+                    keyboard: TextInputType.number,
+                    validator: (v) => v == null || v.isEmpty
+                        ? AppLocalizations.of(context)!.amountRequired
+                        : null,
+                  ),
+                  const SizedBox(height: 22),
+
+                  // ⭐ Kategori
+                  _buildLabel(AppLocalizations.of(context)!.categoryLabel),
+                  _categories.isEmpty
+                      ? Text(
+                          AppLocalizations.of(context)!.noCategories,
+                          style: const TextStyle(color: Colors.white70),
+                        )
+                      : _buildDropdown(context, primary),
+                  const SizedBox(height: 22),
+                  _buildTextField(
+                    controller: _noteController,
+                    hint: AppLocalizations.of(context)!.noteLabel,
+                    primary: primary,
+                  ),
+                  const SizedBox(height: 22),
+
+                  // ⭐ Tarih
+                  _buildDatePicker(primary),
+
+                  const SizedBox(height: 32),
+
+                  // ⭐ Ekle Butonu
+                  _buildSubmitButton(primary),
                 ],
               ),
-              const SizedBox(height: 16),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-              // Kaydet butonu
-              Align(
-                alignment: Alignment.centerRight,
-                child: FilledButton.icon(
-                  onPressed: _submit,
-                  icon: const Icon(Icons.check),
-                  label: Text(AppLocalizations.of(context)!.buttonAdd),
-                ),
+  // ------------------------------------------------------------
+  // COMPONENTS
+  // ------------------------------------------------------------
+
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        color: Color(0xFFD5F3EE),
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hint,
+    required Color primary,
+    TextInputType keyboard = TextInputType.text,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboard,
+      validator: validator,
+      decoration: InputDecoration(
+        hintText: hint,
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        filled: true,
+        fillColor: const Color(0xFF0F2624),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xFF1C3A37)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: primary, width: 1.7),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdown(BuildContext context, Color primary) {
+    return Container(
+      padding: const EdgeInsets.only(left: 16, right: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0F2624),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF1C3A37)),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<Category>(
+          isExpanded: true,
+          value: _selectedCategory,
+          dropdownColor: const Color(0xFF0F2624),
+          icon: Icon(Icons.expand_more, color: primary),
+          items: _categories.map((c) {
+            return DropdownMenuItem(
+              value: c,
+              child: Row(
+                children: [
+                  Icon(c.icon, color: primary),
+                  const SizedBox(width: 12),
+                  Text(c.name, style: const TextStyle(color: Colors.white)),
+                ],
               ),
-            ],
+            );
+          }).toList(),
+          onChanged: (val) => setState(() => _selectedCategory = val),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDatePicker(Color primary) {
+    return InkWell(
+      onTap: _selectDate,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0F2624),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFF1C3A37)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.calendar_today, color: primary, size: 20),
+            const SizedBox(width: 12),
+            Text(
+              "${_selectedDate.day.toString().padLeft(2, '0')}.${_selectedDate.month.toString().padLeft(2, '0')}.${_selectedDate.year}",
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton(Color primary) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: _submit,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primary,
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
+          ),
+          elevation: 0,
+        ),
+        child: Text(
+          AppLocalizations.of(context)!.buttonAdd,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),

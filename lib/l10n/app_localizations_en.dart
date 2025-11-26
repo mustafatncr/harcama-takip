@@ -78,7 +78,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterAll => 'All';
 
   @override
-  String get chartNoData => 'No expense data available yet';
+  String get chartNoData => 'No data available for this currency';
 
   @override
   String get chartTitle => 'Charts';
@@ -166,4 +166,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsCurrencyTitle => 'Currency';
+
+  @override
+  String get categorySelectIcon => 'Select Icon';
 }

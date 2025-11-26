@@ -23,7 +23,7 @@
   "buttonAdd": "Add",
   "buttonCancel": "Cancel",
   "filterAll": "All",
-  "chartNoData": "No expense data available yet",
+  "chartNoData": "No data available for this currency",
   "chartTitle": "Charts",
   "filterLast7Days": "Last 7 Days",
   "filterThisWeek": "This Week",
@@ -52,5 +52,6 @@
   "categoryDeleted": "Category deleted",
   "categoryEditDialogTitle": "Edit Category",
   "buttonSave": "Save",
-  "settingsCurrencyTitle": "Currency"
+  "settingsCurrencyTitle": "Currency",
+  "categorySelectIcon": "Select Icon"
 }

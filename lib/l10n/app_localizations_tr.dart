@@ -78,7 +78,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get filterAll => 'Tümü';
 
   @override
-  String get chartNoData => 'Henüz harcama verisi bulunmuyor';
+  String get chartNoData => 'Bu para birimi için veri bulunmuyor';
 
   @override
   String get chartTitle => 'Grafikler';
@@ -166,4 +166,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsCurrencyTitle => 'Para Birimi';
+
+  @override
+  String get categorySelectIcon => 'İkon Seç';
 }

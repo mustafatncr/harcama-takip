@@ -236,7 +236,7 @@ abstract class AppLocalizations {
   /// No description provided for @chartNoData.
   ///
   /// In en, this message translates to:
-  /// **'No expense data available yet'**
+  /// **'No data available for this currency'**
   String get chartNoData;
 
   /// No description provided for @chartTitle.
@@ -412,6 +412,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Currency'**
   String get settingsCurrencyTitle;
+
+  /// No description provided for @categorySelectIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Icon'**
+  String get categorySelectIcon;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

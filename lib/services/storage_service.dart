@@ -7,20 +7,17 @@ class StorageService {
   static const String _key = "expenses";
   static const String _currencyKey = "currencyCode";
 
-  /// Para birimini kaydet
   static Future<void> saveCurrency(String code) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_currencyKey, code);
   }
 
-  /// Para birimini yükle
   static Future<String> loadCurrency() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString(_currencyKey);
 
     if (saved != null) return saved;
 
-    // Eğer kullanıcı daha önce para birimi seçmediyse, cihaz diline göre default atayalım.
     final deviceLang =
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
 
@@ -36,14 +33,12 @@ class StorageService {
     }
   }
 
-  /// Verileri kaydet
   static Future<void> saveExpenses(List<Expense> expenses) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonList = expenses.map((e) => jsonEncode(e.toMap())).toList();
     await prefs.setStringList(_key, jsonList);
   }
 
-  /// Verileri yükle
   static Future<List<Expense>> loadExpenses() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonList = prefs.getStringList(_key) ?? [];

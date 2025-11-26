@@ -17,12 +17,12 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadCategories(context);
+      _loadCategories();
     });
   }
 
-  Future<void> _loadCategories(BuildContext context) async {
-    final loaded = await CategoryService.loadCategories(context);
+  Future<void> _loadCategories() async {
+    final loaded = await CategoryService.loadCategories();
     setState(() => _categories = loaded);
   }
 
@@ -30,9 +30,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
     await CategoryService.saveCategories(_categories);
   }
 
-  // ---------------------------------------------------------------------
-  // PREMIUM POPUP
-  // ---------------------------------------------------------------------
   Future<void> _openCategoryDialog({Category? edit, int? editIndex}) async {
     final nameController = TextEditingController(text: edit?.name ?? "");
     IconData selectedIcon = edit?.icon ?? Icons.category;
@@ -59,7 +56,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ------- TITLE -------
                     Center(
                       child: Text(
                         edit == null
@@ -75,8 +71,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                       ),
                     ),
                     const SizedBox(height: 22),
-
-                    // ------- PREMIUM INPUT -------
                     TextField(
                       controller: nameController,
                       style: const TextStyle(color: Colors.white),
@@ -100,8 +94,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // ------- LABEL -------
                     Text(
                       AppLocalizations.of(context)!.categorySelectIcon,
                       style: const TextStyle(
@@ -111,8 +103,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                       ),
                     ),
                     const SizedBox(height: 10),
-
-                    // ------- ICON GRID -------
                     Wrap(
                       spacing: 10,
                       runSpacing: 10,
@@ -127,7 +117,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                               height: 52,
                               decoration: BoxDecoration(
                                 color: selectedIcon == icon
-                                    ? primary.withOpacity(0.18)
+                                    ? primary.withValues(alpha: 0.18)
                                     : const Color(0xFF071312),
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
@@ -149,7 +139,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
                     const SizedBox(height: 26),
 
-                    // ------- BUTTONS -------
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -208,7 +197,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
     );
   }
 
-  // DELETE
   void _deleteCategory(int index) {
     final deleted = _categories[index];
     setState(() => _categories.removeAt(index));
@@ -225,9 +213,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
     );
   }
 
-  // ---------------------------------------------------------------------
-  // PREMIUM CATEGORY ITEM CARD
-  // ---------------------------------------------------------------------
   Widget _buildCategoryItem(Category c, int index) {
     final primary = Theme.of(context).colorScheme.primary;
 
@@ -236,7 +221,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
       decoration: BoxDecoration(
         color: const Color(0xFF0F2624),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.06)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
       ),
       child: Row(
         children: [
@@ -308,7 +293,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
   }
 }
 
-// ICON LIST
 final List<IconData> _iconList = [
   Icons.restaurant,
   Icons.directions_car,

@@ -11,17 +11,13 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: const Color(0xFF071312), // Premium dark
+      backgroundColor: const Color(0xFF071312),
       child: Column(
         children: [
-          // -------------------------------------------------------
-          // PREMIUM HEADER
-          // -------------------------------------------------------
           SizedBox(
             height: 160,
             child: Stack(
               children: [
-                // Gradient arka plan
                 Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
@@ -35,11 +31,10 @@ class AppDrawer extends StatelessWidget {
                   ),
                 ),
 
-                // Blur efekti
                 BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                   ),
                 ),
 
@@ -63,7 +58,7 @@ class AppDrawer extends StatelessWidget {
                       Text(
                         AppLocalizations.of(context)!.drawerSubtitle,
                         style: TextStyle(
-                          color: Colors.black.withOpacity(0.75),
+                          color: Colors.black.withValues(alpha: 0.75),
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
@@ -75,14 +70,11 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
 
-          // -------------------------------------------------------
-          // MENU ITEMS (UPDATED)
-          // -------------------------------------------------------
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                const SizedBox(height: 20), // 🔥 Premium boşluk eklendi!
+                const SizedBox(height: 20),
 
                 _drawerItem(
                   context,
@@ -134,11 +126,10 @@ class AppDrawer extends StatelessWidget {
 
                 const SizedBox(height: 16),
 
-                // Divider
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Divider(
-                    color: Colors.white.withOpacity(0.08),
+                    color: Colors.white.withValues(alpha: 0.08),
                     thickness: 1,
                   ),
                 ),
@@ -146,16 +137,15 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
 
-          // -------------------------------------------------------
-          // FOOTER
-          // -------------------------------------------------------
           Padding(
-            padding: const EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.only(bottom: 34),
             child: Text(
-              "Harcama Takip • Premium",
+              "by MustApp Studio",
               style: TextStyle(
-                color: Colors.white.withOpacity(0.28),
+                color: Colors.white.withValues(alpha: 0.28),
                 fontSize: 13,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.3,
               ),
             ),
           ),
@@ -164,7 +154,6 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  /// PREMIUM DRAWER ITEM
   Widget _drawerItem(
     BuildContext context, {
     required IconData icon,

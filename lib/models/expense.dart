@@ -44,12 +44,10 @@ class Expense {
       note: map['note'],
       date: DateTime.parse(map['date']),
 
-      // 🔹 İkon geri oluşturma
       icon: (map['iconCode'] != null && map['iconFamily'] != null)
           ? IconData(map['iconCode'], fontFamily: map['iconFamily'])
           : null,
 
-      // 🔥 Para birimi – eski kayıtlarda yoksa TRY kullan
       currency: map['currency'] ?? 'TRY',
     );
   }

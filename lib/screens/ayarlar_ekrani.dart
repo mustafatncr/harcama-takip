@@ -28,9 +28,6 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
     setState(() => _currency = code);
   }
 
-  // ---------------------------------------------------------------------------
-  // PREMIUM DELETE CONFIRMATION POPUP
-  // ---------------------------------------------------------------------------
   Future<void> _clearAllData() async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -62,8 +59,6 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // BUTTONS
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -98,7 +93,7 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
 
     if (confirm == true) {
       await StorageService.clearAll();
-
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: const Color(0xFF0F2624),
@@ -124,9 +119,6 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // PREMIUM CURRENCY DROPDOWN
-  // ---------------------------------------------------------------------------
   Widget _buildCurrencySelector() {
     final cs = Theme.of(context).colorScheme;
 
@@ -139,7 +131,6 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
       ),
       child: Row(
         children: [
-          // 🔥 DİNAMİK PARA BİRİMİ İKONU
           Text(
             currencyIcon(_currency),
             style: TextStyle(
@@ -148,9 +139,7 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
               color: cs.primary,
             ),
           ),
-
           const SizedBox(width: 14),
-
           Expanded(
             child: Text(
               AppLocalizations.of(context)!.settingsCurrencyTitle,
@@ -161,13 +150,12 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
               ),
             ),
           ),
-
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               color: const Color(0xFF071312),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: cs.primary.withOpacity(0.35)),
+              border: Border.all(color: cs.primary.withValues(alpha: 0.35)),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
@@ -192,9 +180,6 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // PREMIUM DELETE CARD
-  // ---------------------------------------------------------------------------
   Widget _buildDeleteCard() {
     return GestureDetector(
       onTap: _clearAllData,
@@ -203,7 +188,7 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
         decoration: BoxDecoration(
           color: const Color(0xFF0F2624),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: Colors.redAccent.withOpacity(0.4)),
+          border: Border.all(color: Colors.redAccent.withValues(alpha: 0.4)),
         ),
         child: Row(
           children: [
@@ -235,9 +220,6 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // BUILD
-  // ---------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(

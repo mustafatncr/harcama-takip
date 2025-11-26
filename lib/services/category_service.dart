@@ -2,15 +2,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/category.dart';
-import 'dart:ui' as ui;
 
 class CategoryService {
   static const _key = 'categories';
 
-  static Future<List<Category>> loadCategories(BuildContext context) async {
+  static Future<List<Category>> loadCategories() async {
+    final deviceLang = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_key);
-    if (jsonString == null) return _defaultCategories(context);
+    if (jsonString == null) return _defaultCategories(deviceLang);
     final List decoded = jsonDecode(jsonString);
     return decoded.map((e) => Category.fromJson(e)).toList();
   }
@@ -21,9 +21,8 @@ class CategoryService {
     await prefs.setString(_key, jsonString);
   }
 
-  static List<Category> _defaultCategories(BuildContext context) {
-    final lang = ui.PlatformDispatcher.instance.locale.languageCode;
-    if (lang == "tr") {
+  static List<Category> _defaultCategories(String deviceLang) {
+    if (deviceLang == "tr") {
       return [
         Category(name: "Yemek", icon: Icons.restaurant),
         Category(name: "Yakıt", icon: Icons.directions_car),

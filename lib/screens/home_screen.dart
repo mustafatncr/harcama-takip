@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadData();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _loadCategories(context);
+      await _loadCategories();
       await _loadCurrency();
       setState(() {
         _selectedCategory = AppLocalizations.of(context)!.filterAll;
@@ -53,8 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _items.addAll(data));
   }
 
-  Future<void> _loadCategories(BuildContext context) async {
-    final data = await CategoryService.loadCategories(context);
+  Future<void> _loadCategories() async {
+    final data = await CategoryService.loadCategories();
     setState(() => _categories = data);
   }
 
@@ -147,8 +147,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // ---------------- Premium UI Widgets ----------------
-
   Widget _buildFilterChip(String label, bool selected) {
     final primary = Theme.of(context).colorScheme.primary;
 
@@ -162,13 +160,13 @@ class _HomeScreenState extends State<HomeScreen> {
           color: selected ? primary : Colors.transparent,
           borderRadius: BorderRadius.circular(22),
           border: Border.all(
-            color: selected ? primary : primary.withOpacity(0.25),
+            color: selected ? primary : primary.withValues(alpha: 0.25),
             width: 1.4,
           ),
           boxShadow: selected
               ? [
                   BoxShadow(
-                    color: primary.withOpacity(0.35),
+                    color: primary.withValues(alpha: 0.35),
                     blurRadius: 8,
                     spreadRadius: 1,
                     offset: const Offset(0, 3),
@@ -201,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.45),
+            color: Colors.black.withValues(alpha: 0.45),
             blurRadius: 10,
             offset: const Offset(0, 4),
           )
@@ -232,16 +230,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F2624), // premium koyu yüzey
+        color: const Color(0xFF0F2624),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: const Color(0xFF1C3A37), // premium ince border
+          color: const Color(0xFF1C3A37),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.40),
-            blurRadius: 14, // geniş yumuşak gölge
+            color: Colors.black.withValues(alpha: 0.40),
+            blurRadius: 14,
             offset: const Offset(0, 6),
           ),
         ],
@@ -249,15 +247,14 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // ICON BADGE
           Container(
             width: 46,
             height: 46,
             decoration: BoxDecoration(
-              color: primary.withOpacity(0.12),
+              color: primary.withValues(alpha: 0.12),
               shape: BoxShape.circle,
               border: Border.all(
-                color: primary.withOpacity(0.30),
+                color: primary.withValues(alpha: 0.30),
                 width: 1.4,
               ),
             ),
@@ -268,24 +265,19 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(width: 16),
-
-          // TEXTS
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // AMOUNT + CATEGORY
                 Text(
                   "${_formatCurrency(e.amount, e.currency)} • ${e.category}",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF9BF7EB), // soft mint amount
+                    color: Color(0xFF9BF7EB),
                   ),
                 ),
                 const SizedBox(height: 6),
-
-                // DATE + OPTIONAL NOTE
                 Text(
                   (e.note?.trim().isEmpty ?? true)
                       ? _formatDate(e.date)
@@ -293,18 +285,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
-                    color: Color(0xFF7C8B8A), // premium soluk metin
+                    color: Color(0xFF7C8B8A),
                   ),
                 ),
               ],
             ),
           ),
-
-          // DELETE BUTTON
           IconButton(
             icon: Icon(
               Icons.delete_outline,
-              color: primary.withOpacity(0.9),
+              color: primary.withValues(alpha: 0.9),
             ),
             onPressed: () {
               setState(() => _items.remove(e));
@@ -315,8 +305,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // -----------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -389,7 +377,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      drawer: AppDrawer(onCategoriesChanged: () => _loadCategories(context)),
+      drawer: AppDrawer(onCategoriesChanged: () => _loadCategories()),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openAddSheet,
         elevation: 0,
@@ -407,7 +395,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // FILTER PILLS
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -424,13 +411,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // TOTAL CARD
                   _buildTotalCard(),
-
                   const SizedBox(height: 20),
-
-                  // LIST
                   Expanded(
                     child: ListView.separated(
                       itemCount: sortedItems.length,

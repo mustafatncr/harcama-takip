@@ -35,7 +35,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       final currency = await StorageService.loadCurrency();
       setState(() {
         _currencySymbol = _symbolForCurrency(currency);
-        _loadCategories(context);
+        _loadCategories();
       });
     });
   }
@@ -53,8 +53,8 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
     }
   }
 
-  Future<void> _loadCategories(BuildContext context) async {
-    final data = await CategoryService.loadCategories(context);
+  Future<void> _loadCategories() async {
+    final data = await CategoryService.loadCategories();
     setState(() {
       _categories = data;
       if (_categories.isNotEmpty) {
@@ -72,8 +72,8 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            dialogBackgroundColor: const Color(0xFF0F2624),
             colorScheme: Theme.of(context).colorScheme.copyWith(
+                  surface: const Color(0xFF0F2624),
                   primary: const Color(0xFF00C6A9),
                   onSurface: Colors.white,
                 ),
@@ -101,7 +101,9 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
 
     if (!context.mounted) return;
 
-    Navigator.pop(context, expense);
+    final ctx = context;
+
+    Navigator.pop(ctx, expense);
   }
 
   @override
@@ -125,7 +127,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.45),
+              color: Colors.black.withValues(alpha: 0.45),
               blurRadius: 30,
               offset: const Offset(0, -6),
             ),
@@ -141,7 +143,6 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // ⭐ Başlık
                   Text(
                     AppLocalizations.of(context)!.addExpenseTitle,
                     style: const TextStyle(
@@ -151,8 +152,6 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                     ),
                   ),
                   const SizedBox(height: 28),
-
-                  // ⭐ Tutar
                   _buildLabel(
                     "${AppLocalizations.of(context)!.amountLabel} ($_currencySymbol)",
                   ),
@@ -166,8 +165,6 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                         : null,
                   ),
                   const SizedBox(height: 22),
-
-                  // ⭐ Kategori
                   _buildLabel(AppLocalizations.of(context)!.categoryLabel),
                   _categories.isEmpty
                       ? Text(
@@ -182,13 +179,8 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                     primary: primary,
                   ),
                   const SizedBox(height: 22),
-
-                  // ⭐ Tarih
                   _buildDatePicker(primary),
-
                   const SizedBox(height: 32),
-
-                  // ⭐ Ekle Butonu
                   _buildSubmitButton(primary),
                 ],
               ),
@@ -198,10 +190,6 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       ),
     );
   }
-
-  // ------------------------------------------------------------
-  // COMPONENTS
-  // ------------------------------------------------------------
 
   Widget _buildLabel(String text) {
     return Text(

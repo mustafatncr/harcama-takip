@@ -30,13 +30,11 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     setState(() => _expenses = data);
   }
 
-  // Pastel renk üretici
   Color _generatePastelColor(String key) {
     final hue = (key.hashCode % 360).toDouble();
     return HSLColor.fromAHSL(1, hue, 0.55, 0.55).toColor();
   }
 
-  // Tarih aralığı hesaplama
   DateTimeRange get _dateRange {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -64,7 +62,6 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     }
   }
 
-  // Tarihe göre filtre
   List<Expense> get _filteredExpenses {
     final range = _dateRange;
     return _expenses.where((e) {
@@ -73,7 +70,6 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     }).toList();
   }
 
-  // Para birimine göre filtre
   List<Expense> get _currencyFiltered =>
       _filteredExpenses.where((e) => e.currency == _selectedCurrency).toList();
 
@@ -127,19 +123,15 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // 🔹 Para Birimi Seçimi
             _buildCurrencySelector(primary),
             const SizedBox(height: 20),
 
-            // 🔹 Zaman Filtresi
             _buildSegmentedTimeline(primary),
             const SizedBox(height: 20),
 
-            // 🔹 Tarih Aralığı
             _buildDateCapsule(),
             const SizedBox(height: 28),
 
-            // 🔹 Grafik + Liste Alanı (UI HER ZAMAN KALIR)
             Expanded(
               child: _currencyFiltered.isEmpty
                   ? Center(
@@ -153,11 +145,9 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
                     )
                   : Column(
                       children: [
-                        // Donut Chart
                         _buildDonutChart(primary, totals, total),
                         const SizedBox(height: 16),
 
-                        // Liste
                         Expanded(
                           child: _buildLegendList(primary, totals, total),
                         ),
@@ -169,16 +159,13 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
       ),
     );
   }
-
-  // ---------------------------------------------------------------------------
-  // PREMIUM: Currency Selector
-  // ---------------------------------------------------------------------------
+  
   Widget _buildCurrencySelector(Color primary) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primary.withOpacity(0.4), width: 1.4),
+        border: Border.all(color: primary.withValues(alpha: 0.4), width: 1.4),
         color: const Color(0xFF0F2624),
       ),
       child: DropdownButtonHideUnderline(
@@ -200,9 +187,6 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // PREMIUM: Segmented Button (Time Filter)
-  // ---------------------------------------------------------------------------
   Widget _buildSegmentedTimeline(Color primary) {
     return SegmentedButton<TimeFilter>(
       segments: [
@@ -229,7 +213,7 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.resolveWith((states) {
           return states.contains(WidgetState.selected)
-              ? primary.withOpacity(0.25)
+              ? primary.withValues(alpha: 0.25)
               : const Color(0xFF071312);
         }),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
@@ -247,17 +231,14 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // PREMIUM: Date Capsule
-  // ---------------------------------------------------------------------------
   Widget _buildDateCapsule() {
     final r = _dateRange;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        color: Colors.white.withOpacity(0.06),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        color: Colors.white.withValues(alpha: 0.06),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -277,20 +258,17 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // PREMIUM: Donut Chart
-  // ---------------------------------------------------------------------------
   Widget _buildDonutChart(
     Color primary,
     Map<String, double> totals,
     double total,
   ) {
     return SizedBox(
-      height: 260, // <<< TAŞMAYI ÖNLEYEN SABİT BOY
+      height: 260,
       child: PieChart(
         PieChartData(
           sectionsSpace: 4,
-          centerSpaceRadius: 55, // daha dengeli
+          centerSpaceRadius: 55,
           startDegreeOffset: -90,
           borderData: FlBorderData(show: false),
           sections: totals.entries.map((entry) {
@@ -300,7 +278,7 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
             return PieChartSectionData(
               color: color,
               value: entry.value,
-              radius: 70, // <<< 95 çok büyüktü, artık taşmıyor
+              radius: 70,
               title: "${percent.toStringAsFixed(1)}%",
               titleStyle: const TextStyle(
                 color: Colors.white,
@@ -314,9 +292,6 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // PREMIUM: Legend List
-  // ---------------------------------------------------------------------------
   Widget _buildLegendList(
     Color primary,
     Map<String, double> totals,
@@ -337,7 +312,7 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
             color: const Color(0xFF0F2624),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: color.withOpacity(0.55),
+              color: color.withValues(alpha: 0.55),
               width: 1.2,
             ),
           ),
@@ -346,7 +321,6 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
               CircleAvatar(radius: 10, backgroundColor: color),
               const SizedBox(width: 14),
 
-              // Kategori adı
               Expanded(
                 child: Text(
                   e.key,
@@ -358,7 +332,6 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
                 ),
               ),
 
-              // Tutar
               Text(
                 "${_currencySymbol(_selectedCurrency)}${e.value.toStringAsFixed(0)}",
                 style: const TextStyle(
@@ -370,7 +343,6 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
 
               const SizedBox(width: 12),
 
-              // Yüzde
               Text(
                 "%${percent.toStringAsFixed(1)}",
                 style: TextStyle(

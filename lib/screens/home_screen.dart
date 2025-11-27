@@ -82,8 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String _formatCurrency(num value, String code) {
     final symbol = _currencySymbol(code);
     final digits = value % 1 == 0 ? 0 : 2;
+    final locale = Localizations.localeOf(context).toString();
     return NumberFormat.currency(
-      locale: "en_US",
+      locale: locale,
       symbol: symbol,
       decimalDigits: digits,
     ).format(value);

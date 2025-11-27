@@ -344,7 +344,7 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
               const SizedBox(width: 12),
 
               Text(
-                "%${percent.toStringAsFixed(1)}",
+                "${percent.toStringAsFixed(1)}%",
                 style: TextStyle(
                   color: primary,
                   fontSize: 15,

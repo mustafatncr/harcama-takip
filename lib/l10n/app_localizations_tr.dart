@@ -169,4 +169,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get categorySelectIcon => 'İkon Seç';
+
+  @override
+  String get appTitle => 'Harcama Takip';
 }

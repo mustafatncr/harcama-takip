@@ -418,6 +418,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Icon'**
   String get categorySelectIcon;
+
+  /// No description provided for @appTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Tracker'**
+  String get appTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

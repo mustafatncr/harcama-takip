@@ -169,4 +169,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categorySelectIcon => 'Select Icon';
+
+  @override
+  String get appTitle => 'Expense Tracker';
 }

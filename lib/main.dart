@@ -18,7 +18,7 @@ class HarcamaTakipApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Harcama Takip',
+      title: AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
 
       theme: premiumDarkTheme,

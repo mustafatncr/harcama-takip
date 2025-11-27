@@ -53,5 +53,6 @@
   "categoryEditDialogTitle": "Edit Category",
   "buttonSave": "Save",
   "settingsCurrencyTitle": "Currency",
-  "categorySelectIcon": "Select Icon"
+  "categorySelectIcon": "Select Icon",
+  "appTitle": "Expense Tracker"
 }

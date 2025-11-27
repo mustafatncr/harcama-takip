@@ -92,10 +92,10 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
 
     final expense = {
       'amount': double.tryParse(_amountController.text) ?? 0,
-      'category': _selectedCategory?.name,
+      'category': _selectedCategory!.name,
       'note': _noteController.text,
       'date': _selectedDate,
-      'icon': _selectedCategory?.icon.codePoint,
+      'icon': _selectedCategory!.icon.codePoint,
       'currency': currency,
     };
 

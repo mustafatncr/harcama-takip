@@ -50,7 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadData() async {
     final data = await StorageService.loadExpenses();
-    setState(() => _items.addAll(data));
+    setState(() {
+      _items
+        ..clear()
+        ..addAll(data);
+    });
   }
 
   Future<void> _loadCategories() async {
@@ -124,12 +128,8 @@ class _HomeScreenState extends State<HomeScreen> {
         note: result['note'] as String?,
         date: result['date'] as DateTime,
         currency: result['currency'],
-        icon: result['icon'] != null
-            ? IconData(
-                result['icon'] as int,
-                fontFamily: 'MaterialIcons',
-              )
-            : null,
+        iconCode: result['iconCode'] as int?,
+        iconFamily: result['iconFamily'] as String?,
       );
 
       setState(() => _items.insert(0, expense));
@@ -260,7 +260,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             child: Icon(
-              e.icon ?? Icons.receipt_long,
+              IconData(
+                e.iconCode ?? Icons.receipt_long.codePoint,
+                fontFamily: e.iconFamily ?? Icons.receipt_long.fontFamily!,
+              ),
               color: primary,
               size: 24,
             ),
@@ -378,7 +381,22 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      drawer: AppDrawer(onCategoriesChanged: () => _loadCategories()),
+      drawer: AppDrawer(
+        onCategoriesChanged: () async {
+          // Önce bellek içindeki eski verileri temizle
+          _items.clear();
+          _categories.clear();
+
+          // Yeni (boş) verileri yükle
+          await _loadData();
+          await _loadCategories();
+
+          // Filtreyi resetle
+          setState(() {
+            _selectedCategory = AppLocalizations.of(context)!.filterAll;
+          });
+        },
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openAddSheet,
         elevation: 0,

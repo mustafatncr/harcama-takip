@@ -35,8 +35,8 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       final currency = await StorageService.loadCurrency();
       setState(() {
         _currencySymbol = _symbolForCurrency(currency);
-        _loadCategories();
       });
+      _loadCategories();
     });
   }
 
@@ -95,15 +95,14 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       'category': _selectedCategory?.name,
       'note': _noteController.text,
       'date': _selectedDate,
-      'icon': _selectedCategory?.icon.codePoint,
+      'iconCode': _selectedCategory?.iconCode,
+      'iconFamily': _selectedCategory?.iconFamily,
       'currency': currency,
     };
 
     if (!context.mounted) return;
 
-    final ctx = context;
-
-    Navigator.pop(ctx, expense);
+    Navigator.pop(context, expense);
   }
 
   @override
@@ -152,9 +151,11 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                     ),
                   ),
                   const SizedBox(height: 28),
+
                   _buildLabel(
                     "${AppLocalizations.of(context)!.amountLabel} ($_currencySymbol)",
                   ),
+
                   _buildTextField(
                     controller: _amountController,
                     hint: "0.00",
@@ -164,23 +165,32 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                         ? AppLocalizations.of(context)!.amountRequired
                         : null,
                   ),
+
                   const SizedBox(height: 22),
+
                   _buildLabel(AppLocalizations.of(context)!.categoryLabel),
+
                   _categories.isEmpty
                       ? Text(
                           AppLocalizations.of(context)!.noCategories,
                           style: const TextStyle(color: Colors.white70),
                         )
                       : _buildDropdown(context, primary),
+
                   const SizedBox(height: 22),
+
                   _buildTextField(
                     controller: _noteController,
                     hint: AppLocalizations.of(context)!.noteLabel,
                     primary: primary,
                   ),
+
                   const SizedBox(height: 22),
+
                   _buildDatePicker(primary),
+
                   const SizedBox(height: 32),
+
                   _buildSubmitButton(primary),
                 ],
               ),
@@ -250,7 +260,10 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
               value: c,
               child: Row(
                 children: [
-                  Icon(c.icon, color: primary),
+                  Icon(
+                    IconData(c.iconCode, fontFamily: c.iconFamily),
+                    color: primary,
+                  ),
                   const SizedBox(width: 12),
                   Text(c.name, style: const TextStyle(color: Colors.white)),
                 ],

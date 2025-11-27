@@ -32,7 +32,7 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
     final confirm = await showDialog<bool>(
       context: context,
       barrierDismissible: true,
-      builder: (_) => Dialog(
+      builder: (dialogContext) => Dialog(
         backgroundColor: const Color(0xFF0F2624),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
         child: Padding(
@@ -63,11 +63,11 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
+                    onPressed: () => Navigator.pop(dialogContext, false),
                     child: Text(
                       AppLocalizations.of(context)!.buttonCancel,
                       style: const TextStyle(color: Colors.white70),
                     ),
-                    onPressed: () => Navigator.pop(context, false),
                   ),
                   const SizedBox(width: 12),
                   FilledButton(
@@ -77,7 +77,7 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    onPressed: () => Navigator.pop(context, true),
+                    onPressed: () => Navigator.pop(dialogContext, true),
                     child: Text(
                       AppLocalizations.of(context)!.settingsConfirmDelete,
                       style: const TextStyle(fontWeight: FontWeight.w600),
@@ -93,16 +93,24 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
 
     if (confirm == true) {
       await StorageService.clearAll();
+
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: const Color(0xFF0F2624),
-          content: Text(
-            AppLocalizations.of(context)!.settingsDataCleared,
-            style: const TextStyle(color: Colors.white),
+
+      // Önce ayarlar ekranını kapat (SAFE POP)
+      Navigator.pop(context, true);
+
+      // Snackbar gecikmeli tetiklenmeli (UI çökmemesi için)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: const Color(0xFF0F2624),
+            content: Text(
+              AppLocalizations.of(context)!.settingsDataCleared,
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
-        ),
-      );
+        );
+      });
     }
   }
 

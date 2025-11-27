@@ -69,13 +69,11 @@ class AppDrawer extends StatelessWidget {
               ],
             ),
           ),
-
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
                 const SizedBox(height: 20),
-
                 _drawerItem(
                   context,
                   icon: Icons.home,
@@ -85,7 +83,6 @@ class AppDrawer extends StatelessWidget {
                     Navigator.popUntil(context, (route) => route.isFirst);
                   },
                 ),
-
                 _drawerItem(
                   context,
                   icon: Icons.bar_chart,
@@ -98,7 +95,6 @@ class AppDrawer extends StatelessWidget {
                     );
                   },
                 ),
-
                 _drawerItem(
                   context,
                   icon: Icons.category,
@@ -113,19 +109,21 @@ class AppDrawer extends StatelessWidget {
                     }
                   },
                 ),
-
                 _drawerItem(
                   context,
                   icon: Icons.settings,
                   label: AppLocalizations.of(context)!.drawerSettings,
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.pushNamed(context, '/ayarlar');
+                  onTap: () async {
+                    Navigator.pop(context); // Drawer'ı kapat
+                    final result =
+                        await Navigator.pushNamed(context, '/ayarlar');
+                    if (result == true) {
+                      // ana ekrandaki verileri temizle
+                      if (onCategoriesChanged != null) onCategoriesChanged!();
+                    }
                   },
                 ),
-
                 const SizedBox(height: 16),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Divider(
@@ -136,7 +134,6 @@ class AppDrawer extends StatelessWidget {
               ],
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.only(bottom: 34),
             child: Text(

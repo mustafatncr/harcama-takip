@@ -1,18 +1,30 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class Category {
   final String name;
-  final IconData icon;
+  final int iconCode;
+  final String iconFamily;
 
-  Category({required this.name, required this.icon});
+  Category({
+    required this.name,
+    required this.iconCode,
+    this.iconFamily = 'MaterialIcons',
+  });
 
   Map<String, dynamic> toJson() => {
         'name': name,
-        'icon': icon.codePoint,
+        'iconCode': iconCode,
+        'iconFamily': iconFamily,
       };
 
   static Category fromJson(Map<String, dynamic> json) => Category(
         name: json['name'],
-        icon: IconData(json['icon'], fontFamily: 'MaterialIcons'),
+        iconCode: json['iconCode'],
+        iconFamily: json['iconFamily'] ?? 'MaterialIcons',
+      );
+
+  /// UI'de Icon göstermek için helper
+  Icon get iconWidget => Icon(
+        IconData(iconCode, fontFamily: iconFamily),
       );
 }

@@ -6,20 +6,33 @@ class Expense {
   final String? note;
   final DateTime date;
 
-  /// 🔥 Harcamanın para birimi (TRY, USD, EUR, GBP)
+  /// Harcamanın para birimi (TRY, USD, EUR, GBP)
   final String currency;
 
-  /// 🔹 Harcama ikon bilgisi
-  final IconData? icon;
+  /// Icon bilgisi artık IconData yerine
+  /// codePoint + family şeklinde saklanıyor
+  final int? iconCode;
+  final String? iconFamily;
 
   Expense({
     required this.amount,
     required this.category,
     this.note,
     required this.date,
-    required this.currency, // ⭐ zorunlu hale geldi
-    this.icon,
+    required this.currency,
+    this.iconCode,
+    this.iconFamily,
   });
+
+  /// UI'de ikon göstermek için hazır getter
+  Icon get iconWidget {
+    if (iconCode == null) {
+      return const Icon(Icons.receipt_long);
+    }
+    return Icon(
+      IconData(iconCode!, fontFamily: iconFamily ?? 'MaterialIcons'),
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -27,13 +40,11 @@ class Expense {
       'category': category,
       'note': note,
       'date': date.toIso8601String(),
-
-      // 🔹 İkon kaydı
-      'iconCode': icon?.codePoint,
-      'iconFamily': icon?.fontFamily,
-
-      // 🔥 Para birimi kaydı
       'currency': currency,
+
+      // ikon kayıtları
+      'iconCode': iconCode,
+      'iconFamily': iconFamily,
     };
   }
 
@@ -43,12 +54,10 @@ class Expense {
       category: map['category'] ?? '',
       note: map['note'],
       date: DateTime.parse(map['date']),
-
-      icon: (map['iconCode'] != null && map['iconFamily'] != null)
-          ? IconData(map['iconCode'], fontFamily: map['iconFamily'])
-          : null,
-
       currency: map['currency'] ?? 'TRY',
+
+      iconCode: map['iconCode'],
+      iconFamily: map['iconFamily'],
     );
   }
 }

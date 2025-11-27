@@ -32,7 +32,12 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
   Future<void> _openCategoryDialog({Category? edit, int? editIndex}) async {
     final nameController = TextEditingController(text: edit?.name ?? "");
-    IconData selectedIcon = edit?.icon ?? Icons.category;
+
+    // ---- YENİ MODEL İÇİN DOĞRU ICON DEĞİŞKENLERİ ----
+    int selectedIconCode = edit?.iconCode ?? Icons.category.codePoint;
+    String selectedIconFamily =
+        edit?.iconFamily ?? Icons.category.fontFamily!;
+
     final primary = Theme.of(context).colorScheme.primary;
 
     await showModalBottomSheet(
@@ -71,6 +76,8 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                       ),
                     ),
                     const SizedBox(height: 22),
+
+                    // ---- KATEGORİ İSMİ ----
                     TextField(
                       controller: nameController,
                       style: const TextStyle(color: Colors.white),
@@ -94,6 +101,8 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                       ),
                     ),
                     const SizedBox(height: 20),
+
+                    // ---- ICON SEÇME BAŞLIĞI ----
                     Text(
                       AppLocalizations.of(context)!.categorySelectIcon,
                       style: const TextStyle(
@@ -103,6 +112,8 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                       ),
                     ),
                     const SizedBox(height: 10),
+
+                    // ---- ICON SEÇME GRID ----
                     Wrap(
                       spacing: 10,
                       runSpacing: 10,
@@ -110,25 +121,31 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                         for (final icon in _iconList)
                           GestureDetector(
                             onTap: () {
-                              setStateDialog(() => selectedIcon = icon);
+                              setStateDialog(() {
+                                selectedIconCode = icon.codePoint;
+                                selectedIconFamily = icon.fontFamily!;
+                              });
                             },
                             child: Container(
                               width: 52,
                               height: 52,
                               decoration: BoxDecoration(
-                                color: selectedIcon == icon
+                                color: (selectedIconCode == icon.codePoint &&
+                                        selectedIconFamily == icon.fontFamily)
                                     ? primary.withValues(alpha: 0.18)
                                     : const Color(0xFF071312),
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
-                                  color: selectedIcon == icon
+                                  color: (selectedIconCode == icon.codePoint &&
+                                          selectedIconFamily == icon.fontFamily)
                                       ? primary
                                       : Colors.white12,
                                 ),
                               ),
                               child: Icon(
                                 icon,
-                                color: selectedIcon == icon
+                                color: (selectedIconCode == icon.codePoint &&
+                                        selectedIconFamily == icon.fontFamily)
                                     ? primary
                                     : Colors.white54,
                               ),
@@ -139,6 +156,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
                     const SizedBox(height: 26),
 
+                    // ---- BUTONLAR ----
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -163,13 +181,20 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
                             setState(() {
                               if (edit != null) {
+                                // ----- DÜZENLEME -----
                                 _categories[editIndex!] = Category(
                                   name: name,
-                                  icon: selectedIcon,
+                                  iconCode: selectedIconCode,
+                                  iconFamily: selectedIconFamily,
                                 );
                               } else {
+                                // ----- EKLEME -----
                                 _categories.add(
-                                  Category(name: name, icon: selectedIcon),
+                                  Category(
+                                    name: name,
+                                    iconCode: selectedIconCode,
+                                    iconFamily: selectedIconFamily,
+                                  ),
                                 );
                               }
                             });
@@ -185,7 +210,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 10),
                   ],
                 ),
@@ -225,7 +249,11 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
       ),
       child: Row(
         children: [
-          Icon(c.icon, size: 26, color: primary),
+          Icon(
+            IconData(c.iconCode, fontFamily: c.iconFamily),
+            size: 26,
+            color: primary,
+          ),
           const SizedBox(width: 18),
           Expanded(
             child: Text(

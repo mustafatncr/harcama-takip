@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:harcama_takip/services/export_excel_service.dart';
+import 'package:harcama_takip/services/export_pdf_service.dart';
 import 'package:intl/intl.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/icon_map.dart';
 import '../models/expense.dart';
 import '../services/storage_service.dart';
+import '../services/share_text_service.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -44,10 +47,7 @@ class _ReportScreenState extends State<ReportScreen> {
       firstDate: first,
       lastDate: last,
       initialDateRange: _selectedRange ??
-          DateTimeRange(
-            start: DateTime(now.year, now.month, 1),
-            end: now,
-          ),
+          DateTimeRange(start: DateTime(now.year, now.month, 1), end: now),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -71,7 +71,7 @@ class _ReportScreenState extends State<ReportScreen> {
     if (_selectedRange == null) return [];
     return _allExpenses.where((e) {
       return e.date.isAfter(_selectedRange!.start.subtract(const Duration(days: 1))) &&
-             e.date.isBefore(_selectedRange!.end.add(const Duration(days: 1)));
+          e.date.isBefore(_selectedRange!.end.add(const Duration(days: 1)));
     }).toList()
       ..sort((a, b) => b.date.compareTo(a.date));
   }
@@ -143,6 +143,62 @@ class _ReportScreenState extends State<ReportScreen> {
     return sum;
   }
 
+  // -----------------------------------------------------------
+  //  EXPORT MENU
+  // -----------------------------------------------------------
+  void _showExportMenu(BuildContext context, List<Expense> expenses) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: Colors.grey[400],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+
+              ListTile(
+                leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                title: const Text("PDF olarak dışa aktar"),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await ExportPdfService.exportAndShare(expenses);
+                },
+              ),
+
+              ListTile(
+                leading: const Icon(Icons.grid_on, color: Colors.green),
+                title: const Text("Excel olarak dışa aktar"),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await ExportExcelService.exportAndShare(expenses);
+                },
+              ),
+
+              ListTile(
+                leading: const Icon(Icons.close),
+                title: const Text("Kapat"),
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+  // -----------------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -159,7 +215,6 @@ class _ReportScreenState extends State<ReportScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // DATE RANGE PICKER CARD
             GestureDetector(
               onTap: _pickDateRange,
               child: Container(
@@ -178,7 +233,8 @@ class _ReportScreenState extends State<ReportScreen> {
                           : "${_formatDate(_selectedRange!.start)}  →  ${_formatDate(_selectedRange!.end)}",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
-                    Icon(Icons.date_range, color: Theme.of(context).colorScheme.primary),
+                    Icon(Icons.date_range,
+                        color: Theme.of(context).colorScheme.primary),
                   ],
                 ),
               ),
@@ -186,7 +242,6 @@ class _ReportScreenState extends State<ReportScreen> {
 
             const SizedBox(height: 20),
 
-            // TOTAL CARD
             if (_selectedRange != null)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -199,21 +254,18 @@ class _ReportScreenState extends State<ReportScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(loc.totalLabel, style: Theme.of(context).textTheme.bodyMedium),
-                    Text("${_totalAmount}", style: Theme.of(context).textTheme.bodyLarge),
+                    Text("$_totalAmount", style: Theme.of(context).textTheme.bodyLarge),
                   ],
                 ),
               ),
 
             const SizedBox(height: 20),
 
-            // LIST
             Expanded(
               child: _selectedRange == null
                   ? Center(child: Text(loc.selectDateRangeHint))
                   : _filtered.isEmpty
-                      ? const Center(
-                          child: Text("📭 Hiç harcama yok", style: TextStyle(fontSize: 16)),
-                        )
+                      ? const Center(child: Text("📭 Hiç harcama yok", style: TextStyle(fontSize: 16)))
                       : ListView.separated(
                           itemCount: _filtered.length,
                           separatorBuilder: (_, __) => const SizedBox(height: 12),
@@ -224,7 +276,9 @@ class _ReportScreenState extends State<ReportScreen> {
         ),
       ),
 
+      // ---------------------------------------------
       // BOTTOM BUTTONS
+      // ---------------------------------------------
       bottomNavigationBar: _selectedRange == null
           ? null
           : Container(
@@ -235,9 +289,12 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
               child: Row(
                 children: [
+                  // EXPORT BUTTON → MENÜ AÇAR
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        _showExportMenu(context, _filtered);
+                      },
                       icon: const Icon(Icons.upload_file),
                       label: Text(loc.export),
                       style: ElevatedButton.styleFrom(
@@ -248,13 +305,25 @@ class _ReportScreenState extends State<ReportScreen> {
                     ),
                   ),
                   const SizedBox(width: 14),
+
+                  // SHARE AS TEXT BUTTON
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () async {
+                        if (_selectedRange == null) return;
+
+                        final text = ShareTextService.buildReportText(
+                            _filtered, _selectedRange!);
+
+                        await ShareTextService.shareText(text);
+                      },
                       icon: const Icon(Icons.share),
                       label: Text(loc.share),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.85),
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withValues(alpha: 0.85),
                         foregroundColor: Colors.black,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),

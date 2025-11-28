@@ -54,5 +54,12 @@
   "buttonSave": "Kaydet",
   "settingsCurrencyTitle": "Para Birimi",
   "categorySelectIcon": "İkon Seç",
-  "appTitle": "Harcama Takip"
+  "appTitle": "Harcama Takip",
+  "drawerReport": "Rapor",
+  "reportTitle": "Rapor",
+  "reportTitle": "Rapor",
+  "selectDateRange": "Tarih Aralığı Seç",
+  "selectDateRangeHint": "Lütfen bir tarih aralığı seçin",
+  "export": "Dışarı Aktar",
+  "share": "Paylaş"
 }

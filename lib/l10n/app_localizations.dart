@@ -424,6 +424,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Expense Tracker'**
   String get appTitle;
+
+  /// No description provided for @drawerReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get drawerReport;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get reportTitle;
+
+  /// No description provided for @selectDateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Date Range'**
+  String get selectDateRange;
+
+  /// No description provided for @selectDateRangeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a date range'**
+  String get selectDateRangeHint;
+
+  /// No description provided for @export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get export;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

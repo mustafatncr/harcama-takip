@@ -54,5 +54,12 @@
   "buttonSave": "Save",
   "settingsCurrencyTitle": "Currency",
   "categorySelectIcon": "Select Icon",
-  "appTitle": "Expense Tracker"
+  "appTitle": "Expense Tracker",
+  "drawerReport": "Report",
+  "reportTitle": "Report",
+  "reportTitle": "Report",
+  "selectDateRange": "Select Date Range",
+  "selectDateRangeHint": "Please select a date range",
+  "export": "Export",
+  "share": "Share"
 }

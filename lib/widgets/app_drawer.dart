@@ -30,14 +30,12 @@ class AppDrawer extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
                     color: Colors.white.withValues(alpha: 0.05),
                   ),
                 ),
-
                 Positioned(
                   left: 20,
                   bottom: 24,
@@ -106,6 +104,15 @@ class AppDrawer extends StatelessWidget {
                     if (result == true && onCategoriesChanged != null) {
                       onCategoriesChanged!();
                     }
+                  },
+                ),
+                _drawerItem(
+                  context,
+                  icon: Icons.summarize_outlined,
+                  label: AppLocalizations.of(context)!.drawerReport,
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/rapor');
                   },
                 ),
                 _drawerItem(

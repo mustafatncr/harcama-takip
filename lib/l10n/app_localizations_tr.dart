@@ -172,4 +172,22 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get appTitle => 'Harcama Takip';
+
+  @override
+  String get drawerReport => 'Rapor';
+
+  @override
+  String get reportTitle => 'Rapor';
+
+  @override
+  String get selectDateRange => 'Tarih Aralığı Seç';
+
+  @override
+  String get selectDateRangeHint => 'Lütfen bir tarih aralığı seçin';
+
+  @override
+  String get export => 'Dışarı Aktar';
+
+  @override
+  String get share => 'Paylaş';
 }

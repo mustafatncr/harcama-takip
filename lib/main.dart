@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:harcama_takip/l10n/app_localizations.dart';
+import 'package:harcama_takip/screens/report_screen.dart';
 import 'theme/premium_dark_theme.dart';
 import 'screens/home_screen.dart';
 import 'screens/ayarlar_ekrani.dart';
@@ -20,10 +21,8 @@ class HarcamaTakipApp extends StatelessWidget {
     return MaterialApp(
       title: AppLocalizations.of(context)?.appTitle,
       debugShowCheckedModeBanner: false,
-
       theme: premiumDarkTheme,
       themeMode: ThemeMode.dark,
-
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -31,7 +30,6 @@ class HarcamaTakipApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [Locale('tr'), Locale('en')],
-
       localeResolutionCallback: (locale, supportedLocales) {
         for (final supportedLocale in supportedLocales) {
           if (supportedLocale.languageCode == locale?.languageCode) {
@@ -40,12 +38,11 @@ class HarcamaTakipApp extends StatelessWidget {
         }
         return const Locale('en');
       },
-
       routes: {
         '/': (_) => const HomeScreen(),
         '/grafikler': (_) => const GrafikEkrani(),
         '/kategoriler': (_) => const KategoriEkrani(),
-
+        '/rapor': (_) => const ReportScreen(),
         '/ayarlar': (_) => const AyarlarEkrani(),
       },
       initialRoute: '/',

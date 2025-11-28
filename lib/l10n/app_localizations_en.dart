@@ -172,4 +172,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appTitle => 'Expense Tracker';
+
+  @override
+  String get drawerReport => 'Report';
+
+  @override
+  String get reportTitle => 'Report';
+
+  @override
+  String get selectDateRange => 'Select Date Range';
+
+  @override
+  String get selectDateRangeHint => 'Please select a date range';
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get share => 'Share';
 }

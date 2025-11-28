@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:harcama_takip/l10n/app_localizations.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
+import '../utils/icon_map.dart';
 
 class KategoriEkrani extends StatefulWidget {
   const KategoriEkrani({super.key});
@@ -33,10 +34,8 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
   Future<void> _openCategoryDialog({Category? edit, int? editIndex}) async {
     final nameController = TextEditingController(text: edit?.name ?? "");
 
-    // ---- YENİ MODEL İÇİN DOĞRU ICON DEĞİŞKENLERİ ----
-    int selectedIconCode = edit?.iconCode ?? Icons.category.codePoint;
-    String selectedIconFamily =
-        edit?.iconFamily ?? Icons.category.fontFamily!;
+    /// yeni modelde sadece iconName var
+    String selectedIconName = edit?.iconName ?? iconMap.keys.first;
 
     final primary = Theme.of(context).colorScheme.primary;
 
@@ -64,10 +63,8 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                     Center(
                       child: Text(
                         edit == null
-                            ? AppLocalizations.of(context)!
-                                .categoryAddDialogTitle
-                            : AppLocalizations.of(context)!
-                                .categoryEditDialogTitle,
+                            ? AppLocalizations.of(context)!.categoryAddDialogTitle
+                            : AppLocalizations.of(context)!.categoryEditDialogTitle,
                         style: const TextStyle(
                           fontSize: 20,
                           color: Colors.white,
@@ -77,15 +74,14 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                     ),
                     const SizedBox(height: 22),
 
-                    // ---- KATEGORİ İSMİ ----
+                    /// KATEGORİ ADI
                     TextField(
                       controller: nameController,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: const Color(0xFF071312),
-                        hintText:
-                            AppLocalizations.of(context)!.categoryNameLabel,
+                        hintText: AppLocalizations.of(context)!.categoryNameLabel,
                         hintStyle: const TextStyle(color: Colors.white54),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -100,9 +96,10 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 20),
 
-                    // ---- ICON SEÇME BAŞLIĞI ----
+                    /// ICON BAŞLIK
                     Text(
                       AppLocalizations.of(context)!.categorySelectIcon,
                       style: const TextStyle(
@@ -111,41 +108,38 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
+
                     const SizedBox(height: 10),
 
-                    // ---- ICON SEÇME GRID ----
+                    /// ICONLAR
                     Wrap(
                       spacing: 10,
                       runSpacing: 10,
                       children: [
-                        for (final icon in _iconList)
+                        for (final entry in iconMap.entries)
                           GestureDetector(
                             onTap: () {
                               setStateDialog(() {
-                                selectedIconCode = icon.codePoint;
-                                selectedIconFamily = icon.fontFamily!;
+                                selectedIconName = entry.key;
                               });
                             },
                             child: Container(
                               width: 52,
                               height: 52,
                               decoration: BoxDecoration(
-                                color: (selectedIconCode == icon.codePoint &&
-                                        selectedIconFamily == icon.fontFamily)
+                                color: selectedIconName == entry.key
                                     ? primary.withValues(alpha: 0.18)
                                     : const Color(0xFF071312),
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
-                                  color: (selectedIconCode == icon.codePoint &&
-                                          selectedIconFamily == icon.fontFamily)
+                                  color: selectedIconName == entry.key
                                       ? primary
                                       : Colors.white12,
                                 ),
                               ),
                               child: Icon(
-                                icon,
-                                color: (selectedIconCode == icon.codePoint &&
-                                        selectedIconFamily == icon.fontFamily)
+                                entry.value,
+                                color: selectedIconName == entry.key
                                     ? primary
                                     : Colors.white54,
                               ),
@@ -156,7 +150,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
                     const SizedBox(height: 26),
 
-                    // ---- BUTONLAR ----
+                    /// BUTONLAR
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -181,19 +175,17 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
                             setState(() {
                               if (edit != null) {
-                                // ----- DÜZENLEME -----
+                                /// düzenleme
                                 _categories[editIndex!] = Category(
                                   name: name,
-                                  iconCode: selectedIconCode,
-                                  iconFamily: selectedIconFamily,
+                                  iconName: selectedIconName,
                                 );
                               } else {
-                                // ----- EKLEME -----
+                                /// ekleme
                                 _categories.add(
                                   Category(
                                     name: name,
-                                    iconCode: selectedIconCode,
-                                    iconFamily: selectedIconFamily,
+                                    iconName: selectedIconName,
                                   ),
                                 );
                               }
@@ -250,7 +242,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
       child: Row(
         children: [
           Icon(
-            IconData(c.iconCode, fontFamily: c.iconFamily),
+            iconMap[c.iconName] ?? Icons.category,
             size: 26,
             color: primary,
           ),
@@ -320,21 +312,3 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
     );
   }
 }
-
-final List<IconData> _iconList = [
-  Icons.restaurant,
-  Icons.directions_car,
-  Icons.receipt_long,
-  Icons.shopping_cart,
-  Icons.home,
-  Icons.flight_takeoff,
-  Icons.coffee,
-  Icons.fastfood,
-  Icons.work,
-  Icons.local_hospital,
-  Icons.school,
-  Icons.sports_soccer,
-  Icons.pets,
-  Icons.local_mall,
-  Icons.local_gas_station,
-];

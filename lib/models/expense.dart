@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
+import '../utils/icon_map.dart';
 
 class Expense {
   final double amount;
   final String category;
   final String? note;
   final DateTime date;
-
-  /// Harcamanın para birimi (TRY, USD, EUR, GBP)
   final String currency;
 
-  /// Icon bilgisi artık IconData yerine
-  /// codePoint + family şeklinde saklanıyor
-  final int? iconCode;
-  final String? iconFamily;
+  /// Yeni sistem: IconData yerine sadece iconName string tutulur
+  final String iconName;
 
   Expense({
     required this.amount,
@@ -20,18 +17,12 @@ class Expense {
     this.note,
     required this.date,
     required this.currency,
-    this.iconCode,
-    this.iconFamily,
+    required this.iconName,
   });
 
-  /// UI'de ikon göstermek için hazır getter
+  /// UI'de ikon göstermek için
   Icon get iconWidget {
-    if (iconCode == null) {
-      return const Icon(Icons.receipt_long);
-    }
-    return Icon(
-      IconData(iconCode!, fontFamily: iconFamily ?? 'MaterialIcons'),
-    );
+    return Icon(iconMap[iconName] ?? Icons.receipt_long);
   }
 
   Map<String, dynamic> toMap() {
@@ -42,9 +33,8 @@ class Expense {
       'date': date.toIso8601String(),
       'currency': currency,
 
-      // ikon kayıtları
-      'iconCode': iconCode,
-      'iconFamily': iconFamily,
+      /// yalnızca iconName kayıt ediyoruz
+      'iconName': iconName,
     };
   }
 
@@ -56,8 +46,8 @@ class Expense {
       date: DateTime.parse(map['date']),
       currency: map['currency'] ?? 'TRY',
 
-      iconCode: map['iconCode'],
-      iconFamily: map['iconFamily'],
+      /// default fallback
+      iconName: map['iconName'] ?? "receipt",
     );
   }
 }

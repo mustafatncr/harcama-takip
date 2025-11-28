@@ -6,19 +6,22 @@ import '../models/category.dart';
 class CategoryService {
   static const _key = 'categories';
 
+  /// Kategorileri SharedPreferences'tan yükleme
   static Future<List<Category>> loadCategories() async {
-    final deviceLang =
-        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
-
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_key);
 
-    if (jsonString == null) return _defaultCategories(deviceLang);
+    if (jsonString == null) {
+      final deviceLang =
+          WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+      return _defaultCategories(deviceLang);
+    }
 
     final List decoded = jsonDecode(jsonString);
     return decoded.map((e) => Category.fromJson(e)).toList();
   }
 
+  /// Kategorileri kaydetme
   static Future<void> saveCategories(List<Category> categories) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString =
@@ -26,56 +29,25 @@ class CategoryService {
     await prefs.setString(_key, jsonString);
   }
 
-  // -------------------------
-  //   DÜZELTİLMİŞ DEFAULTLAR
-  // -------------------------
-  static List<Category> _defaultCategories(String deviceLang) {
-    if (deviceLang == "tr") {
+  // --------------------------------------
+  //   YENİ MODEL İÇİN DEFAULT KATEGORİLER
+  //   iconName KULLANIYORUZ
+  // --------------------------------------
+  static List<Category> _defaultCategories(String lang) {
+    if (lang == "tr") {
       return [
-        Category(
-          name: "Yemek",
-          iconCode: Icons.restaurant.codePoint,
-          iconFamily: Icons.restaurant.fontFamily!,
-        ),
-        Category(
-          name: "Yakıt",
-          iconCode: Icons.directions_car.codePoint,
-          iconFamily: Icons.directions_car.fontFamily!,
-        ),
-        Category(
-          name: "Fatura",
-          iconCode: Icons.receipt_long.codePoint,
-          iconFamily: Icons.receipt_long.fontFamily!,
-        ),
-        Category(
-          name: "Market",
-          iconCode: Icons.shopping_cart.codePoint,
-          iconFamily: Icons.shopping_cart.fontFamily!,
-        ),
+        Category(name: "Yemek", iconName: "restaurant"),
+        Category(name: "Yakıt", iconName: "car"),
+        Category(name: "Fatura", iconName: "receipt"),
+        Category(name: "Market", iconName: "shopping"),
       ];
     }
 
     return [
-      Category(
-        name: "Food",
-        iconCode: Icons.restaurant.codePoint,
-        iconFamily: Icons.restaurant.fontFamily!,
-      ),
-      Category(
-        name: "Fuel",
-        iconCode: Icons.directions_car.codePoint,
-        iconFamily: Icons.directions_car.fontFamily!,
-      ),
-      Category(
-        name: "Bill",
-        iconCode: Icons.receipt_long.codePoint,
-        iconFamily: Icons.receipt_long.fontFamily!,
-      ),
-      Category(
-        name: "Groceries",
-        iconCode: Icons.shopping_cart.codePoint,
-        iconFamily: Icons.shopping_cart.fontFamily!,
-      ),
+      Category(name: "Food", iconName: "restaurant"),
+      Category(name: "Fuel", iconName: "car"),
+      Category(name: "Bill", iconName: "receipt"),
+      Category(name: "Groceries", iconName: "shopping"),
     ];
   }
 }

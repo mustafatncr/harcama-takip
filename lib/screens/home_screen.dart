@@ -7,6 +7,7 @@ import '../models/expense.dart';
 import '../models/category.dart';
 import '../widgets/app_drawer.dart';
 import 'package:intl/intl.dart';
+import '../utils/icon_map.dart'; // 🔥 iconName => IconData eşlemesi
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -77,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
         return "€";
       case "GBP":
         return "£";
-      case "TRY":
       default:
         return "₺";
     }
@@ -87,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final symbol = _currencySymbol(code);
     final digits = value % 1 == 0 ? 0 : 2;
     final locale = Localizations.localeOf(context).toString();
+
     return NumberFormat.currency(
       locale: locale,
       symbol: symbol,
@@ -123,14 +124,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (result != null) {
       final expense = Expense(
-        amount: (result['amount'] as num).toDouble(),
-        category: result['category'] as String,
-        note: result['note'] as String?,
-        date: result['date'] as DateTime,
-        currency: result['currency'],
-        iconCode: result['iconCode'] as int?,
-        iconFamily: result['iconFamily'] as String?,
-      );
+          amount: (result['amount'] as num).toDouble(),
+          category: result['category'] as String,
+          note: result['note'] as String?,
+          date: result['date'] as DateTime,
+          currency: result['currency'],
+
+          // 🔥 iconName artık string olarak geliyor
+          iconName: result['iconName'] as String);
 
       setState(() => _items.insert(0, expense));
       await _saveData();
@@ -228,6 +229,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildExpenseCard(Expense e) {
     final primary = Theme.of(context).colorScheme.primary;
 
+    final IconData iconData =
+        iconMap[e.iconName] ?? Icons.receipt_long; // 🔥 güvenli yükleme
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -260,10 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             child: Icon(
-              IconData(
-                e.iconCode ?? Icons.receipt_long.codePoint,
-                fontFamily: e.iconFamily ?? Icons.receipt_long.fontFamily!,
-              ),
+              iconData,
               color: primary,
               size: 24,
             ),
@@ -383,15 +384,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       drawer: AppDrawer(
         onCategoriesChanged: () async {
-          // Önce bellek içindeki eski verileri temizle
           _items.clear();
           _categories.clear();
 
-          // Yeni (boş) verileri yükle
           await _loadData();
           await _loadCategories();
 
-          // Filtreyi resetle
           setState(() {
             _selectedCategory = AppLocalizations.of(context)!.filterAll;
           });

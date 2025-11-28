@@ -34,7 +34,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
   Future<void> _openCategoryDialog({Category? edit, int? editIndex}) async {
     final nameController = TextEditingController(text: edit?.name ?? "");
 
-    /// yeni modelde sadece iconName var
     String selectedIconName = edit?.iconName ?? iconMap.keys.first;
 
     final primary = Theme.of(context).colorScheme.primary;
@@ -74,7 +73,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                     ),
                     const SizedBox(height: 22),
 
-                    /// KATEGORİ ADI
                     TextField(
                       controller: nameController,
                       style: const TextStyle(color: Colors.white),
@@ -99,7 +97,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
                     const SizedBox(height: 20),
 
-                    /// ICON BAŞLIK
                     Text(
                       AppLocalizations.of(context)!.categorySelectIcon,
                       style: const TextStyle(
@@ -111,7 +108,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
                     const SizedBox(height: 10),
 
-                    /// ICONLAR
                     Wrap(
                       spacing: 10,
                       runSpacing: 10,
@@ -150,7 +146,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
                     const SizedBox(height: 26),
 
-                    /// BUTONLAR
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -175,13 +170,11 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
                             setState(() {
                               if (edit != null) {
-                                /// düzenleme
                                 _categories[editIndex!] = Category(
                                   name: name,
                                   iconName: selectedIconName,
                                 );
                               } else {
-                                /// ekleme
                                 _categories.add(
                                   Category(
                                     name: name,

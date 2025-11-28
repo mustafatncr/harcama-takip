@@ -96,10 +96,8 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
 
       if (!mounted) return;
 
-      // Önce ayarlar ekranını kapat (SAFE POP)
       Navigator.pop(context, true);
 
-      // Snackbar gecikmeli tetiklenmeli (UI çökmemesi için)
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

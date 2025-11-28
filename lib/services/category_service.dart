@@ -6,7 +6,6 @@ import '../models/category.dart';
 class CategoryService {
   static const _key = 'categories';
 
-  /// Kategorileri SharedPreferences'tan yükleme
   static Future<List<Category>> loadCategories() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_key);
@@ -21,7 +20,6 @@ class CategoryService {
     return decoded.map((e) => Category.fromJson(e)).toList();
   }
 
-  /// Kategorileri kaydetme
   static Future<void> saveCategories(List<Category> categories) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString =
@@ -29,10 +27,6 @@ class CategoryService {
     await prefs.setString(_key, jsonString);
   }
 
-  // --------------------------------------
-  //   YENİ MODEL İÇİN DEFAULT KATEGORİLER
-  //   iconName KULLANIYORUZ
-  // --------------------------------------
   static List<Category> _defaultCategories(String lang) {
     if (lang == "tr") {
       return [

@@ -7,7 +7,7 @@ import '../models/expense.dart';
 import '../models/category.dart';
 import '../widgets/app_drawer.dart';
 import 'package:intl/intl.dart';
-import '../utils/icon_map.dart'; // 🔥 iconName => IconData eşlemesi
+import '../utils/icon_map.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -129,8 +129,6 @@ class _HomeScreenState extends State<HomeScreen> {
           note: result['note'] as String?,
           date: result['date'] as DateTime,
           currency: result['currency'],
-
-          // 🔥 iconName artık string olarak geliyor
           iconName: result['iconName'] as String);
 
       setState(() => _items.insert(0, expense));
@@ -230,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final primary = Theme.of(context).colorScheme.primary;
 
     final IconData iconData =
-        iconMap[e.iconName] ?? Icons.receipt_long; // 🔥 güvenli yükleme
+        iconMap[e.iconName] ?? Icons.receipt_long;
 
     return Container(
       padding: const EdgeInsets.all(16),

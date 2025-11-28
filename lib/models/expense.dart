@@ -8,7 +8,6 @@ class Expense {
   final DateTime date;
   final String currency;
 
-  /// Yeni sistem: IconData yerine sadece iconName string tutulur
   final String iconName;
 
   Expense({
@@ -20,7 +19,6 @@ class Expense {
     required this.iconName,
   });
 
-  /// UI'de ikon göstermek için
   Icon get iconWidget {
     return Icon(iconMap[iconName] ?? Icons.receipt_long);
   }
@@ -32,8 +30,6 @@ class Expense {
       'note': note,
       'date': date.toIso8601String(),
       'currency': currency,
-
-      /// yalnızca iconName kayıt ediyoruz
       'iconName': iconName,
     };
   }
@@ -45,8 +41,6 @@ class Expense {
       note: map['note'],
       date: DateTime.parse(map['date']),
       currency: map['currency'] ?? 'TRY',
-
-      /// default fallback
       iconName: map['iconName'] ?? "receipt",
     );
   }

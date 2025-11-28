@@ -38,7 +38,6 @@ class AppDrawer extends StatelessWidget {
                   ),
                 ),
 
-                // İçerik
                 Positioned(
                   left: 20,
                   bottom: 24,
@@ -114,11 +113,10 @@ class AppDrawer extends StatelessWidget {
                   icon: Icons.settings,
                   label: AppLocalizations.of(context)!.drawerSettings,
                   onTap: () async {
-                    Navigator.pop(context); // Drawer'ı kapat
+                    Navigator.pop(context);
                     final result =
                         await Navigator.pushNamed(context, '/ayarlar');
                     if (result == true) {
-                      // ana ekrandaki verileri temizle
                       if (onCategoriesChanged != null) onCategoriesChanged!();
                     }
                   },

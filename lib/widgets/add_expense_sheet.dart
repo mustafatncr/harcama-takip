@@ -3,7 +3,7 @@ import 'package:harcama_takip/l10n/app_localizations.dart';
 import 'package:harcama_takip/services/storage_service.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
-import '../utils/icon_map.dart'; // icon map dosyası
+import '../utils/icon_map.dart';
 
 class AddExpenseSheet extends StatefulWidget {
   final String currencyCode;
@@ -96,10 +96,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       'category': _selectedCategory?.name,
       'note': _noteController.text,
       'date': _selectedDate,
-
-      // 🔥 YENİ MODEL: iconName gönderiyoruz
       'iconName': _selectedCategory?.iconName,
-
       'currency': currency,
     };
 

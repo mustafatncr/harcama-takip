@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../utils/icon_map.dart'; // icon map'i birazdan vereceğim
+import '../utils/icon_map.dart';
 
 class Category {
   final String name;
-  final String iconName; // 🔥 artık sadece string tutuyoruz
+  final String iconName;
 
   Category({
     required this.name,
@@ -20,7 +20,6 @@ class Category {
         iconName: json['iconName'],
       );
 
-  /// UI için Icon getter
   Icon get iconWidget => Icon(
         iconMap[iconName] ?? Icons.category,
       );

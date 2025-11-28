@@ -48,7 +48,6 @@ class HarcamaTakipApp extends StatelessWidget {
 
         '/ayarlar': (_) => const AyarlarEkrani(),
       },
-
       initialRoute: '/',
     );
   }

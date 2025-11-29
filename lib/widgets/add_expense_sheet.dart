@@ -4,13 +4,16 @@ import 'package:harcama_takip/services/storage_service.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
 import '../utils/icon_map.dart';
+import '../models/expense.dart';
 
 class AddExpenseSheet extends StatefulWidget {
   final String currencyCode;
+  final Expense? expenseToEdit; // ⭐ Düzenleme için eklendi
 
   const AddExpenseSheet({
     super.key,
     required this.currencyCode,
+    this.expenseToEdit,
   });
 
   @override
@@ -34,11 +37,30 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final currency = await StorageService.loadCurrency();
-      setState(() {
-        _currencySymbol = _symbolForCurrency(currency);
-      });
-      _loadCategories();
+      setState(() => _currencySymbol = _symbolForCurrency(currency));
+
+      await _loadCategories();
+      _fillFormIfEditing(); // ⭐ Düzenleme modunda alanları doldurur
     });
+  }
+
+  void _fillFormIfEditing() {
+    if (widget.expenseToEdit == null) return;
+
+    final e = widget.expenseToEdit!;
+
+    _amountController.text = e.amount.toString();
+    _noteController.text = e.note ?? "";
+    _selectedDate = e.date;
+
+    if (_categories.isNotEmpty) {
+      _selectedCategory = _categories.firstWhere(
+        (c) => c.name == e.category,
+        orElse: () => _categories.first,
+      );
+    }
+
+    setState(() {});
   }
 
   String _symbolForCurrency(String code) {
@@ -58,7 +80,9 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
     final data = await CategoryService.loadCategories();
     setState(() {
       _categories = data;
-      _selectedCategory = null;
+      if (widget.expenseToEdit == null) {
+        _selectedCategory = null;
+      }
     });
   }
 
@@ -81,11 +105,13 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
         );
       },
     );
+
     if (picked != null) setState(() => _selectedDate = picked);
   }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+
     if (_selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -99,18 +125,20 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
 
     final currency = await StorageService.loadCurrency();
 
-    final expense = {
-      'amount': double.tryParse(_amountController.text) ?? 0,
-      'category': _selectedCategory?.name,
-      'note': _noteController.text,
-      'date': _selectedDate,
-      'iconName': _selectedCategory?.iconName,
-      'currency': currency,
-    };
+    final newExpense = Expense(
+      amount: double.tryParse(_amountController.text) ?? 0,
+      category: _selectedCategory!.name,
+      note: _noteController.text,
+      date: _selectedDate,
+      currency: currency,
+      iconName: _selectedCategory!.iconName,
+    );
 
-    if (!context.mounted) return;
-
-    Navigator.pop(context, expense);
+    Navigator.pop(context, {
+      "mode": widget.expenseToEdit == null ? "add" : "edit",
+      "original": widget.expenseToEdit,
+      "updated": newExpense,
+    });
   }
 
   @override
@@ -128,10 +156,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
             topLeft: Radius.circular(36),
             topRight: Radius.circular(36),
           ),
-          border: Border.all(
-            color: const Color(0xFF1C3A37),
-            width: 1.2,
-          ),
+          border: Border.all(color: const Color(0xFF1C3A37), width: 1.2),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.45),
@@ -151,7 +176,9 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.addExpenseTitle,
+                    widget.expenseToEdit == null
+                        ? AppLocalizations.of(context)!.addExpenseTitle
+                        : AppLocalizations.of(context)!.editExpenseTitle,
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -159,9 +186,9 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                     ),
                   ),
                   const SizedBox(height: 28),
+
                   _buildLabel(
-                    "${AppLocalizations.of(context)!.amountLabel} ($_currencySymbol)",
-                  ),
+                      "${AppLocalizations.of(context)!.amountLabel} ($_currencySymbol)"),
                   _buildTextField(
                     controller: _amountController,
                     hint: "0.00",
@@ -171,18 +198,15 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                       if (v == null || v.isEmpty) {
                         return AppLocalizations.of(context)!.amountRequired;
                       }
-
-                      final value = double.tryParse(v) ?? 0;
-
-                      if (value == 0) {
+                      if ((double.tryParse(v) ?? 0) == 0) {
                         return AppLocalizations.of(context)!.amountCannotBeZero;
-                        // Bu metni localization dosyasına ekleyeceğiz
                       }
-
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 22),
+
                   _buildLabel(AppLocalizations.of(context)!.categoryLabel),
                   _categories.isEmpty
                       ? Text(
@@ -190,16 +214,21 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                           style: const TextStyle(color: Colors.white70),
                         )
                       : _buildDropdown(context, primary),
+
                   const SizedBox(height: 22),
+
                   _buildLabel(AppLocalizations.of(context)!.noteLabel),
                   _buildTextField(
                     controller: _noteController,
                     hint: AppLocalizations.of(context)!.notePlaceholder,
                     primary: primary,
                   ),
+
                   const SizedBox(height: 22),
+
                   _buildDatePicker(primary),
                   const SizedBox(height: 32),
+
                   _buildSubmitButton(primary),
                 ],
               ),
@@ -294,9 +323,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
           ),
         );
       }).toList(),
-      onChanged: (val) {
-        setState(() => _selectedCategory = val);
-      },
+      onChanged: (val) => setState(() => _selectedCategory = val),
     );
   }
 
@@ -342,7 +369,9 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
           elevation: 0,
         ),
         child: Text(
-          AppLocalizations.of(context)!.buttonAdd,
+          widget.expenseToEdit == null
+              ? AppLocalizations.of(context)!.buttonAdd
+              : AppLocalizations.of(context)!.buttonSave,
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,

@@ -205,4 +205,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryNameRequired => 'Category name cannot be empty';
+
+  @override
+  String get editExpenseTitle => 'Edit Expense';
+
+  @override
+  String get expenseUpdated => 'Expense updated';
+
+  @override
+  String get buttonSaveChanges => 'Save Changes';
+
+  @override
+  String get buttonUpdate => 'Update';
 }

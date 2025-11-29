@@ -66,5 +66,9 @@
   "amountCannotBeZero": "Tutar 0 olamaz",
   "categoryRequired": "Kategori seçmelisiniz.",
   "selectCategoryPlaceholder": "Kategori seç",
-  "categoryNameRequired": "Kategori adı boş olamaz"
+  "categoryNameRequired": "Kategori adı boş olamaz",
+  "editExpenseTitle": "Harcama Düzenle",
+  "expenseUpdated": "Harcama güncellendi",
+  "buttonSaveChanges": "Değişiklikleri Kaydet",
+  "buttonUpdate": "Güncelle"
 }

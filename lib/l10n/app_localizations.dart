@@ -490,6 +490,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Category name cannot be empty'**
   String get categoryNameRequired;
+
+  /// No description provided for @editExpenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Expense'**
+  String get editExpenseTitle;
+
+  /// No description provided for @expenseUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense updated'**
+  String get expenseUpdated;
+
+  /// No description provided for @buttonSaveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get buttonSaveChanges;
+
+  /// No description provided for @buttonUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get buttonUpdate;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

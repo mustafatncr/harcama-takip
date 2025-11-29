@@ -147,6 +147,40 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _openEditSheet(Expense expense, int index) async {
+    final result = await showModalBottomSheet<Map<String, dynamic>>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => AddExpenseSheet(
+        currencyCode: _currencyCode,
+        expenseToEdit: expense,
+      ),
+    );
+
+    if (result == null) return;
+
+    if (result["mode"] == "edit") {
+      final updated = result["updated"] as Expense;
+
+      setState(() {
+        _items[index] = updated;
+      });
+
+      await _saveData();
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "${AppLocalizations.of(context)!.expenseUpdated}: "
+            "${_formatCurrency(updated.amount, updated.currency)} • "
+            "${updated.category} • ${_formatDate(updated.date)}",
+          ),
+        ),
+      );
+    }
+  }
+
   Widget _buildFilterChip(String label, bool selected) {
     final primary = Theme.of(context).colorScheme.primary;
 
@@ -224,11 +258,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildExpenseCard(Expense e) {
+  Widget _buildExpenseCard(Expense e, int index) {
     final primary = Theme.of(context).colorScheme.primary;
 
-    final IconData iconData =
-        iconMap[e.iconName] ?? Icons.receipt_long;
+    final IconData iconData = iconMap[e.iconName] ?? Icons.receipt_long;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -248,8 +281,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // --- SOL ICON ---
           Container(
             width: 46,
             height: 46,
@@ -267,7 +301,10 @@ class _HomeScreenState extends State<HomeScreen> {
               size: 24,
             ),
           ),
+
           const SizedBox(width: 16),
+
+          // --- ORTA BILGI ALANI ---
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,15 +331,37 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          IconButton(
-            icon: Icon(
-              Icons.delete_outline,
-              color: primary.withValues(alpha: 0.9),
-            ),
-            onPressed: () {
-              setState(() => _items.remove(e));
-              _saveData();
-            },
+
+          const SizedBox(width: 8),
+
+          // --- SAGDA DIKEY EDIT + DELETE ICONLARI ---
+          Column(
+            children: [
+              IconButton(
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+                iconSize: 20,
+                icon: Icon(
+                  Icons.edit,
+                  color: primary.withValues(alpha: 0.9),
+                ),
+                onPressed: () => _openEditSheet(e, index),
+              ),
+              const SizedBox(height: 4),
+              IconButton(
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+                iconSize: 20,
+                icon: const Icon(
+                  Icons.delete_outline,
+                  color: Colors.redAccent,
+                ),
+                onPressed: () {
+                  setState(() => _items.removeAt(index));
+                  _saveData();
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -433,7 +492,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemCount: sortedItems.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, i) =>
-                          _buildExpenseCard(sortedItems[i]),
+                          _buildExpenseCard(sortedItems[i], i),
                     ),
                   ),
                 ],

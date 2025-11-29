@@ -205,4 +205,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get categoryNameRequired => 'Kategori adı boş olamaz';
+
+  @override
+  String get editExpenseTitle => 'Harcama Düzenle';
+
+  @override
+  String get expenseUpdated => 'Harcama güncellendi';
+
+  @override
+  String get buttonSaveChanges => 'Değişiklikleri Kaydet';
+
+  @override
+  String get buttonUpdate => 'Güncelle';
 }

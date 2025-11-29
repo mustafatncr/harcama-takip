@@ -66,5 +66,9 @@
   "amountCannotBeZero": "Amount cannot be zero",
   "categoryRequired": "You must select a category.",
   "selectCategoryPlaceholder": "Select category",
-  "categoryNameRequired": "Category name cannot be empty"
+  "categoryNameRequired": "Category name cannot be empty",
+  "editExpenseTitle": "Edit Expense",
+  "expenseUpdated": "Expense updated",
+  "buttonSaveChanges": "Save Changes",
+  "buttonUpdate": "Update"
 }

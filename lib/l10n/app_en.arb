@@ -62,5 +62,7 @@
   "selectDateRangeHint": "Please select a date range",
   "export": "Export",
   "share": "Share",
-  "amountCannotBeZero": "Amount cannot be zero"
+  "amountCannotBeZero": "Amount cannot be zero",
+  "categoryRequired": "You must select a category.",
+  "selectCategoryPlaceholder": "Select category"
 }

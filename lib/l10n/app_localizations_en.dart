@@ -193,4 +193,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get amountCannotBeZero => 'Amount cannot be zero';
+
+  @override
+  String get categoryRequired => 'You must select a category.';
+
+  @override
+  String get selectCategoryPlaceholder => 'Select category';
 }

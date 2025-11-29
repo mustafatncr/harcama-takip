@@ -62,5 +62,7 @@
   "selectDateRangeHint": "Lütfen bir tarih aralığı seçin",
   "export": "Dışarı Aktar",
   "share": "Paylaş",
-  "amountCannotBeZero": "Tutar 0 olamaz"
+  "amountCannotBeZero": "Tutar 0 olamaz",
+  "categoryRequired": "Kategori seçmelisiniz.",
+  "selectCategoryPlaceholder": "Kategori seç"
 }

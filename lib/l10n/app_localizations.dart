@@ -466,6 +466,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Amount cannot be zero'**
   String get amountCannotBeZero;
+
+  /// No description provided for @categoryRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'You must select a category.'**
+  String get categoryRequired;
+
+  /// No description provided for @selectCategoryPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Select category'**
+  String get selectCategoryPlaceholder;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

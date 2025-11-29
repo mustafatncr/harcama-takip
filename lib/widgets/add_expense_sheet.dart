@@ -58,9 +58,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
     final data = await CategoryService.loadCategories();
     setState(() {
       _categories = data;
-      if (_categories.isNotEmpty) {
-        _selectedCategory = _categories.first;
-      }
+      _selectedCategory = null;
     });
   }
 
@@ -88,6 +86,16 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+    if (_selectedCategory == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.categoryRequired),
+          backgroundColor: Colors.redAccent,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
 
     final currency = await StorageService.loadCurrency();
 
@@ -242,37 +250,52 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
   }
 
   Widget _buildDropdown(BuildContext context, Color primary) {
-    return Container(
-      padding: const EdgeInsets.only(left: 16, right: 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0F2624),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF1C3A37)),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<Category>(
-          isExpanded: true,
-          value: _selectedCategory,
-          dropdownColor: const Color(0xFF0F2624),
-          icon: Icon(Icons.expand_more, color: primary),
-          items: _categories.map((c) {
-            return DropdownMenuItem(
-              value: c,
-              child: Row(
-                children: [
-                  Icon(
-                    iconMap[c.iconName] ?? Icons.category,
-                    color: primary,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(c.name, style: const TextStyle(color: Colors.white)),
-                ],
-              ),
-            );
-          }).toList(),
-          onChanged: (val) => setState(() => _selectedCategory = val),
+    return DropdownButtonFormField<Category>(
+      value: _selectedCategory,
+      validator: (val) {
+        if (val == null) {
+          return AppLocalizations.of(context)!.categoryRequired;
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: const Color(0xFF0F2624),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xFF1C3A37)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: primary, width: 1.7),
         ),
       ),
+      dropdownColor: const Color(0xFF0F2624),
+      hint: Text(
+        AppLocalizations.of(context)!.selectCategoryPlaceholder,
+        style: const TextStyle(color: Colors.white54),
+      ),
+      icon: Icon(Icons.expand_more, color: primary),
+      items: _categories.map((c) {
+        return DropdownMenuItem(
+          value: c,
+          child: Row(
+            children: [
+              Icon(
+                iconMap[c.iconName] ?? Icons.category,
+                color: primary,
+              ),
+              const SizedBox(width: 12),
+              Text(c.name, style: const TextStyle(color: Colors.white)),
+            ],
+          ),
+        );
+      }).toList(),
+      onChanged: (val) {
+        setState(() => _selectedCategory = val);
+      },
     );
   }
 

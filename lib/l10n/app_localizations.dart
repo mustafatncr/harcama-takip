@@ -460,6 +460,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get share;
+
+  /// No description provided for @amountCannotBeZero.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount cannot be zero'**
+  String get amountCannotBeZero;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

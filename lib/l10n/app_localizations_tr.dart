@@ -190,4 +190,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get share => 'Paylaş';
+
+  @override
+  String get amountCannotBeZero => 'Tutar 0 olamaz';
 }

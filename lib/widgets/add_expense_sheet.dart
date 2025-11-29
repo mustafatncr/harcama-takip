@@ -151,46 +151,46 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                     ),
                   ),
                   const SizedBox(height: 28),
-
                   _buildLabel(
                     "${AppLocalizations.of(context)!.amountLabel} ($_currencySymbol)",
                   ),
-
                   _buildTextField(
                     controller: _amountController,
                     hint: "0.00",
                     primary: primary,
                     keyboard: TextInputType.number,
-                    validator: (v) => v == null || v.isEmpty
-                        ? AppLocalizations.of(context)!.amountRequired
-                        : null,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return AppLocalizations.of(context)!.amountRequired;
+                      }
+
+                      final value = double.tryParse(v) ?? 0;
+
+                      if (value == 0) {
+                        return AppLocalizations.of(context)!.amountCannotBeZero;
+                        // Bu metni localization dosyasına ekleyeceğiz
+                      }
+
+                      return null;
+                    },
                   ),
-
                   const SizedBox(height: 22),
-
                   _buildLabel(AppLocalizations.of(context)!.categoryLabel),
-
                   _categories.isEmpty
                       ? Text(
                           AppLocalizations.of(context)!.noCategories,
                           style: const TextStyle(color: Colors.white70),
                         )
                       : _buildDropdown(context, primary),
-
                   const SizedBox(height: 22),
-
                   _buildTextField(
                     controller: _noteController,
                     hint: AppLocalizations.of(context)!.noteLabel,
                     primary: primary,
                   ),
-
                   const SizedBox(height: 22),
-
                   _buildDatePicker(primary),
-
                   const SizedBox(height: 32),
-
                   _buildSubmitButton(primary),
                 ],
               ),

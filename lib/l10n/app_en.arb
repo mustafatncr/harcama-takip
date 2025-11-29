@@ -61,5 +61,6 @@
   "selectDateRange": "Select Date Range",
   "selectDateRangeHint": "Please select a date range",
   "export": "Export",
-  "share": "Share"
+  "share": "Share",
+  "amountCannotBeZero": "Amount cannot be zero"
 }

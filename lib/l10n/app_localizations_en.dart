@@ -190,4 +190,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get share => 'Share';
+
+  @override
+  String get amountCannotBeZero => 'Amount cannot be zero';
 }

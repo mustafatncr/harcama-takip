@@ -61,5 +61,6 @@
   "selectDateRange": "Tarih Aralığı Seç",
   "selectDateRangeHint": "Lütfen bir tarih aralığı seçin",
   "export": "Dışarı Aktar",
-  "share": "Paylaş"
+  "share": "Paylaş",
+  "amountCannotBeZero": "Tutar 0 olamaz"
 }

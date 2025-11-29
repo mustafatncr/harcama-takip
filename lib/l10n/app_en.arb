@@ -20,6 +20,7 @@
   "noCategories": "No categories found. Please add a category first.",
   "categoryLabel": "Category",
   "noteLabel": "Note (optional)",
+  "notePlaceholder": "e.g. Lunch",
   "buttonAdd": "Add",
   "buttonCancel": "Cancel",
   "filterAll": "All",
@@ -64,5 +65,6 @@
   "share": "Share",
   "amountCannotBeZero": "Amount cannot be zero",
   "categoryRequired": "You must select a category.",
-  "selectCategoryPlaceholder": "Select category"
+  "selectCategoryPlaceholder": "Select category",
+  "categoryNameRequired": "Category name cannot be empty"
 }

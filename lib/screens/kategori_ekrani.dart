@@ -38,6 +38,8 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
 
     final primary = Theme.of(context).colorScheme.primary;
 
+    final dialogFormKey = GlobalKey<FormState>();
+
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -55,148 +57,169 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                   color: Color(0xFF0F2624),
                   borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Text(
-                        edit == null
-                            ? AppLocalizations.of(context)!.categoryAddDialogTitle
-                            : AppLocalizations.of(context)!.categoryEditDialogTitle,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 22),
-
-                    TextField(
-                      controller: nameController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: const Color(0xFF071312),
-                        hintText: AppLocalizations.of(context)!.categoryNameLabel,
-                        hintStyle: const TextStyle(color: Colors.white54),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(color: Colors.white12),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(
-                            color: primary,
-                            width: 2,
+                child: Form(
+                  key: dialogFormKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          edit == null
+                              ? AppLocalizations.of(context)!
+                                  .categoryAddDialogTitle
+                              : AppLocalizations.of(context)!
+                                  .categoryEditDialogTitle,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
-                    ),
 
-                    const SizedBox(height: 20),
+                      const SizedBox(height: 22),
 
-                    Text(
-                      AppLocalizations.of(context)!.categorySelectIcon,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                      /// --- VALIDATOR EKLENMİŞ TEXTFORMFIELD ---
+                      TextFormField(
+                        controller: nameController,
+                        style: const TextStyle(color: Colors.white),
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) {
+                            return AppLocalizations.of(context)!
+                                .categoryNameRequired;
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: const Color(0xFF071312),
+                          hintText:
+                              AppLocalizations.of(context)!.categoryNameLabel,
+                          hintStyle: const TextStyle(color: Colors.white54),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: const BorderSide(color: Colors.white12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide(
+                              color: primary,
+                              width: 2,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
 
-                    const SizedBox(height: 10),
+                      const SizedBox(height: 20),
 
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        for (final entry in iconMap.entries)
-                          GestureDetector(
-                            onTap: () {
-                              setStateDialog(() {
-                                selectedIconName = entry.key;
-                              });
-                            },
-                            child: Container(
-                              width: 52,
-                              height: 52,
-                              decoration: BoxDecoration(
-                                color: selectedIconName == entry.key
-                                    ? primary.withValues(alpha: 0.18)
-                                    : const Color(0xFF071312),
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(
+                      Text(
+                        AppLocalizations.of(context)!.categorySelectIcon,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: [
+                          for (final entry in iconMap.entries)
+                            GestureDetector(
+                              onTap: () {
+                                setStateDialog(() {
+                                  selectedIconName = entry.key;
+                                });
+                              },
+                              child: Container(
+                                width: 52,
+                                height: 52,
+                                decoration: BoxDecoration(
+                                  color: selectedIconName == entry.key
+                                      ? primary.withValues(alpha: 0.18)
+                                      : const Color(0xFF071312),
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: selectedIconName == entry.key
+                                        ? primary
+                                        : Colors.white12,
+                                  ),
+                                ),
+                                child: Icon(
+                                  entry.value,
                                   color: selectedIconName == entry.key
                                       ? primary
-                                      : Colors.white12,
+                                      : Colors.white54,
                                 ),
                               ),
-                              child: Icon(
-                                entry.value,
-                                color: selectedIconName == entry.key
-                                    ? primary
-                                    : Colors.white54,
+                            ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 26),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(
+                              AppLocalizations.of(context)!.buttonCancel,
+                              style: const TextStyle(color: Colors.white70),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+
+                          /// --- BUTON ARTIK VALIDASYONU TETİKLİYOR ---
+                          FilledButton(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
                               ),
                             ),
-                          ),
-                      ],
-                    ),
+                            onPressed: () {
+                              if (!dialogFormKey.currentState!.validate()) {
+                                return;
+                              }
 
-                    const SizedBox(height: 26),
+                              final name = nameController.text.trim();
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text(
-                            AppLocalizations.of(context)!.buttonCancel,
-                            style: const TextStyle(color: Colors.white70),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        FilledButton(
-                          style: FilledButton.styleFrom(
-                            backgroundColor: primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          onPressed: () {
-                            final name = nameController.text.trim();
-                            if (name.isEmpty) return;
-
-                            setState(() {
-                              if (edit != null) {
-                                _categories[editIndex!] = Category(
-                                  name: name,
-                                  iconName: selectedIconName,
-                                );
-                              } else {
-                                _categories.add(
-                                  Category(
+                              setState(() {
+                                if (edit != null) {
+                                  _categories[editIndex!] = Category(
                                     name: name,
                                     iconName: selectedIconName,
-                                  ),
-                                );
-                              }
-                            });
+                                  );
+                                } else {
+                                  _categories.add(
+                                    Category(
+                                      name: name,
+                                      iconName: selectedIconName,
+                                    ),
+                                  );
+                                }
+                              });
 
-                            _saveCategories();
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            edit == null
-                                ? AppLocalizations.of(context)!.buttonAdd
-                                : AppLocalizations.of(context)!.buttonSave,
+                              _saveCategories();
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              edit == null
+                                  ? AppLocalizations.of(context)!.buttonAdd
+                                  : AppLocalizations.of(context)!.buttonSave,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                  ],
+                        ],
+                      ),
+
+                      const SizedBox(height: 10),
+                    ],
+                  ),
                 ),
               ),
             );

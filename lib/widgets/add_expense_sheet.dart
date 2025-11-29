@@ -191,9 +191,10 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                         )
                       : _buildDropdown(context, primary),
                   const SizedBox(height: 22),
+                  _buildLabel(AppLocalizations.of(context)!.noteLabel),
                   _buildTextField(
                     controller: _noteController,
-                    hint: AppLocalizations.of(context)!.noteLabel,
+                    hint: AppLocalizations.of(context)!.notePlaceholder,
                     primary: primary,
                   ),
                   const SizedBox(height: 22),

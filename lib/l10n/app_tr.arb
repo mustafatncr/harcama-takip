@@ -19,7 +19,8 @@
   "amountRequired": "Tutar giriniz",
   "noCategories": "Kategori bulunamadı. Lütfen önce kategori ekleyin.",
   "categoryLabel": "Kategori",
-  "noteLabel": "Not (isteğe bağlı)",
+  "noteLabel": "Not (opsiyonel)",
+  "notePlaceholder": "Örn: Öğle yemeği",
   "buttonAdd": "Ekle",
   "buttonCancel": "İptal",
   "filterAll": "Tümü",
@@ -64,5 +65,6 @@
   "share": "Paylaş",
   "amountCannotBeZero": "Tutar 0 olamaz",
   "categoryRequired": "Kategori seçmelisiniz.",
-  "selectCategoryPlaceholder": "Kategori seç"
+  "selectCategoryPlaceholder": "Kategori seç",
+  "categoryNameRequired": "Kategori adı boş olamaz"
 }

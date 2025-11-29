@@ -69,6 +69,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noteLabel => 'Note (optional)';
 
   @override
+  String get notePlaceholder => 'e.g. Lunch';
+
+  @override
   String get buttonAdd => 'Add';
 
   @override
@@ -199,4 +202,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectCategoryPlaceholder => 'Select category';
+
+  @override
+  String get categoryNameRequired => 'Category name cannot be empty';
 }

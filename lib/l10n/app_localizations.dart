@@ -215,6 +215,12 @@ abstract class AppLocalizations {
   /// **'Note (optional)'**
   String get noteLabel;
 
+  /// No description provided for @notePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Lunch'**
+  String get notePlaceholder;
+
   /// No description provided for @buttonAdd.
   ///
   /// In en, this message translates to:
@@ -478,6 +484,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select category'**
   String get selectCategoryPlaceholder;
+
+  /// No description provided for @categoryNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Category name cannot be empty'**
+  String get categoryNameRequired;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

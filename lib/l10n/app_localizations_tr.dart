@@ -66,7 +66,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get categoryLabel => 'Kategori';
 
   @override
-  String get noteLabel => 'Not (isteğe bağlı)';
+  String get noteLabel => 'Not (opsiyonel)';
+
+  @override
+  String get notePlaceholder => 'Örn: Öğle yemeği';
 
   @override
   String get buttonAdd => 'Ekle';
@@ -199,4 +202,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get selectCategoryPlaceholder => 'Kategori seç';
+
+  @override
+  String get categoryNameRequired => 'Kategori adı boş olamaz';
 }

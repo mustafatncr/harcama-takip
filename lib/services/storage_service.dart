@@ -49,4 +49,19 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
+
+  static Future<void> deleteExpensesByCategory(String categoryName) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final jsonList = prefs.getStringList(_key) ?? [];
+
+    final expenses =
+        jsonList.map((e) => Expense.fromMap(jsonDecode(e))).toList();
+
+    final filtered = expenses.where((e) => e.category != categoryName).toList();
+
+    final updatedJsonList = filtered.map((e) => jsonEncode(e.toMap())).toList();
+
+    await prefs.setStringList(_key, updatedJsonList);
+  }
 }

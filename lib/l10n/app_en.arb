@@ -7,7 +7,7 @@
   "drawerCharts": "Charts",
   "drawerCategories": "Categories",
   "drawerSettings": "Settings",
-  "emptyExpenses": "No expenses added yet",
+  "emptyExpenses": "You haven't added any expenses yet",
   "emptyExpensesHint": "Tap the + button below to add your first expense",
   "homeAddExpense": "Add Expense",
   "sortDateDesc": "Date (Newer > Older)",
@@ -38,6 +38,8 @@
   "categoryAddDialogTitle": "Add New Category",
   "categoryNameLabel": "Category Name",
   "totalLabel": "Total",
+  "totalSpending": "Total Spending",
+  "basedOnSelectedFilters": "Based on selected filters",
   "settingsClearDataTitle": "Delete All Data",
   "settingsClearDataMessage": "All expenses will be permanently deleted. Are you sure?",
   "settingsConfirmDelete": "Yes, delete",
@@ -70,5 +72,8 @@
   "editExpenseTitle": "Edit Expense",
   "expenseUpdated": "Expense updated",
   "buttonSaveChanges": "Save Changes",
-  "buttonUpdate": "Update"
+  "buttonUpdate": "Update",
+  "categoryDeleteTitle": "Delete category?",
+  "categoryDeleteMessage": "This category and all related expenses will be deleted. This action cannot be undone.",
+  "buttonDelete": "Delete"
 }

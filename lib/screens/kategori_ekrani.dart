@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:harcama_takip/l10n/app_localizations.dart';
+import 'package:harcama_takip/services/storage_service.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
 import '../utils/icon_map.dart';
@@ -229,10 +230,89 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
     );
   }
 
-  void _deleteCategory(int index) {
+  Future<void> _confirmDeleteCategory(int index) async {
+    final loc = AppLocalizations.of(context)!;
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: const Color(0xFF0F2624),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(22),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                loc.categoryDeleteTitle,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                loc.categoryDeleteMessage,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 15,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext, false),
+                    child: Text(
+                      loc.buttonCancel,
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(dialogContext, true),
+                    child: Text(
+                      loc.buttonDelete,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (confirm == true) {
+      _deleteCategory(index);
+    }
+  }
+
+  Future<void> _deleteCategory(int index) async {
     final deleted = _categories[index];
+
+    // 🔥 Önce bu kategoriye bağlı harcamaları sil
+    await StorageService.deleteExpensesByCategory(deleted.name);
+
+    // 🔥 Sonra kategoriyi sil
     setState(() => _categories.removeAt(index));
-    _saveCategories();
+    await _saveCategories();
+
+    if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -279,7 +359,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
           ),
           IconButton(
             icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-            onPressed: () => _deleteCategory(index),
+            onPressed: () => _confirmDeleteCategory(index),
           ),
         ],
       ),

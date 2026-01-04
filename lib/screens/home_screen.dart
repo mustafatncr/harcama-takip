@@ -110,8 +110,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String get _formattedTotal {
-    final parts =
-        _totalsByCurrency.entries.map((e) => _formatCurrency(e.value, e.key));
+    final totals = _totalsByCurrency;
+
+    // 🔥 Hiç harcama yoksa → 0 göster
+    if (totals.isEmpty) {
+      return _formatCurrency(0, _currencyCode);
+    }
+
+    final parts = totals.entries.map((e) => _formatCurrency(e.value, e.key));
+
     return parts.join("  +  ");
   }
 
@@ -215,6 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildTotalCard() {
     final cardColor = Theme.of(context).colorScheme.surface;
     const borderColor = Color(0xFF1C3A37);
+    final loc = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -233,16 +241,34 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            AppLocalizations.of(context)!.totalLabel,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(fontWeight: FontWeight.w600),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                loc.totalSpending,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                loc.basedOnSelectedFilters,
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.55),
+                    ),
+              ),
+            ],
           ),
           Text(
             _formattedTotal,
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(fontWeight: FontWeight.bold),
           ),
         ],
       ),

@@ -7,8 +7,8 @@
   "drawerCharts": "Grafikler",
   "drawerCategories": "Kategoriler",
   "drawerSettings": "Ayarlar",
-  "emptyExpenses": "Henüz harcama eklenmemiş",
-  "emptyExpensesHint": "Aşağıdaki + butonuna dokunarak ilk harcamanı ekle",
+  "emptyExpenses": "Henüz harcama eklemedin",
+  "emptyExpensesHint": "Aşağıdaki + butonuna dokunarak ilk harcamanı ekleyebilirsin",
   "homeAddExpense": "Harcama Ekle",
   "sortDateDesc": "Tarih (Yeni > Eski)",
   "sortDateAsc": "Tarih (Eski > Yeni)",
@@ -38,6 +38,8 @@
   "categoryAddDialogTitle": "Yeni Kategori Ekle",
   "categoryNameLabel": "Kategori Adı",
   "totalLabel": "Toplam",
+  "totalSpending": "Toplam Harcama",
+  "basedOnSelectedFilters": "Seçili filtreye göre",
   "settingsClearDataTitle": "Tüm Verileri Sil",
   "settingsClearDataMessage": "Tüm harcamalar kalıcı olarak silinecek. Emin misin?",
   "settingsConfirmDelete": "Evet, sil",
@@ -70,5 +72,8 @@
   "editExpenseTitle": "Harcama Düzenle",
   "expenseUpdated": "Harcama güncellendi",
   "buttonSaveChanges": "Değişiklikleri Kaydet",
-  "buttonUpdate": "Güncelle"
+  "buttonUpdate": "Güncelle",
+  "categoryDeleteTitle": "Kategori silinsin mi?",
+  "categoryDeleteMessage": "Bu kategori ve buna bağlı tüm harcamalar silinecek. Bu işlem geri alınamaz.",
+  "buttonDelete": "Sil"
 }

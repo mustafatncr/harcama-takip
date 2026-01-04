@@ -30,10 +30,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get drawerSettings => 'Ayarlar';
 
   @override
-  String get emptyExpenses => 'Henüz harcama eklenmemiş';
+  String get emptyExpenses => 'Henüz harcama eklemedin';
 
   @override
-  String get emptyExpensesHint => 'Aşağıdaki + butonuna dokunarak ilk harcamanı ekle';
+  String get emptyExpensesHint => 'Aşağıdaki + butonuna dokunarak ilk harcamanı ekleyebilirsin';
 
   @override
   String get homeAddExpense => 'Harcama Ekle';
@@ -121,6 +121,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get totalLabel => 'Toplam';
+
+  @override
+  String get totalSpending => 'Toplam Harcama';
+
+  @override
+  String get basedOnSelectedFilters => 'Seçili filtreye göre';
 
   @override
   String get settingsClearDataTitle => 'Tüm Verileri Sil';
@@ -217,4 +223,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get buttonUpdate => 'Güncelle';
+
+  @override
+  String get categoryDeleteTitle => 'Kategori silinsin mi?';
+
+  @override
+  String get categoryDeleteMessage => 'Bu kategori ve buna bağlı tüm harcamalar silinecek. Bu işlem geri alınamaz.';
+
+  @override
+  String get buttonDelete => 'Sil';
 }

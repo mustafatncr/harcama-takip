@@ -30,7 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerSettings => 'Settings';
 
   @override
-  String get emptyExpenses => 'No expenses added yet';
+  String get emptyExpenses => 'You haven\'t added any expenses yet';
 
   @override
   String get emptyExpensesHint => 'Tap the + button below to add your first expense';
@@ -121,6 +121,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get totalLabel => 'Total';
+
+  @override
+  String get totalSpending => 'Total Spending';
+
+  @override
+  String get basedOnSelectedFilters => 'Based on selected filters';
 
   @override
   String get settingsClearDataTitle => 'Delete All Data';
@@ -217,4 +223,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buttonUpdate => 'Update';
+
+  @override
+  String get categoryDeleteTitle => 'Delete category?';
+
+  @override
+  String get categoryDeleteMessage => 'This category and all related expenses will be deleted. This action cannot be undone.';
+
+  @override
+  String get buttonDelete => 'Delete';
 }

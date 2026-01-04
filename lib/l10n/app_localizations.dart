@@ -140,7 +140,7 @@ abstract class AppLocalizations {
   /// No description provided for @emptyExpenses.
   ///
   /// In en, this message translates to:
-  /// **'No expenses added yet'**
+  /// **'You haven\'t added any expenses yet'**
   String get emptyExpenses;
 
   /// No description provided for @emptyExpensesHint.
@@ -322,6 +322,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total'**
   String get totalLabel;
+
+  /// No description provided for @totalSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Spending'**
+  String get totalSpending;
+
+  /// No description provided for @basedOnSelectedFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on selected filters'**
+  String get basedOnSelectedFilters;
 
   /// No description provided for @settingsClearDataTitle.
   ///
@@ -514,6 +526,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update'**
   String get buttonUpdate;
+
+  /// No description provided for @categoryDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete category?'**
+  String get categoryDeleteTitle;
+
+  /// No description provided for @categoryDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This category and all related expenses will be deleted. This action cannot be undone.'**
+  String get categoryDeleteMessage;
+
+  /// No description provided for @buttonDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get buttonDelete;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -116,39 +116,34 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _openAddSheet() async {
-    final result = await showModalBottomSheet<Map<String, dynamic>>(
+    final Expense? expense = await showModalBottomSheet<Expense>(
       context: context,
       isScrollControlled: true,
       builder: (_) => AddExpenseSheet(currencyCode: _currencyCode),
     );
 
-    if (result != null) {
-      final expense = Expense(
-          amount: (result['amount'] as num).toDouble(),
-          category: result['category'] as String,
-          note: result['note'] as String?,
-          date: result['date'] as DateTime,
-          currency: result['currency'],
-          iconName: result['iconName'] as String);
+    if (expense == null) return;
 
-      setState(() => _items.insert(0, expense));
-      await _saveData();
+    setState(() {
+      _items.insert(0, expense);
+    });
 
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "${AppLocalizations.of(context)!.expenseAdded}: "
-            "${_formatCurrency(expense.amount, expense.currency)} • "
-            "${expense.category} • ${_formatDate(expense.date)}",
-          ),
+    await _saveData();
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "${AppLocalizations.of(context)!.expenseAdded}: "
+          "${_formatCurrency(expense.amount, expense.currency)} • "
+          "${expense.category} • ${_formatDate(expense.date)}",
         ),
-      );
-    }
+      ),
+    );
   }
 
   Future<void> _openEditSheet(Expense expense, int index) async {
-    final result = await showModalBottomSheet<Map<String, dynamic>>(
+    final Expense? updatedExpense = await showModalBottomSheet<Expense>(
       context: context,
       isScrollControlled: true,
       builder: (_) => AddExpenseSheet(
@@ -157,28 +152,24 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    if (result == null) return;
+    if (updatedExpense == null) return;
 
-    if (result["mode"] == "edit") {
-      final updated = result["updated"] as Expense;
+    setState(() {
+      _items[index] = updatedExpense;
+    });
 
-      setState(() {
-        _items[index] = updated;
-      });
+    await _saveData();
 
-      await _saveData();
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "${AppLocalizations.of(context)!.expenseUpdated}: "
-            "${_formatCurrency(updated.amount, updated.currency)} • "
-            "${updated.category} • ${_formatDate(updated.date)}",
-          ),
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "${AppLocalizations.of(context)!.expenseUpdated}: "
+          "${_formatCurrency(updatedExpense.amount, updatedExpense.currency)} • "
+          "${updatedExpense.category} • ${_formatDate(updatedExpense.date)}",
         ),
-      );
-    }
+      ),
+    );
   }
 
   Widget _buildFilterChip(String label, bool selected) {

@@ -134,11 +134,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       iconName: _selectedCategory!.iconName,
     );
 
-    Navigator.pop(context, {
-      "mode": widget.expenseToEdit == null ? "add" : "edit",
-      "original": widget.expenseToEdit,
-      "updated": newExpense,
-    });
+    Navigator.pop(context, newExpense);
   }
 
   @override
@@ -186,7 +182,6 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                     ),
                   ),
                   const SizedBox(height: 28),
-
                   _buildLabel(
                       "${AppLocalizations.of(context)!.amountLabel} ($_currencySymbol)"),
                   _buildTextField(
@@ -204,9 +199,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                       return null;
                     },
                   ),
-
                   const SizedBox(height: 22),
-
                   _buildLabel(AppLocalizations.of(context)!.categoryLabel),
                   _categories.isEmpty
                       ? Text(
@@ -214,21 +207,16 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                           style: const TextStyle(color: Colors.white70),
                         )
                       : _buildDropdown(context, primary),
-
                   const SizedBox(height: 22),
-
                   _buildLabel(AppLocalizations.of(context)!.noteLabel),
                   _buildTextField(
                     controller: _noteController,
                     hint: AppLocalizations.of(context)!.notePlaceholder,
                     primary: primary,
                   ),
-
                   const SizedBox(height: 22),
-
                   _buildDatePicker(primary),
                   const SizedBox(height: 32),
-
                   _buildSubmitButton(primary),
                 ],
               ),

@@ -73,6 +73,9 @@ class _ReportScreenState extends State<ReportScreen> {
       ..sort((a, b) => b.date.compareTo(a.date));
   }
 
+  bool get hasSelectedRange => _selectedRange != null;
+  bool get hasData => _filtered.isNotEmpty;
+
   Widget _buildExpenseCard(Expense e) {
     final primary = Theme.of(context).colorScheme.primary;
     final iconData = iconMap[e.iconName] ?? Icons.receipt_long;
@@ -237,7 +240,7 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            if (_selectedRange != null)
+            if (hasSelectedRange && hasData)
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -249,25 +252,29 @@ class _ReportScreenState extends State<ReportScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(loc.totalLabel,
-                        style: Theme.of(context).textTheme.bodyMedium),
+                    Text(loc.totalLabel),
                     Text(
                       formatCurrency(
-                          context, _totalAmount, _filtered.first.currency),
-                      style: Theme.of(context).textTheme.bodyLarge,
+                        context,
+                        _totalAmount,
+                        _filtered.first.currency, // artık %100 güvenli
+                      ),
                     ),
                   ],
                 ),
               ),
             const SizedBox(height: 20),
             Expanded(
-              child: _selectedRange == null
-                  ? Center(child: Text(loc.selectDateRangeHint))
-                  : _filtered.isEmpty
+              child: !hasSelectedRange
+                  ? Center(
+                      child: Text(loc.selectDateRangeHint),
+                    )
+                  : !hasData
                       ? Center(
                           child: Text(
                             "📭 ${loc.reportEmpty}",
                             style: const TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
                           ),
                         )
                       : ListView.separated(
@@ -285,9 +292,8 @@ class _ReportScreenState extends State<ReportScreen> {
       // ---------------------------------------------
       // BOTTOM BUTTONS
       // ---------------------------------------------
-      bottomNavigationBar: _selectedRange == null
-          ? null
-          : Container(
+      bottomNavigationBar: hasSelectedRange && hasData
+          ? Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: BoxDecoration(
                 color: _cardBg,
@@ -295,7 +301,6 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
               child: Row(
                 children: [
-                  // EXPORT BUTTON → MENÜ AÇAR
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
@@ -303,41 +308,26 @@ class _ReportScreenState extends State<ReportScreen> {
                       },
                       icon: const Icon(Icons.upload_file),
                       label: Text(loc.export),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
                     ),
                   ),
                   const SizedBox(width: 14),
-
-                  // SHARE AS TEXT BUTTON
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () async {
-                        if (_selectedRange == null) return;
-
                         final text = ShareTextService.buildReportText(
-                            _filtered, _selectedRange!);
-
+                          _filtered,
+                          _selectedRange!,
+                        );
                         await ShareTextService.shareText(text);
                       },
                       icon: const Icon(Icons.share),
                       label: Text(loc.share),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(alpha: 0.85),
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
                     ),
                   ),
                 ],
               ),
-            ),
+            )
+          : null,
     );
   }
 }

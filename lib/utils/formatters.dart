@@ -7,7 +7,7 @@ String formatDate(BuildContext context, DateTime date) {
   return DateFormat.yMMMd(locale).format(date);
 }
 
-/// Locale-aware para formatı
+/// Locale-aware para formatı (HER ZAMAN 2 KURUŞ)
 String formatCurrency(
   BuildContext context,
   num value,
@@ -15,13 +15,19 @@ String formatCurrency(
 ) {
   final locale = Localizations.localeOf(context).toString();
 
-  final digits = value % 1 == 0 ? 0 : 2;
+  final normalizedCode = currencyCode == "TL" ? "TRY" : currencyCode;
+
+  String symbol;
+  if (normalizedCode == "TRY") {
+    symbol = "₺"; // 🔥 ZORLA ₺
+  } else {
+    symbol = NumberFormat.simpleCurrency(name: normalizedCode).currencySymbol;
+  }
 
   return NumberFormat.currency(
     locale: locale,
-    name: currencyCode,
-    symbol:
-        NumberFormat.simpleCurrency(name: currencyCode).currencySymbol,
-    decimalDigits: digits,
+    name: normalizedCode,
+    symbol: symbol,
+    decimalDigits: 2, // her zaman kuruş
   ).format(value);
 }

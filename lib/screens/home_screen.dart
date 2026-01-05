@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:harcama_takip/l10n/app_localizations.dart';
+import 'package:harcama_takip/utils/formatters.dart';
 import '../widgets/add_expense_sheet.dart';
 import '../services/storage_service.dart';
 import '../services/category_service.dart';
 import '../models/expense.dart';
 import '../models/category.dart';
 import '../widgets/app_drawer.dart';
-import 'package:intl/intl.dart';
 import '../utils/icon_map.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -67,34 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
     await StorageService.saveExpenses(_items);
   }
 
-  String _formatDate(DateTime d) =>
-      "${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}";
-
-  String _currencySymbol(String code) {
-    switch (code) {
-      case "USD":
-        return "\$";
-      case "EUR":
-        return "€";
-      case "GBP":
-        return "£";
-      default:
-        return "₺";
-    }
-  }
-
-  String _formatCurrency(num value, String code) {
-    final symbol = _currencySymbol(code);
-    final digits = value % 1 == 0 ? 0 : 2;
-    final locale = Localizations.localeOf(context).toString();
-
-    return NumberFormat.currency(
-      locale: locale,
-      symbol: symbol,
-      decimalDigits: digits,
-    ).format(value);
-  }
-
   Map<String, num> get _totalsByCurrency {
     final filtered =
         _selectedCategory == AppLocalizations.of(context)!.filterAll
@@ -114,10 +86,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // 🔥 Hiç harcama yoksa → 0 göster
     if (totals.isEmpty) {
-      return _formatCurrency(0, _currencyCode);
+      return formatCurrency(context, 0, _currencyCode);
     }
 
-    final parts = totals.entries.map((e) => _formatCurrency(e.value, e.key));
+    final parts =
+        totals.entries.map((e) => formatCurrency(context, e.value, e.key));
 
     return parts.join("  +  ");
   }
@@ -142,8 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
       SnackBar(
         content: Text(
           "${AppLocalizations.of(context)!.expenseAdded}: "
-          "${_formatCurrency(expense.amount, expense.currency)} • "
-          "${expense.category} • ${_formatDate(expense.date)}",
+          "${formatCurrency(context, expense.amount, expense.currency)} • "
+          "${expense.category} • ${formatDate(context, expense.date)}",
         ),
       ),
     );
@@ -170,11 +143,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          "${AppLocalizations.of(context)!.expenseUpdated}: "
-          "${_formatCurrency(updatedExpense.amount, updatedExpense.currency)} • "
-          "${updatedExpense.category} • ${_formatDate(updatedExpense.date)}",
-        ),
+        content: Text("${AppLocalizations.of(context)!.expenseUpdated}: "
+            "${formatCurrency(context, updatedExpense.amount, updatedExpense.currency)} • "
+            "${updatedExpense.category} • ${formatDate(context, updatedExpense.date)}"),
       ),
     );
   }
@@ -327,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "${_formatCurrency(e.amount, e.currency)} • ${e.category}",
+                  "${formatCurrency(context, e.amount, e.currency)} • ${e.category}",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -337,8 +308,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 6),
                 Text(
                   (e.note?.trim().isEmpty ?? true)
-                      ? _formatDate(e.date)
-                      : "${_formatDate(e.date)} • ${e.note}",
+                      ? formatDate(context, e.date)
+                      : "${formatDate(context, e.date)} • ${e.note}",
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w400,

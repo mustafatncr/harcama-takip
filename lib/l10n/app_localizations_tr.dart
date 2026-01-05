@@ -232,4 +232,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get buttonDelete => 'Sil';
+
+  @override
+  String get exportPdf => 'PDF olarak dışa aktar';
+
+  @override
+  String get exportExcel => 'Excel olarak dışa aktar';
+
+  @override
+  String get close => 'Kapat';
+
+  @override
+  String get reportEmpty => 'Bu tarih aralığında harcama yok';
 }

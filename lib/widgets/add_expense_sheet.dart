@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:harcama_takip/l10n/app_localizations.dart';
 import 'package:harcama_takip/services/storage_service.dart';
+import 'package:harcama_takip/utils/formatters.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
 import '../utils/icon_map.dart';
@@ -330,7 +331,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
             Icon(Icons.calendar_today, color: primary, size: 20),
             const SizedBox(width: 12),
             Text(
-              "${_selectedDate.day.toString().padLeft(2, '0')}.${_selectedDate.month.toString().padLeft(2, '0')}.${_selectedDate.year}",
+              formatDate(context, _selectedDate),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 15,

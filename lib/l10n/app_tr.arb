@@ -75,5 +75,9 @@
   "buttonUpdate": "Güncelle",
   "categoryDeleteTitle": "Kategori silinsin mi?",
   "categoryDeleteMessage": "Bu kategori ve buna bağlı tüm harcamalar silinecek. Bu işlem geri alınamaz.",
-  "buttonDelete": "Sil"
+  "buttonDelete": "Sil",
+  "exportPdf": "PDF olarak dışa aktar",
+  "exportExcel": "Excel olarak dışa aktar",
+  "close": "Kapat",
+  "reportEmpty": "Bu tarih aralığında harcama yok"
 }

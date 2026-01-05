@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:harcama_takip/services/export_excel_service.dart';
 import 'package:harcama_takip/services/export_pdf_service.dart';
-import 'package:intl/intl.dart';
+import 'package:harcama_takip/utils/formatters.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/icon_map.dart';
 import '../models/expense.dart';
@@ -28,10 +28,6 @@ class _ReportScreenState extends State<ReportScreen> {
   Future<void> _loadExpenses() async {
     final data = await StorageService.loadExpenses();
     setState(() => _allExpenses = data);
-  }
-
-  String _formatDate(DateTime date) {
-    return DateFormat("dd.MM.yyyy").format(date);
   }
 
   Color get _cardBorder => const Color(0xFF1C3A37);
@@ -70,7 +66,8 @@ class _ReportScreenState extends State<ReportScreen> {
   List<Expense> get _filtered {
     if (_selectedRange == null) return [];
     return _allExpenses.where((e) {
-      return e.date.isAfter(_selectedRange!.start.subtract(const Duration(days: 1))) &&
+      return e.date.isAfter(
+              _selectedRange!.start.subtract(const Duration(days: 1))) &&
           e.date.isBefore(_selectedRange!.end.add(const Duration(days: 1)));
     }).toList()
       ..sort((a, b) => b.date.compareTo(a.date));
@@ -112,7 +109,7 @@ class _ReportScreenState extends State<ReportScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "${e.amount} ${e.currency} • ${e.category}",
+                  "${formatCurrency(context, e.amount, e.currency)} • ${e.category}",
                   style: const TextStyle(
                     color: Color(0xFF9BF7EB),
                     fontSize: 16,
@@ -121,7 +118,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  "${_formatDate(e.date)}${e.note != null ? " • ${e.note}" : ""}",
+                  "${formatDate(context, e.date)}${e.note != null ? " • ${e.note}" : ""}",
                   style: const TextStyle(
                     color: Color(0xFF7C8B8A),
                     fontSize: 14,
@@ -167,28 +164,25 @@ class _ReportScreenState extends State<ReportScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-
               ListTile(
                 leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
-                title: const Text("PDF olarak dışa aktar"),
+                title: Text(AppLocalizations.of(context)!.exportPdf),
                 onTap: () async {
                   Navigator.pop(context);
                   await ExportPdfService.exportAndShare(expenses);
                 },
               ),
-
               ListTile(
                 leading: const Icon(Icons.grid_on, color: Colors.green),
-                title: const Text("Excel olarak dışa aktar"),
+                title: Text(AppLocalizations.of(context)!.exportExcel),
                 onTap: () async {
                   Navigator.pop(context);
                   await ExportExcelService.exportAndShare(expenses);
                 },
               ),
-
               ListTile(
                 leading: const Icon(Icons.close),
-                title: const Text("Kapat"),
+                title: Text(AppLocalizations.of(context)!.close),
                 onTap: () => Navigator.pop(context),
               ),
             ],
@@ -205,7 +199,8 @@ class _ReportScreenState extends State<ReportScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(loc.reportTitle, style: Theme.of(context).textTheme.headlineLarge),
+        title: Text(loc.reportTitle,
+            style: Theme.of(context).textTheme.headlineLarge),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -218,7 +213,8 @@ class _ReportScreenState extends State<ReportScreen> {
             GestureDetector(
               onTap: _pickDateRange,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(20),
@@ -230,8 +226,9 @@ class _ReportScreenState extends State<ReportScreen> {
                     Text(
                       _selectedRange == null
                           ? loc.selectDateRange
-                          : "${_formatDate(_selectedRange!.start)}  →  ${_formatDate(_selectedRange!.end)}",
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          : "${formatDate(context, _selectedRange!.start)} → ${formatDate(context, _selectedRange!.end)}",
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     Icon(Icons.date_range,
                         color: Theme.of(context).colorScheme.primary),
@@ -239,12 +236,11 @@ class _ReportScreenState extends State<ReportScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
-
             if (_selectedRange != null)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(20),
@@ -253,23 +249,33 @@ class _ReportScreenState extends State<ReportScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(loc.totalLabel, style: Theme.of(context).textTheme.bodyMedium),
-                    Text("$_totalAmount", style: Theme.of(context).textTheme.bodyLarge),
+                    Text(loc.totalLabel,
+                        style: Theme.of(context).textTheme.bodyMedium),
+                    Text(
+                      formatCurrency(
+                          context, _totalAmount, _filtered.first.currency),
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ],
                 ),
               ),
-
             const SizedBox(height: 20),
-
             Expanded(
               child: _selectedRange == null
                   ? Center(child: Text(loc.selectDateRangeHint))
                   : _filtered.isEmpty
-                      ? const Center(child: Text("📭 Hiç harcama yok", style: TextStyle(fontSize: 16)))
+                      ? Center(
+                          child: Text(
+                            "📭 ${loc.reportEmpty}",
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        )
                       : ListView.separated(
                           itemCount: _filtered.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 12),
-                          itemBuilder: (_, i) => _buildExpenseCard(_filtered[i]),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 12),
+                          itemBuilder: (_, i) =>
+                              _buildExpenseCard(_filtered[i]),
                         ),
             ),
           ],

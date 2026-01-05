@@ -75,5 +75,9 @@
   "buttonUpdate": "Update",
   "categoryDeleteTitle": "Delete category?",
   "categoryDeleteMessage": "This category and all related expenses will be deleted. This action cannot be undone.",
-  "buttonDelete": "Delete"
+  "buttonDelete": "Delete",
+  "exportPdf": "Export as PDF",
+  "exportExcel": "Export as Excel",
+  "close": "Close",
+  "reportEmpty": "No expenses in this date range"
 }

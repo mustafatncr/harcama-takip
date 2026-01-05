@@ -232,4 +232,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buttonDelete => 'Delete';
+
+  @override
+  String get exportPdf => 'Export as PDF';
+
+  @override
+  String get exportExcel => 'Export as Excel';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get reportEmpty => 'No expenses in this date range';
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:harcama_takip/l10n/app_localizations.dart';
+import 'package:harcama_takip/utils/formatters.dart';
 import '../models/expense.dart';
 import '../services/storage_service.dart';
-import 'package:intl/intl.dart';
 
 enum TimeFilter { last7, thisWeek, thisMonth, prevMonth }
 
@@ -85,22 +85,7 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
       _currencyFiltered.fold(0, (sum, e) => sum + e.amount);
 
   String _formatDateRange(DateTimeRange r) {
-    final locale = Localizations.localeOf(context).toString();
-    final f = DateFormat("d MMM yyyy", locale);
-    return "${f.format(r.start)}  -  ${f.format(r.end)}";
-  }
-
-  String _currencySymbol(String code) {
-    switch (code) {
-      case "USD":
-        return "\$";
-      case "EUR":
-        return "€";
-      case "GBP":
-        return "£";
-      default:
-        return "₺";
-    }
+    return "${formatDate(context, r.start)}  –  ${formatDate(context, r.end)}";
   }
 
   @override
@@ -125,13 +110,10 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
           children: [
             _buildCurrencySelector(primary),
             const SizedBox(height: 20),
-
             _buildSegmentedTimeline(primary),
             const SizedBox(height: 20),
-
             _buildDateCapsule(),
             const SizedBox(height: 28),
-
             Expanded(
               child: _currencyFiltered.isEmpty
                   ? Center(
@@ -147,7 +129,6 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
                       children: [
                         _buildDonutChart(primary, totals, total),
                         const SizedBox(height: 16),
-
                         Expanded(
                           child: _buildLegendList(primary, totals, total),
                         ),
@@ -159,7 +140,7 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
       ),
     );
   }
-  
+
   Widget _buildCurrencySelector(Color primary) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -320,7 +301,6 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
             children: [
               CircleAvatar(radius: 10, backgroundColor: color),
               const SizedBox(width: 14),
-
               Expanded(
                 child: Text(
                   e.key,
@@ -331,18 +311,15 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
                   ),
                 ),
               ),
-
               Text(
-                "${_currencySymbol(_selectedCurrency)}${e.value.toStringAsFixed(0)}",
+                formatCurrency(context, e.value, _selectedCurrency),
                 style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-
               const SizedBox(width: 12),
-
               Text(
                 "${percent.toStringAsFixed(1)}%",
                 style: TextStyle(

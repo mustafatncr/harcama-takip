@@ -6,6 +6,7 @@ import '../models/category.dart';
 import '../services/category_service.dart';
 import '../utils/icon_map.dart';
 import '../models/expense.dart';
+import 'package:harcama_takip/utils/amount_parser.dart';
 
 class AddExpenseSheet extends StatefulWidget {
   final String currencyCode;
@@ -22,6 +23,17 @@ class AddExpenseSheet extends StatefulWidget {
 }
 
 class _AddExpenseSheetState extends State<AddExpenseSheet> {
+  String _amountHintForCurrency(String currencyCode) {
+    switch (currencyCode) {
+      case 'TRY':
+        return '0,00'; // Türk formatı
+      case 'EUR':
+        return '0,00';
+      default:
+        return '0.00'; // USD, GBP vs.
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _amountController = TextEditingController();
@@ -126,8 +138,13 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
 
     final currency = await StorageService.loadCurrency();
 
+    final parsedAmount = parseAmountByCurrency(
+      _amountController.text,
+      currency,
+    );
+
     final newExpense = Expense(
-      amount: double.tryParse(_amountController.text) ?? 0,
+      amount: parsedAmount,
       category: _selectedCategory!.name,
       note: _noteController.text,
       date: _selectedDate,
@@ -187,16 +204,14 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                       "${AppLocalizations.of(context)!.amountLabel} ($_currencySymbol)"),
                   _buildTextField(
                     controller: _amountController,
-                    hint: "0.00",
+                    hint: _amountHintForCurrency(widget.currencyCode),
                     primary: primary,
                     keyboard: TextInputType.number,
                     validator: (v) {
                       if (v == null || v.isEmpty) {
                         return AppLocalizations.of(context)!.amountRequired;
                       }
-                      if ((double.tryParse(v) ?? 0) == 0) {
-                        return AppLocalizations.of(context)!.amountCannotBeZero;
-                      }
+
                       return null;
                     },
                   ),

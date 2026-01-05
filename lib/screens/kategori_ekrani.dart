@@ -33,6 +33,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
   }
 
   Future<void> _openCategoryDialog({Category? edit, int? editIndex}) async {
+    final oldCategoryName = edit?.name;
     final nameController = TextEditingController(text: edit?.name ?? "");
 
     String selectedIconName = edit?.iconName ?? iconMap.keys.first;
@@ -183,12 +184,23 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                                 borderRadius: BorderRadius.circular(14),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               if (!dialogFormKey.currentState!.validate()) {
                                 return;
                               }
 
                               final name = nameController.text.trim();
+                              final isEdit = edit != null;
+                              final nameChanged =
+                                  isEdit && oldCategoryName != name;
+
+                              if (isEdit && nameChanged) {
+                                await StorageService.updateExpensesCategory(
+                                  oldName: oldCategoryName!,
+                                  newName: name,
+                                  newIconName: selectedIconName,
+                                );
+                              }
 
                               setState(() {
                                 if (edit != null) {

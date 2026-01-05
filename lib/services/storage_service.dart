@@ -64,4 +64,28 @@ class StorageService {
 
     await prefs.setStringList(_key, updatedJsonList);
   }
+
+  static Future<void> updateExpensesCategory({
+    required String oldName,
+    required String newName,
+    required String newIconName,
+  }) async {
+    final expenses = await loadExpenses();
+
+    final updated = expenses.map((e) {
+      if (e.category == oldName) {
+        return Expense(
+          amount: e.amount,
+          category: newName,
+          note: e.note,
+          date: e.date,
+          currency: e.currency,
+          iconName: newIconName,
+        );
+      }
+      return e;
+    }).toList();
+
+    await saveExpenses(updated);
+  }
 }

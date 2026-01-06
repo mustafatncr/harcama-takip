@@ -274,4 +274,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfShareText => 'Expense Report (PDF)';
+
+  @override
+  String get excelSheetName => 'Expense Report';
+
+  @override
+  String get excelColumnDate => 'Date';
+
+  @override
+  String get excelColumnCategory => 'Category';
+
+  @override
+  String get excelColumnAmount => 'Amount';
+
+  @override
+  String get excelColumnCurrency => 'Currency';
+
+  @override
+  String get excelColumnNote => 'Note';
+
+  @override
+  String get excelFileName => 'expense_report';
+
+  @override
+  String get excelShareText => 'Expense Report (Excel)';
 }

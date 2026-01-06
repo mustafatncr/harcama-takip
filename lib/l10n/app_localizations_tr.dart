@@ -274,4 +274,28 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pdfShareText => 'Harcama Raporu (PDF)';
+
+  @override
+  String get excelSheetName => 'Harcama Raporu';
+
+  @override
+  String get excelColumnDate => 'Tarih';
+
+  @override
+  String get excelColumnCategory => 'Kategori';
+
+  @override
+  String get excelColumnAmount => 'Tutar';
+
+  @override
+  String get excelColumnCurrency => 'Para Birimi';
+
+  @override
+  String get excelColumnNote => 'Not';
+
+  @override
+  String get excelFileName => 'harcama_raporu';
+
+  @override
+  String get excelShareText => 'Harcama Raporu (Excel)';
 }

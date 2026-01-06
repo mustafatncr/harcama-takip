@@ -628,6 +628,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Expense Report (PDF)'**
   String get pdfShareText;
+
+  /// No description provided for @excelSheetName.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Report'**
+  String get excelSheetName;
+
+  /// No description provided for @excelColumnDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get excelColumnDate;
+
+  /// No description provided for @excelColumnCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get excelColumnCategory;
+
+  /// No description provided for @excelColumnAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get excelColumnAmount;
+
+  /// No description provided for @excelColumnCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get excelColumnCurrency;
+
+  /// No description provided for @excelColumnNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get excelColumnNote;
+
+  /// No description provided for @excelFileName.
+  ///
+  /// In en, this message translates to:
+  /// **'expense_report'**
+  String get excelFileName;
+
+  /// No description provided for @excelShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Report (Excel)'**
+  String get excelShareText;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

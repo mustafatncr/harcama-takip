@@ -47,3 +47,37 @@ String formatCurrency(
     decimalDigits: 2,
   ).format(value);
 }
+
+String formatCurrencyWithoutSymbol(
+  BuildContext context,
+  num value,
+  String currencyCode,
+) {
+  final normalizedCode = currencyCode == "TL" ? "TRY" : currencyCode;
+
+  late final String locale;
+
+  switch (normalizedCode) {
+    case "TRY":
+      locale = "tr_TR";
+      break;
+    case "USD":
+      locale = "en_US";
+      break;
+    case "EUR":
+      locale = "de_DE";
+      break;
+    case "GBP":
+      locale = "en_GB";
+      break;
+    default:
+      locale = "en_US";
+  }
+
+  return NumberFormat.currency(
+    locale: locale,
+    name: normalizedCode,
+    symbol: "", // 🔥 SEMBOL YOK
+    decimalDigits: 2,
+  ).format(value).trim(); // trim önemli
+}

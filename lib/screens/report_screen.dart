@@ -35,15 +35,16 @@ class _ReportScreenState extends State<ReportScreen> {
 
   Future<void> _pickDateRange() async {
     final now = DateTime.now();
-    final first = DateTime(now.year - 3);
-    final last = DateTime(now.year + 3);
 
     final picked = await showDateRangePicker(
       context: context,
-      firstDate: first,
-      lastDate: last,
+      firstDate: DateTime(now.year - 3),
+      lastDate: DateTime(now.year + 3),
       initialDateRange: _selectedRange ??
-          DateTimeRange(start: DateTime(now.year, now.month, 1), end: now),
+          DateTimeRange(
+            start: DateTime(now.year, now.month, 1),
+            end: now,
+          ),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -65,6 +66,7 @@ class _ReportScreenState extends State<ReportScreen> {
 
   List<Expense> get _filtered {
     if (_selectedRange == null) return [];
+
     return _allExpenses.where((e) {
       return e.date.isAfter(
               _selectedRange!.start.subtract(const Duration(days: 1))) &&
@@ -75,6 +77,15 @@ class _ReportScreenState extends State<ReportScreen> {
 
   bool get hasSelectedRange => _selectedRange != null;
   bool get hasData => _filtered.isNotEmpty;
+
+  // 🔥 ÇOKLU PARA BİRİMİ TOPLAM
+  Map<String, num> get _totalsByCurrency {
+    final Map<String, num> result = {};
+    for (final e in _filtered) {
+      result[e.currency] = (result[e.currency] ?? 0) + e.amount;
+    }
+    return result;
+  }
 
   Widget _buildExpenseCard(Expense e) {
     final primary = Theme.of(context).colorScheme.primary;
@@ -135,16 +146,8 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  num get _totalAmount {
-    num sum = 0;
-    for (var e in _filtered) {
-      sum += e.amount;
-    }
-    return sum;
-  }
-
   // -----------------------------------------------------------
-  //  EXPORT MENU
+  // EXPORT MENU
   // -----------------------------------------------------------
   void _showExportMenu(BuildContext context, List<Expense> expenses) {
     showModalBottomSheet(
@@ -180,7 +183,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 title: Text(AppLocalizations.of(context)!.exportExcel),
                 onTap: () async {
                   Navigator.pop(context);
-                  await ExportExcelService.exportAndShare(expenses);
+                  await ExportExcelService.exportAndShare(context, expenses);
                 },
               ),
               ListTile(
@@ -194,7 +197,6 @@ class _ReportScreenState extends State<ReportScreen> {
       },
     );
   }
-  // -----------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +209,6 @@ class _ReportScreenState extends State<ReportScreen> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -240,6 +241,8 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
             ),
             const SizedBox(height: 20),
+
+            // 🔥 TOPLAM – SOLDA BAŞLIK, SAĞDA ALT ALTA TUTARLAR
             if (hasSelectedRange && hasData)
               Container(
                 padding:
@@ -251,32 +254,39 @@ class _ReportScreenState extends State<ReportScreen> {
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(loc.totalLabel),
+                    // ⬅️ SOL: TOPLAM
                     Text(
-                      formatCurrency(
-                        context,
-                        _totalAmount,
-                        _filtered.first.currency, // artık %100 güvenli
+                      loc.totalLabel,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
                       ),
+                    ),
+
+                    // ➡️ SAĞ: TUTARLAR (ALT ALTA)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        for (final entry in _totalsByCurrency.entries)
+                          Text(
+                            formatCurrency(context, entry.value, entry.key),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),
               ),
+
             const SizedBox(height: 20),
             Expanded(
               child: !hasSelectedRange
-                  ? Center(
-                      child: Text(loc.selectDateRangeHint),
-                    )
+                  ? Center(child: Text(loc.selectDateRangeHint))
                   : !hasData
-                      ? Center(
-                          child: Text(
-                            "📭 ${loc.reportEmpty}",
-                            style: const TextStyle(fontSize: 16),
-                            textAlign: TextAlign.center,
-                          ),
-                        )
+                      ? Center(child: Text("📭 ${loc.reportEmpty}"))
                       : ListView.separated(
                           itemCount: _filtered.length,
                           separatorBuilder: (_, __) =>
@@ -288,13 +298,9 @@ class _ReportScreenState extends State<ReportScreen> {
           ],
         ),
       ),
-
-      // ---------------------------------------------
-      // BOTTOM BUTTONS
-      // ---------------------------------------------
       bottomNavigationBar: hasSelectedRange && hasData
           ? Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: _cardBg,
                 border: Border(top: BorderSide(color: _cardBorder)),
@@ -303,9 +309,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        _showExportMenu(context, _filtered);
-                      },
+                      onPressed: () => _showExportMenu(context, _filtered),
                       icon: const Icon(Icons.upload_file),
                       label: Text(loc.export),
                     ),

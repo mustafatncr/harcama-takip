@@ -89,5 +89,13 @@
   "pdfColumnAmount": "Amount",
   "pdfColumnCurrency": "Currency",
   "pdfTotal": "TOTAL",
-  "pdfShareText": "Expense Report (PDF)"
+  "pdfShareText": "Expense Report (PDF)",
+  "excelSheetName": "Expense Report",
+  "excelColumnDate": "Date",
+  "excelColumnCategory": "Category",
+  "excelColumnAmount": "Amount",
+  "excelColumnCurrency": "Currency",
+  "excelColumnNote": "Note",
+  "excelFileName": "expense_report",
+  "excelShareText": "Expense Report (Excel)"
 }

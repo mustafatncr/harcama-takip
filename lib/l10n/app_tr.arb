@@ -89,5 +89,13 @@
   "pdfColumnAmount": "Tutar",
   "pdfColumnCurrency": "Para Birimi",
   "pdfTotal": "TOPLAM",
-  "pdfShareText": "Harcama Raporu (PDF)"
+  "pdfShareText": "Harcama Raporu (PDF)",
+  "excelSheetName": "Harcama Raporu",
+  "excelColumnDate": "Tarih",
+  "excelColumnCategory": "Kategori",
+  "excelColumnAmount": "Tutar",
+  "excelColumnCurrency": "Para Birimi",
+  "excelColumnNote": "Not",
+  "excelFileName": "harcama_raporu",
+  "excelShareText": "Harcama Raporu (Excel)"
 }

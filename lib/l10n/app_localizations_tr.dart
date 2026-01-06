@@ -244,4 +244,34 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get reportEmpty => 'Bu tarih aralığında harcama yok';
+
+  @override
+  String get pdfReportTitle => 'Harcama Raporu';
+
+  @override
+  String get pdfCreatedAt => 'Oluşturulma';
+
+  @override
+  String get pdfReportedBy => 'Reported by MustApp Studio';
+
+  @override
+  String get pdfColumnDate => 'Tarih';
+
+  @override
+  String get pdfColumnCategory => 'Kategori';
+
+  @override
+  String get pdfColumnNote => 'Not';
+
+  @override
+  String get pdfColumnAmount => 'Tutar';
+
+  @override
+  String get pdfColumnCurrency => 'Para Birimi';
+
+  @override
+  String get pdfTotal => 'TOPLAM';
+
+  @override
+  String get pdfShareText => 'Harcama Raporu (PDF)';
 }

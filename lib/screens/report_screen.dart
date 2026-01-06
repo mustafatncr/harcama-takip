@@ -172,7 +172,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 title: Text(AppLocalizations.of(context)!.exportPdf),
                 onTap: () async {
                   Navigator.pop(context);
-                  await ExportPdfService.exportAndShare(expenses);
+                  await ExportPdfService.exportAndShare(context, expenses);
                 },
               ),
               ListTile(

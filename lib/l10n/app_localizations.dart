@@ -568,6 +568,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No expenses in this date range'**
   String get reportEmpty;
+
+  /// No description provided for @pdfReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Report'**
+  String get pdfReportTitle;
+
+  /// No description provided for @pdfCreatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created at'**
+  String get pdfCreatedAt;
+
+  /// No description provided for @pdfReportedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Reported by MustApp Studio'**
+  String get pdfReportedBy;
+
+  /// No description provided for @pdfColumnDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get pdfColumnDate;
+
+  /// No description provided for @pdfColumnCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get pdfColumnCategory;
+
+  /// No description provided for @pdfColumnNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get pdfColumnNote;
+
+  /// No description provided for @pdfColumnAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get pdfColumnAmount;
+
+  /// No description provided for @pdfColumnCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get pdfColumnCurrency;
+
+  /// No description provided for @pdfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'TOTAL'**
+  String get pdfTotal;
+
+  /// No description provided for @pdfShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Report (PDF)'**
+  String get pdfShareText;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

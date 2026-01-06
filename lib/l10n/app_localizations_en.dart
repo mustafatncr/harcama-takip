@@ -244,4 +244,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportEmpty => 'No expenses in this date range';
+
+  @override
+  String get pdfReportTitle => 'Expense Report';
+
+  @override
+  String get pdfCreatedAt => 'Created at';
+
+  @override
+  String get pdfReportedBy => 'Reported by MustApp Studio';
+
+  @override
+  String get pdfColumnDate => 'Date';
+
+  @override
+  String get pdfColumnCategory => 'Category';
+
+  @override
+  String get pdfColumnNote => 'Note';
+
+  @override
+  String get pdfColumnAmount => 'Amount';
+
+  @override
+  String get pdfColumnCurrency => 'Currency';
+
+  @override
+  String get pdfTotal => 'TOTAL';
+
+  @override
+  String get pdfShareText => 'Expense Report (PDF)';
 }

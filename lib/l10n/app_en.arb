@@ -79,5 +79,15 @@
   "exportPdf": "Export as PDF",
   "exportExcel": "Export as Excel",
   "close": "Close",
-  "reportEmpty": "No expenses in this date range"
+  "reportEmpty": "No expenses in this date range",
+  "pdfReportTitle": "Expense Report",
+  "pdfCreatedAt": "Created at",
+  "pdfReportedBy": "Reported by MustApp Studio",
+  "pdfColumnDate": "Date",
+  "pdfColumnCategory": "Category",
+  "pdfColumnNote": "Note",
+  "pdfColumnAmount": "Amount",
+  "pdfColumnCurrency": "Currency",
+  "pdfTotal": "TOTAL",
+  "pdfShareText": "Expense Report (PDF)"
 }

@@ -13,18 +13,39 @@ class CategoryService {
     if (jsonString == null) {
       final deviceLang =
           WidgetsBinding.instance.platformDispatcher.locale.languageCode;
-      return _defaultCategories(deviceLang);
+      return _sortOtherLast(_defaultCategories(deviceLang));
     }
 
     final List decoded = jsonDecode(jsonString);
-    return decoded.map((e) => Category.fromJson(e)).toList();
+
+    final categories = decoded.map((e) => Category.fromJson(e)).toList();
+
+    return _sortOtherLast(categories);
   }
 
   static Future<void> saveCategories(List<Category> categories) async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString =
-        jsonEncode(categories.map((e) => e.toJson()).toList());
+    final jsonString = jsonEncode(categories.map((e) => e.toJson()).toList());
     await prefs.setString(_key, jsonString);
+  }
+
+  static List<Category> _sortOtherLast(
+    List<Category> categories,
+  ) {
+    return List<Category>.from(categories)
+      ..sort((a, b) {
+        final aIsOther = _isOther(a.name);
+        final bIsOther = _isOther(b.name);
+
+        if (aIsOther && !bIsOther) return 1; // a sona
+        if (!aIsOther && bIsOther) return -1; // b sona
+        return 0; // sıralamayı bozma
+      });
+  }
+
+  static bool _isOther(String name) {
+    final lower = name.toLowerCase();
+    return lower == "diğer" || lower == "other";
   }
 
   static List<Category> _defaultCategories(String lang) {
@@ -34,6 +55,7 @@ class CategoryService {
         Category(name: "Yakıt", iconName: "car"),
         Category(name: "Fatura", iconName: "receipt"),
         Category(name: "Market", iconName: "shopping"),
+        Category(name: "Diğer", iconName: "more"),
       ];
     }
 
@@ -42,6 +64,7 @@ class CategoryService {
       Category(name: "Fuel", iconName: "car"),
       Category(name: "Bill", iconName: "receipt"),
       Category(name: "Groceries", iconName: "shopping"),
+      Category(name: "Other", iconName: "more"),
     ];
   }
 }

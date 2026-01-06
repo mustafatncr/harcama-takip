@@ -1,13 +1,19 @@
 double parseAmountByCurrency(String input, String currencyCode) {
-  if (currencyCode == "TRY") {
-    final normalized = input
+  final trimmed = input.trim();
+
+  // Avrupa formatı (TRY + EUR)
+  if (currencyCode == "TRY" || currencyCode == "EUR") {
+    final normalized = trimmed
         .replaceAll(' ', '')
-        .replaceAll('.', '')   // binlik ayıracı sil
-        .replaceAll(',', '.'); // virgülü ondalığa çevir
+        .replaceAll('.', '') // binlik ayıracı sil
+        .replaceAll(',', '.'); // ondalık noktaya çevir
 
     return double.tryParse(normalized) ?? 0;
   }
 
-  // Diğer para birimleri (USD, EUR vs.)
-  return double.tryParse(input) ?? 0;
+  // Anglo formatı (USD + GBP)
+  final normalized =
+      trimmed.replaceAll(' ', '').replaceAll(',', ''); // binlik ayıracı sil
+
+  return double.tryParse(normalized) ?? 0;
 }

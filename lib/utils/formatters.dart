@@ -13,21 +13,37 @@ String formatCurrency(
   num value,
   String currencyCode,
 ) {
-  final locale = Localizations.localeOf(context).toString();
-
   final normalizedCode = currencyCode == "TL" ? "TRY" : currencyCode;
 
-  String symbol;
-  if (normalizedCode == "TRY") {
-    symbol = "₺"; // 🔥 ZORLA ₺
-  } else {
-    symbol = NumberFormat.simpleCurrency(name: normalizedCode).currencySymbol;
+  late final String locale;
+  late final String symbol;
+
+  switch (normalizedCode) {
+    case "TRY":
+      locale = "tr_TR";
+      symbol = "₺";
+      break;
+    case "USD":
+      locale = "en_US";
+      symbol = "\$";
+      break;
+    case "EUR":
+      locale = "de_DE";
+      symbol = "€";
+      break;
+    case "GBP":
+      locale = "en_GB";
+      symbol = "£";
+      break;
+    default:
+      locale = "en_US";
+      symbol = normalizedCode;
   }
 
   return NumberFormat.currency(
     locale: locale,
     name: normalizedCode,
     symbol: symbol,
-    decimalDigits: 2, // her zaman kuruş
+    decimalDigits: 2,
   ).format(value);
 }

@@ -81,25 +81,24 @@ class _HomeScreenState extends State<HomeScreen> {
     return result;
   }
 
-  String get _formattedTotal {
+  List<String> get _formattedTotals {
     final totals = _totalsByCurrency;
 
-    // 🔥 Hiç harcama yoksa → 0 göster
     if (totals.isEmpty) {
-      return formatCurrency(context, 0, _currencyCode);
+      return [];
     }
 
-    final parts =
-        totals.entries.map((e) => formatCurrency(context, e.value, e.key));
-
-    return parts.join("  +  ");
+    return totals.entries
+        .map((e) => formatCurrency(context, e.value, e.key))
+        .toList();
   }
 
   Future<void> _openAddSheet() async {
+    final currency = await StorageService.loadCurrency();
     final Expense? expense = await showModalBottomSheet<Expense>(
       context: context,
       isScrollControlled: true,
-      builder: (_) => AddExpenseSheet(currencyCode: _currencyCode),
+      builder: (_) => AddExpenseSheet(currencyCode: currency),
     );
 
     if (expense == null) return;
@@ -123,11 +122,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _openEditSheet(Expense expense, int index) async {
+    final currency = await StorageService.loadCurrency();
+
     final Expense? updatedExpense = await showModalBottomSheet<Expense>(
       context: context,
       isScrollControlled: true,
       builder: (_) => AddExpenseSheet(
-        currencyCode: _currencyCode,
+        currencyCode: currency,
         expenseToEdit: expense,
       ),
     );
@@ -234,12 +235,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          Text(
-            _formattedTotal,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium!
-                .copyWith(fontWeight: FontWeight.bold),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: _formattedTotals.map((text) {
+              return Text(
+                text,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(fontWeight: FontWeight.bold),
+              );
+            }).toList(),
           ),
         ],
       ),

@@ -25,7 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Category> _categories = [];
 
   String _selectedCategory = "";
-  String _currencyCode = "TRY";
 
   SortField _sortField = SortField.date;
   SortOrder _sortOrder = SortOrder.desc;
@@ -37,16 +36,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _loadCategories();
-      await _loadCurrency();
       setState(() {
         _selectedCategory = AppLocalizations.of(context)!.filterAll;
       });
     });
-  }
-
-  Future<void> _loadCurrency() async {
-    final saved = await StorageService.loadCurrency();
-    setState(() => _currencyCode = saved);
   }
 
   Future<void> _loadData() async {
@@ -491,16 +484,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               )
-            : _EmptyState(onAdd: _openAddSheet),
+            : const _EmptyState(),
       ),
     );
   }
 }
 
 class _EmptyState extends StatelessWidget {
-  final VoidCallback onAdd;
 
-  const _EmptyState({required this.onAdd});
+  const _EmptyState();
 
   @override
   Widget build(BuildContext context) {

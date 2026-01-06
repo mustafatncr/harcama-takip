@@ -319,6 +319,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     child: ElevatedButton.icon(
                       onPressed: () async {
                         final text = ShareTextService.buildReportText(
+                          context,
                           _filtered,
                           _selectedRange!,
                         );

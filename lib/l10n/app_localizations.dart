@@ -676,6 +676,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Expense Report (Excel)'**
   String get excelShareText;
+
+  /// No description provided for @shareReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Report'**
+  String get shareReportTitle;
+
+  /// No description provided for @shareReportDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get shareReportDetails;
+
+  /// No description provided for @shareTotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get shareTotalLabel;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

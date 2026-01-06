@@ -298,4 +298,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get excelShareText => 'Harcama Raporu (Excel)';
+
+  @override
+  String get shareReportTitle => 'Harcama Raporu';
+
+  @override
+  String get shareReportDetails => 'Detaylar';
+
+  @override
+  String get shareTotalLabel => 'Toplam';
 }

@@ -97,5 +97,8 @@
   "excelColumnCurrency": "Currency",
   "excelColumnNote": "Note",
   "excelFileName": "expense_report",
-  "excelShareText": "Expense Report (Excel)"
+  "excelShareText": "Expense Report (Excel)",
+  "shareReportTitle": "Expense Report",
+  "shareReportDetails": "Details",
+  "shareTotalLabel": "Total"
 }

@@ -97,5 +97,8 @@
   "excelColumnCurrency": "Para Birimi",
   "excelColumnNote": "Not",
   "excelFileName": "harcama_raporu",
-  "excelShareText": "Harcama Raporu (Excel)"
+  "excelShareText": "Harcama Raporu (Excel)",
+  "shareReportTitle": "Harcama Raporu",
+  "shareReportDetails": "Detaylar",
+  "shareTotalLabel": "Toplam"
 }

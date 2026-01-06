@@ -298,4 +298,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get excelShareText => 'Expense Report (Excel)';
+
+  @override
+  String get shareReportTitle => 'Expense Report';
+
+  @override
+  String get shareReportDetails => 'Details';
+
+  @override
+  String get shareTotalLabel => 'Total';
 }

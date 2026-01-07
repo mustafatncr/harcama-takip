@@ -226,6 +226,21 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
     );
   }
 
+  Widget _buildLocalDataInfo() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Text(
+        AppLocalizations.of(context)!.settingsLocalDataInfo,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 13,
+          color: Colors.white54,
+          height: 1.4,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -243,6 +258,11 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
         padding: const EdgeInsets.all(16),
         children: [
           _buildCurrencySelector(),
+          const SizedBox(height: 16),
+
+          // ✅ Yeni eklediğimiz bilgi yazısı
+          _buildLocalDataInfo(),
+
           const SizedBox(height: 22),
           Divider(color: Colors.white12, thickness: 1),
           const SizedBox(height: 22),

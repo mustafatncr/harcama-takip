@@ -14,9 +14,7 @@ class ExportExcelService {
   // 📅 Tarih formatı – dile göre
   static String _formatDate(BuildContext context, DateTime date) {
     final lang = Localizations.localeOf(context).languageCode;
-
     final pattern = lang == "tr" ? "dd.MM.yyyy" : "MM/dd/yyyy";
-
     return DateFormat(pattern).format(date);
   }
 
@@ -27,25 +25,25 @@ class ExportExcelService {
     final loc = AppLocalizations.of(context)!;
 
     final workbook = xls.Workbook();
+
+    // =========================
+    // 📄 SHEET 1: EXPENSES
+    // =========================
     final sheet = workbook.worksheets[0];
+    sheet.name = loc.excelSheetName; // "Expenses"
 
-    // 📄 Sayfa adı
-    sheet.name = loc.excelSheetName;
-
-    // 🧾 Başlıklar (ARB’den)
+    // 🧾 Başlıklar
     sheet.getRangeByName('A1').setText(loc.excelColumnDate);
     sheet.getRangeByName('B1').setText(loc.excelColumnCategory);
     sheet.getRangeByName('C1').setText(loc.excelColumnAmount);
     sheet.getRangeByName('D1').setText(loc.excelColumnCurrency);
     sheet.getRangeByName('E1').setText(loc.excelColumnNote);
 
-    // 🎨 Header stili
     final headerStyle = workbook.styles.add('Header');
     headerStyle.bold = true;
 
     sheet.getRangeByName("A1:E1").cellStyle = headerStyle;
 
-    // 📄 Satırlar
     int row = 2;
     for (final e in expenses) {
       sheet.getRangeByIndex(row, 1).setText(
@@ -64,12 +62,48 @@ class ExportExcelService {
       row++;
     }
 
-    // 📐 Otomatik kolon genişliği
     for (int i = 1; i <= 5; i++) {
       sheet.autoFitColumn(i);
     }
 
-    // 💾 Kaydet
+    // =========================
+    // 📊 SHEET 2: SUMMARY
+    // =========================
+    final summarySheet = workbook.worksheets.add();
+    summarySheet.name = loc.excelSummarySheetName; // "Summary"
+
+    summarySheet.getRangeByName('A1').setText(loc.excelSummaryCurrency);
+    summarySheet.getRangeByName('B1').setText(loc.excelSummaryTotal);
+
+    summarySheet.getRangeByName("A1:B1").cellStyle = headerStyle;
+
+    // 🔢 Para birimine göre toplam
+    final Map<String, double> totalsByCurrency = {};
+
+    for (final e in expenses) {
+      totalsByCurrency[e.currency] =
+          (totalsByCurrency[e.currency] ?? 0) + e.amount;
+    }
+
+    int summaryRow = 2;
+    for (final entry in totalsByCurrency.entries) {
+      summarySheet.getRangeByIndex(summaryRow, 1).setText(entry.key);
+      summarySheet.getRangeByIndex(summaryRow, 2).setText(
+            formatCurrencyWithoutSymbol(
+              context,
+              entry.value,
+              entry.key,
+            ),
+          );
+      summaryRow++;
+    }
+
+    summarySheet.autoFitColumn(1);
+    summarySheet.autoFitColumn(2);
+
+    // =========================
+    // 💾 KAYDET
+    // =========================
     final bytes = workbook.saveAsStream();
     workbook.dispose();
 

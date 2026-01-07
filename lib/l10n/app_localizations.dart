@@ -694,6 +694,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total'**
   String get shareTotalLabel;
+
+  /// No description provided for @settingsLocalDataInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is stored only on this device.'**
+  String get settingsLocalDataInfo;
+
+  /// No description provided for @excelSummarySheetName.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get excelSummarySheetName;
+
+  /// No description provided for @excelSummaryCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get excelSummaryCurrency;
+
+  /// No description provided for @excelSummaryTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get excelSummaryTotal;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

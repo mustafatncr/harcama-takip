@@ -100,5 +100,9 @@
   "excelShareText": "Expense Report (Excel)",
   "shareReportTitle": "Expense Report",
   "shareReportDetails": "Details",
-  "shareTotalLabel": "Total"
+  "shareTotalLabel": "Total",
+  "settingsLocalDataInfo": "Your data is stored only on this device.",
+  "excelSummarySheetName": "Summary",
+  "excelSummaryCurrency": "Currency",
+  "excelSummaryTotal": "Total"
 }

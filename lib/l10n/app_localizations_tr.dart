@@ -307,4 +307,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get shareTotalLabel => 'Toplam';
+
+  @override
+  String get settingsLocalDataInfo => 'Verileriniz yalnızca bu cihazda saklanır.';
+
+  @override
+  String get excelSummarySheetName => 'Özet';
+
+  @override
+  String get excelSummaryCurrency => 'Para Birimi';
+
+  @override
+  String get excelSummaryTotal => 'Toplam';
 }

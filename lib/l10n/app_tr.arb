@@ -100,5 +100,9 @@
   "excelShareText": "Harcama Raporu (Excel)",
   "shareReportTitle": "Harcama Raporu",
   "shareReportDetails": "Detaylar",
-  "shareTotalLabel": "Toplam"
+  "shareTotalLabel": "Toplam",
+  "settingsLocalDataInfo": "Verileriniz yalnızca bu cihazda saklanır.",
+  "excelSummarySheetName": "Özet",
+  "excelSummaryCurrency": "Para Birimi",
+  "excelSummaryTotal": "Toplam"
 }

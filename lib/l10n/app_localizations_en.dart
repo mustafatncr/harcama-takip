@@ -307,4 +307,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareTotalLabel => 'Total';
+
+  @override
+  String get settingsLocalDataInfo => 'Your data is stored only on this device.';
+
+  @override
+  String get excelSummarySheetName => 'Summary';
+
+  @override
+  String get excelSummaryCurrency => 'Currency';
+
+  @override
+  String get excelSummaryTotal => 'Total';
 }

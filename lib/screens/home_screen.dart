@@ -61,16 +61,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Map<String, num> get _totalsByCurrency {
-    final filtered =
-        _selectedCategory == AppLocalizations.of(context)!.filterAll
-            ? _items
-            : _items.where((e) => e.category == _selectedCategory).toList();
+    final now = DateTime.now();
+
+    final filtered = _items.where((e) {
+      final sameMonth = e.date.year == now.year && e.date.month == now.month;
+
+      final sameCategory =
+          _selectedCategory == AppLocalizations.of(context)!.filterAll
+              ? true
+              : e.category == _selectedCategory;
+
+      return sameMonth && sameCategory;
+    });
 
     final Map<String, num> result = {};
 
     for (var e in filtered) {
       result[e.currency] = (result[e.currency] ?? 0) + e.amount;
     }
+
     return result;
   }
 
@@ -210,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                loc.totalSpending,
+                 loc.thisMonth,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
@@ -491,7 +500,6 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _EmptyState extends StatelessWidget {
-
   const _EmptyState();
 
   @override

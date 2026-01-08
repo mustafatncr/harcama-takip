@@ -126,7 +126,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get totalSpending => 'Toplam Harcama';
 
   @override
-  String get basedOnSelectedFilters => 'Seçili filtreye göre';
+  String get thisMonth => 'Bu Ay';
+
+  @override
+  String get basedOnSelectedFilters => 'Seçili kategoriye göre';
 
   @override
   String get settingsClearDataTitle => 'Tüm Verileri Sil';

@@ -329,10 +329,16 @@ abstract class AppLocalizations {
   /// **'Total Spending'**
   String get totalSpending;
 
+  /// No description provided for @thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get thisMonth;
+
   /// No description provided for @basedOnSelectedFilters.
   ///
   /// In en, this message translates to:
-  /// **'Based on selected filters'**
+  /// **'Based on selected filter'**
   String get basedOnSelectedFilters;
 
   /// No description provided for @settingsClearDataTitle.

@@ -126,7 +126,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get totalSpending => 'Total Spending';
 
   @override
-  String get basedOnSelectedFilters => 'Based on selected filters';
+  String get thisMonth => 'This Month';
+
+  @override
+  String get basedOnSelectedFilters => 'Based on selected filter';
 
   @override
   String get settingsClearDataTitle => 'Delete All Data';

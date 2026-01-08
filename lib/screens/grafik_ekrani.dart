@@ -17,17 +17,22 @@ class GrafikEkrani extends StatefulWidget {
 class _GrafikEkraniState extends State<GrafikEkrani> {
   List<Expense> _expenses = [];
   TimeFilter _filter = TimeFilter.thisMonth;
-  String _selectedCurrency = "TRY";
+  late String _selectedCurrency;
 
   @override
   void initState() {
     super.initState();
-    _loadExpenses();
+    _loadInitialData();
   }
 
-  Future<void> _loadExpenses() async {
-    final data = await StorageService.loadExpenses();
-    setState(() => _expenses = data);
+  Future<void> _loadInitialData() async {
+    final expenses = await StorageService.loadExpenses();
+    final currency = await StorageService.loadCurrency();
+
+    setState(() {
+      _expenses = expenses;
+      _selectedCurrency = currency;
+    });
   }
 
   Color _generatePastelColor(String key) {

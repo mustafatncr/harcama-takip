@@ -124,13 +124,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _openEditSheet(Expense expense, int index) async {
-    final currency = await StorageService.loadCurrency();
 
     final Expense? updatedExpense = await showModalBottomSheet<Expense>(
       context: context,
       isScrollControlled: true,
       builder: (_) => AddExpenseSheet(
-        currencyCode: currency,
+        currencyCode: expense.currency,
         expenseToEdit: expense,
       ),
     );

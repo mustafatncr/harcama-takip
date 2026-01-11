@@ -81,3 +81,35 @@ String formatCurrencyWithoutSymbol(
     decimalDigits: 2,
   ).format(value).trim(); // trim önemli
 }
+
+String formatAmountForInput(
+  num value,
+  String currencyCode,
+) {
+  final normalizedCode = currencyCode == "TL" ? "TRY" : currencyCode;
+
+  late final String locale;
+
+  switch (normalizedCode) {
+    case "TRY":
+      locale = "tr_TR";
+      break;
+    case "EUR":
+      locale = "de_DE";
+      break;
+    case "USD":
+      locale = "en_US";
+      break;
+    case "GBP":
+      locale = "en_GB";
+      break;
+    default:
+      locale = "en_US";
+  }
+
+  final f = NumberFormat.decimalPattern(locale)
+    ..minimumFractionDigits = 2
+    ..maximumFractionDigits = 2;
+
+  return f.format(value);
+}

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:harcama_takip/l10n/app_localizations.dart';
-import 'package:harcama_takip/services/storage_service.dart';
 import 'package:harcama_takip/utils/formatters.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
@@ -23,6 +22,9 @@ class AddExpenseSheet extends StatefulWidget {
 }
 
 class _AddExpenseSheetState extends State<AddExpenseSheet> {
+  late String _activeCurrencyCode;
+  late String _currencySymbol;
+
   String _amountHintForCurrency(String currencyCode) {
     switch (currencyCode) {
       case 'TRY':
@@ -43,17 +45,16 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
   List<Category> _categories = [];
   Category? _selectedCategory;
 
-  String _currencySymbol = "₺";
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final currency = await StorageService.loadCurrency();
-      setState(() => _currencySymbol = _symbolForCurrency(currency));
 
+    _activeCurrencyCode = widget.expenseToEdit?.currency ?? widget.currencyCode;
+    _currencySymbol = _symbolForCurrency(_activeCurrencyCode);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _loadCategories();
-      _fillFormIfEditing(); // ⭐ Düzenleme modunda alanları doldurur
+      _fillFormIfEditing();
     });
   }
 
@@ -62,7 +63,8 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
 
     final e = widget.expenseToEdit!;
 
-    _amountController.text = e.amount.toString();
+    _amountController.text =
+        formatAmountForInput(e.amount, _activeCurrencyCode);
     _noteController.text = e.note ?? "";
     _selectedDate = e.date;
 
@@ -100,6 +102,9 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
   }
 
   Future<void> _selectDate() async {
+
+    FocusManager.instance.primaryFocus?.unfocus();
+
     final picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
@@ -119,7 +124,11 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       },
     );
 
-    if (picked != null) setState(() => _selectedDate = picked);
+    if (!mounted) return;
+
+    if (picked != null) {
+      setState(() => _selectedDate = picked);
+    }
   }
 
   Future<void> _submit() async {
@@ -136,11 +145,9 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       return;
     }
 
-    final currency = await StorageService.loadCurrency();
-
     final parsedAmount = parseAmountByCurrency(
       _amountController.text,
-      currency,
+      _activeCurrencyCode,
     );
 
     final newExpense = Expense(
@@ -148,7 +155,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       category: _selectedCategory!.name,
       note: _noteController.text,
       date: _selectedDate,
-      currency: currency,
+      currency: _activeCurrencyCode,
       iconName: _selectedCategory!.iconName,
     );
 

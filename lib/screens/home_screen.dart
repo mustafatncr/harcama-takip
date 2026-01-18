@@ -97,6 +97,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _openAddSheet() async {
     final currency = await StorageService.loadCurrency();
+
+    if (!mounted) return;
+
     final Expense? expense = await showModalBottomSheet<Expense>(
       context: context,
       isScrollControlled: true,
@@ -298,8 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           const SizedBox(width: 16),
-
-          // --- ORTA BILGI ALANI ---
+          
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,7 +331,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
           const SizedBox(width: 8),
 
-          // --- SAGDA DIKEY EDIT + DELETE ICONLARI ---
           Column(
             children: [
               IconButton(

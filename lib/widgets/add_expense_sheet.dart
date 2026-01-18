@@ -9,7 +9,7 @@ import 'package:harcama_takip/utils/amount_parser.dart';
 
 class AddExpenseSheet extends StatefulWidget {
   final String currencyCode;
-  final Expense? expenseToEdit; // ⭐ Düzenleme için eklendi
+  final Expense? expenseToEdit;
 
   const AddExpenseSheet({
     super.key,
@@ -28,11 +28,11 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
   String _amountHintForCurrency(String currencyCode) {
     switch (currencyCode) {
       case 'TRY':
-        return '0,00'; // Türk formatı
+        return '0,00';
       case 'EUR':
         return '0,00';
       default:
-        return '0.00'; // USD, GBP vs.
+        return '0.00';
     }
   }
 
@@ -292,7 +292,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
 
   Widget _buildDropdown(BuildContext context, Color primary) {
     return DropdownButtonFormField<Category>(
-      value: _selectedCategory,
+      initialValue: _selectedCategory,
       validator: (val) {
         if (val == null) {
           return AppLocalizations.of(context)!.categoryRequired;

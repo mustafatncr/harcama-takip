@@ -79,10 +79,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 22),
-
-                      /// --- VALIDATOR EKLENMİŞ TEXTFORMFIELD ---
                       TextFormField(
                         controller: nameController,
                         style: const TextStyle(color: Colors.white),
@@ -112,9 +109,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 20),
-
                       Text(
                         AppLocalizations.of(context)!.categorySelectIcon,
                         style: const TextStyle(
@@ -123,9 +118,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-
                       const SizedBox(height: 10),
-
                       Wrap(
                         spacing: 10,
                         runSpacing: 10,
@@ -161,9 +154,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                             ),
                         ],
                       ),
-
                       const SizedBox(height: 26),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -175,8 +166,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                             ),
                           ),
                           const SizedBox(width: 12),
-
-                          /// --- BUTON ARTIK VALIDASYONU TETİKLİYOR ---
                           FilledButton(
                             style: FilledButton.styleFrom(
                               backgroundColor: primary,
@@ -185,6 +174,7 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                               ),
                             ),
                             onPressed: () async {
+
                               if (!dialogFormKey.currentState!.validate()) {
                                 return;
                               }
@@ -218,8 +208,11 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                                 }
                               });
 
-                              _saveCategories();
-                              Navigator.pop(context);
+                              await _saveCategories();
+
+                              if (!context.mounted) return;
+
+                              Navigator.of(context).pop();
                             },
                             child: Text(
                               edit == null
@@ -229,7 +222,6 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 10),
                     ],
                   ),
@@ -317,10 +309,8 @@ class _KategoriEkraniState extends State<KategoriEkrani> {
   Future<void> _deleteCategory(int index) async {
     final deleted = _categories[index];
 
-    // 🔥 Önce bu kategoriye bağlı harcamaları sil
     await StorageService.deleteExpensesByCategory(deleted.name);
 
-    // 🔥 Sonra kategoriyi sil
     setState(() => _categories.removeAt(index));
     await _saveCategories();
 

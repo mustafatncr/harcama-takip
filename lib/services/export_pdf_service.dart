@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui' show Rect;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -26,11 +25,9 @@ class ExportPdfService {
   ) async {
     final loc = AppLocalizations.of(context)!;
 
-    // 🔤 Unicode font
     final fontData = await rootBundle.load("assets/fonts/Roboto-Regular.ttf");
     final Uint8List fontBytes = fontData.buffer.asUint8List();
 
-    // 🖼️ Logo
     final Uint8List logoBytes =
         (await rootBundle.load("assets/icon/app_icon.png"))
             .buffer
@@ -47,34 +44,29 @@ class ExportPdfService {
     final cellFont = PdfTrueTypeFont(fontBytes, 12);
     final headerFont = PdfTrueTypeFont(fontBytes, 12, style: PdfFontStyle.bold);
 
-    // 🖼️ LOGO
     page.graphics.drawImage(
       logoImage,
       const Rect.fromLTWH(0, 0, 60, 60),
     );
 
-    // 📄 BAŞLIK
     page.graphics.drawString(
       loc.pdfReportTitle,
       titleFont,
       bounds: const Rect.fromLTWH(70, 0, 500, 40),
     );
 
-    // 🕒 OLUŞTURULMA TARİHİ
     page.graphics.drawString(
       "${loc.pdfCreatedAt}: ${_formatDate(context, DateTime.now())}",
       subFont,
       bounds: const Rect.fromLTWH(70, 30, 500, 20),
     );
 
-    // 🏷️ REPORTED BY
     page.graphics.drawString(
       loc.pdfReportedBy,
       smallItalic,
       bounds: const Rect.fromLTWH(70, 48, 500, 20),
     );
 
-    // 📊 TABLO
     final PdfGrid grid = PdfGrid();
     grid.columns.add(count: 5);
 
@@ -102,7 +94,6 @@ class ExportPdfService {
       header.cells[i].style = headerStyle;
     }
 
-    // 📄 SATIRLAR
     for (final e in expenses) {
       final row = grid.rows.add();
       row.cells[0].value = _formatDate(context, e.date);
@@ -116,7 +107,6 @@ class ExportPdfService {
       row.cells[4].value = e.currency;
     }
 
-    // 🔥 ÇOKLU PARA BİRİMİ TOPLAM
     final Map<String, double> totalsByCurrency = {};
     for (final e in expenses) {
       totalsByCurrency[e.currency] =
@@ -125,7 +115,6 @@ class ExportPdfService {
 
     final entries = totalsByCurrency.entries.toList();
 
-// 🔹 TOPLAM + İLK PARA BİRİMİ AYNI SATIRDA
     final PdfGridRow totalRow = grid.rows.add();
     totalRow.cells[2].value = loc.pdfTotal;
     totalRow.cells[3].value = formatCurrencyWithoutSymbol(
@@ -141,7 +130,6 @@ class ExportPdfService {
       );
     }
 
-// 🔹 KALAN PARA BİRİMLERİ ALT SATIRLARDA
     for (int i = 1; i < entries.length; i++) {
       final row = grid.rows.add();
       row.cells[3].value = formatCurrencyWithoutSymbol(

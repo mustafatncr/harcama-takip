@@ -66,18 +66,14 @@ class ExportExcelService {
       sheet.autoFitColumn(i);
     }
 
-    // =========================
-    // 📊 SHEET 2: SUMMARY
-    // =========================
     final summarySheet = workbook.worksheets.add();
-    summarySheet.name = loc.excelSummarySheetName; // "Summary"
+    summarySheet.name = loc.excelSummarySheetName;
 
     summarySheet.getRangeByName('A1').setText(loc.excelSummaryCurrency);
     summarySheet.getRangeByName('B1').setText(loc.excelSummaryTotal);
 
     summarySheet.getRangeByName("A1:B1").cellStyle = headerStyle;
 
-    // 🔢 Para birimine göre toplam
     final Map<String, double> totalsByCurrency = {};
 
     for (final e in expenses) {
@@ -100,10 +96,7 @@ class ExportExcelService {
 
     summarySheet.autoFitColumn(1);
     summarySheet.autoFitColumn(2);
-
-    // =========================
-    // 💾 KAYDET
-    // =========================
+    
     final bytes = workbook.saveAsStream();
     workbook.dispose();
 

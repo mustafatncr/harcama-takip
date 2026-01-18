@@ -78,7 +78,6 @@ class _ReportScreenState extends State<ReportScreen> {
   bool get hasSelectedRange => _selectedRange != null;
   bool get hasData => _filtered.isNotEmpty;
 
-  // 🔥 ÇOKLU PARA BİRİMİ TOPLAM
   Map<String, num> get _totalsByCurrency {
     final Map<String, num> result = {};
     for (final e in _filtered) {
@@ -146,9 +145,6 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  // -----------------------------------------------------------
-  // EXPORT MENU
-  // -----------------------------------------------------------
   void _showExportMenu(BuildContext context, List<Expense> expenses) {
     showModalBottomSheet(
       context: context,
@@ -241,8 +237,6 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // 🔥 TOPLAM – SOLDA BAŞLIK, SAĞDA ALT ALTA TUTARLAR
             if (hasSelectedRange && hasData)
               Container(
                 padding:
@@ -256,15 +250,12 @@ class _ReportScreenState extends State<ReportScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ⬅️ SOL: TOPLAM
                     Text(
                       loc.totalLabel,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
-                    // ➡️ SAĞ: TUTARLAR (ALT ALTA)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -280,7 +271,6 @@ class _ReportScreenState extends State<ReportScreen> {
                   ],
                 ),
               ),
-
             const SizedBox(height: 20),
             Expanded(
               child: !hasSelectedRange

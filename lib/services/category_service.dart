@@ -37,9 +37,9 @@ class CategoryService {
         final aIsOther = _isOther(a.name);
         final bIsOther = _isOther(b.name);
 
-        if (aIsOther && !bIsOther) return 1; // a sona
-        if (!aIsOther && bIsOther) return -1; // b sona
-        return 0; // sıralamayı bozma
+        if (aIsOther && !bIsOther) return 1;
+        if (!aIsOther && bIsOther) return -1;
+        return 0;
       });
   }
 

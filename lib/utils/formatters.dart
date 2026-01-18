@@ -1,13 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-/// Locale-aware tarih formatı
 String formatDate(BuildContext context, DateTime date) {
   final locale = Localizations.localeOf(context).toString();
   return DateFormat.yMMMd(locale).format(date);
 }
 
-/// Locale-aware para formatı (HER ZAMAN 2 KURUŞ)
 String formatCurrency(
   BuildContext context,
   num value,
@@ -77,9 +75,9 @@ String formatCurrencyWithoutSymbol(
   return NumberFormat.currency(
     locale: locale,
     name: normalizedCode,
-    symbol: "", // 🔥 SEMBOL YOK
+    symbol: "",
     decimalDigits: 2,
-  ).format(value).trim(); // trim önemli
+  ).format(value).trim();
 }
 
 String formatAmountForInput(

@@ -29,7 +29,6 @@ class ShareTextService {
     buffer.writeln(loc.shareReportDetails);
     buffer.writeln();
 
-    // 🔥 Toplamları para birimine göre ayır
     final Map<String, num> totalsByCurrency = {};
 
     for (final e in expenses) {

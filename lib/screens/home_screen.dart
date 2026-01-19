@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:harcama_takip/l10n/app_localizations.dart';
+import 'package:harcama_takip/main.dart';
 import 'package:harcama_takip/utils/formatters.dart';
 import '../widgets/add_expense_sheet.dart';
 import '../services/storage_service.dart';
@@ -20,9 +21,10 @@ enum SortField { date, amount }
 
 enum SortOrder { desc, asc }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with RouteAware {
   final List<Expense> _items = [];
   List<Category> _categories = [];
+  String? _settingsCurrency;
 
   String _selectedCategory = "";
 
@@ -36,9 +38,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _loadCategories();
+      final currency = await StorageService.loadCurrency();
       setState(() {
+        _settingsCurrency = currency;
         _selectedCategory = AppLocalizations.of(context)!.filterAll;
       });
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() async {
+    final currency = await StorageService.loadCurrency();
+
+    if (!mounted) return;
+
+    setState(() {
+      _settingsCurrency = currency;
     });
   }
 
@@ -87,7 +114,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final totals = _totalsByCurrency;
 
     if (totals.isEmpty) {
-      return [];
+      if (_settingsCurrency == null) return [];
+
+      return [
+        formatCurrency(context, 0, _settingsCurrency!),
+      ];
     }
 
     return totals.entries
@@ -127,7 +158,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _openEditSheet(Expense expense, int index) async {
-
     final Expense? updatedExpense = await showModalBottomSheet<Expense>(
       context: context,
       isScrollControlled: true,
@@ -221,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                 loc.thisMonth,
+                loc.thisMonth,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
@@ -301,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           const SizedBox(width: 16),
-          
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

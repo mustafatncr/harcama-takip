@@ -8,6 +8,9 @@ import 'screens/ayarlar_ekrani.dart';
 import 'screens/grafik_ekrani.dart';
 import 'screens/kategori_ekrani.dart';
 
+final RouteObserver<PageRoute> routeObserver =
+    RouteObserver<PageRoute>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const HarcamaTakipApp());
@@ -23,6 +26,9 @@ class HarcamaTakipApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: premiumDarkTheme,
       themeMode: ThemeMode.dark,
+
+      navigatorObservers: [routeObserver],
+
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

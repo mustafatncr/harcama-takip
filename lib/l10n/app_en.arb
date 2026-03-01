@@ -107,5 +107,7 @@
   "excelSummarySheetName": "Summary",
   "excelSummaryCurrency": "Currency",
   "excelSummaryTotal": "Total",
-  "exportError": "An error occurred during export."
+  "exportError": "An error occurred during export.",
+  "searchHint": "Search expenses...",
+  "searchNoResults": "No results found"
 }

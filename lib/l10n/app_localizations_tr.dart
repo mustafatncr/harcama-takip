@@ -331,4 +331,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get exportError => 'Dışa aktarma sırasında bir hata oluştu.';
+
+  @override
+  String get searchHint => 'Harcama ara...';
+
+  @override
+  String get searchNoResults => 'Sonuç bulunamadı';
 }

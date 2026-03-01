@@ -27,6 +27,10 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
   String? _settingsCurrency;
 
   String _selectedCategory = "";
+  String _searchQuery = "";
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  bool _isSearching = false;
 
   SortField _sortField = SortField.date;
   SortOrder _sortOrder = SortOrder.desc;
@@ -55,6 +59,8 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -256,6 +262,47 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
             "${formatCurrency(context, updatedExpense.amount, updatedExpense.currency)} • "
             "${updatedExpense.category} • ${formatDate(context, updatedExpense.date)}"),
       ),
+    );
+  }
+
+  void _startSearch() {
+    setState(() => _isSearching = true);
+    _searchFocusNode.requestFocus();
+  }
+
+  void _stopSearch() {
+    _searchController.clear();
+    _searchFocusNode.unfocus();
+    setState(() {
+      _isSearching = false;
+      _searchQuery = "";
+    });
+  }
+
+  Widget _buildSearchResults(List<Expense> items) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final loc = AppLocalizations.of(context)!;
+
+    if (items.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.search_off, size: 48, color: primary.withValues(alpha: 0.4)),
+            const SizedBox(height: 12),
+            Text(
+              _searchQuery.trim().isEmpty ? loc.emptyExpenses : loc.searchNoResults,
+              style: const TextStyle(color: Colors.white54, fontSize: 15),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.separated(
+      itemCount: items.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, i) => _buildExpenseCard(items[i]),
     );
   }
 
@@ -468,19 +515,31 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
   @override
   Widget build(BuildContext context) {
     final hasData = _items.isNotEmpty;
+    final primary = Theme.of(context).colorScheme.primary;
+    final loc = AppLocalizations.of(context)!;
 
     final categoryNames = [
-      AppLocalizations.of(context)!.filterAll,
+      loc.filterAll,
       ..._categories.map((c) => c.name),
     ];
 
-    var filteredItems =
-        _selectedCategory == AppLocalizations.of(context)!.filterAll
-            ? _items
-            : _items.where((e) => e.category == _selectedCategory).toList();
+    // Arama modunda tüm harcamalarda ara; normal modda kategoriye göre filtrele
+    late List<Expense> filteredItems;
+    if (_isSearching) {
+      final query = _searchQuery.trim().toLowerCase();
+      filteredItems = query.isEmpty
+          ? _items
+          : _items.where((e) {
+              return e.category.toLowerCase().contains(query) ||
+                  (e.note?.toLowerCase().contains(query) ?? false);
+            }).toList();
+    } else {
+      filteredItems = _selectedCategory == loc.filterAll
+          ? _items
+          : _items.where((e) => e.category == _selectedCategory).toList();
+    }
 
     final sortedItems = [...filteredItems];
-
     if (_sortField == SortField.date) {
       sortedItems.sort((a, b) => _sortOrder == SortOrder.desc
           ? b.date.compareTo(a.date)
@@ -491,110 +550,150 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
           : a.amount.compareTo(b.amount));
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.appName,
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
-        actions: [
-          PopupMenuButton<Map<String, dynamic>>(
-            color: Theme.of(context).colorScheme.surface,
-            onSelected: (value) {
-              setState(() {
-                _sortField = value["field"] as SortField;
-                _sortOrder = value["order"] as SortOrder;
-              });
-            },
-            icon: const Icon(Icons.sort),
-            itemBuilder: (context) {
-              final loc = AppLocalizations.of(context)!;
-              return [
-                PopupMenuItem(
-                  value: {"field": SortField.date, "order": SortOrder.desc},
-                  child: Text(loc.sortDateDesc),
+    return PopScope(
+      canPop: !_isSearching,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) _stopSearch();
+      },
+      child: Scaffold(
+        appBar: _isSearching
+            ? AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back, color: primary),
+                  onPressed: _stopSearch,
                 ),
-                PopupMenuItem(
-                  value: {"field": SortField.date, "order": SortOrder.asc},
-                  child: Text(loc.sortDateAsc),
-                ),
-                const PopupMenuDivider(),
-                PopupMenuItem(
-                  value: {"field": SortField.amount, "order": SortOrder.desc},
-                  child: Text(loc.sortAmountDesc),
-                ),
-                PopupMenuItem(
-                  value: {"field": SortField.amount, "order": SortOrder.asc},
-                  child: Text(loc.sortAmountAsc),
-                ),
-              ];
-            },
-          ),
-        ],
-      ),
-      drawer: AppDrawer(
-        onCategoriesChanged: () async {
-          _items.clear();
-          _categories.clear();
-
-          await _loadData();
-          await _loadCategories();
-
-          setState(() {
-            _selectedCategory = AppLocalizations.of(context)!.filterAll;
-          });
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openAddSheet,
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.black,
-        icon: const Icon(Icons.add),
-        label: Text(
-          AppLocalizations.of(context)!.homeAddExpense,
-          style: const TextStyle(color: Colors.black),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: hasData
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        for (final category in categoryNames)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: _buildFilterChip(
-                              category,
-                              _selectedCategory == category,
-                            ),
-                          ),
-                      ],
-                    ),
+                title: TextField(
+                  controller: _searchController,
+                  focusNode: _searchFocusNode,
+                  autofocus: true,
+                  onChanged: (v) => setState(() => _searchQuery = v),
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: loc.searchHint,
+                    hintStyle: const TextStyle(color: Colors.white38),
                   ),
-                  const SizedBox(height: 20),
-                  _buildTotalCard(),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: ListView.separated(
-                      itemCount: sortedItems.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, i) =>
-                          _buildExpenseCard(sortedItems[i]),
+                ),
+                actions: [
+                  if (_searchQuery.isNotEmpty)
+                    IconButton(
+                      icon: Icon(Icons.close, color: primary),
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() => _searchQuery = "");
+                      },
                     ),
-                  ),
                 ],
               )
-            : const _EmptyState(),
+            : AppBar(
+                title: Text(
+                  loc.appName,
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                centerTitle: true,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                iconTheme: IconThemeData(color: primary),
+                actions: [
+                  IconButton(
+                    icon: Icon(Icons.search, color: primary),
+                    onPressed: _startSearch,
+                  ),
+                  PopupMenuButton<Map<String, dynamic>>(
+                    color: Theme.of(context).colorScheme.surface,
+                    onSelected: (value) {
+                      setState(() {
+                        _sortField = value["field"] as SortField;
+                        _sortOrder = value["order"] as SortOrder;
+                      });
+                    },
+                    icon: const Icon(Icons.sort),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: {"field": SortField.date, "order": SortOrder.desc},
+                        child: Text(loc.sortDateDesc),
+                      ),
+                      PopupMenuItem(
+                        value: {"field": SortField.date, "order": SortOrder.asc},
+                        child: Text(loc.sortDateAsc),
+                      ),
+                      const PopupMenuDivider(),
+                      PopupMenuItem(
+                        value: {"field": SortField.amount, "order": SortOrder.desc},
+                        child: Text(loc.sortAmountDesc),
+                      ),
+                      PopupMenuItem(
+                        value: {"field": SortField.amount, "order": SortOrder.asc},
+                        child: Text(loc.sortAmountAsc),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+        drawer: AppDrawer(
+          onCategoriesChanged: () async {
+            _items.clear();
+            _categories.clear();
+
+            await _loadData();
+            await _loadCategories();
+
+            setState(() {
+              _selectedCategory = loc.filterAll;
+            });
+          },
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: _openAddSheet,
+          elevation: 0,
+          backgroundColor: primary,
+          foregroundColor: Colors.black,
+          icon: const Icon(Icons.add),
+          label: Text(
+            loc.homeAddExpense,
+            style: const TextStyle(color: Colors.black),
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: _isSearching
+              ? _buildSearchResults(sortedItems)
+              : hasData
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              for (final category in categoryNames)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                                  child: _buildFilterChip(
+                                    category,
+                                    _selectedCategory == category,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        _buildTotalCard(),
+                        const SizedBox(height: 20),
+                        Expanded(
+                          child: ListView.separated(
+                            itemCount: sortedItems.length,
+                            separatorBuilder: (_, __) => const SizedBox(height: 12),
+                            itemBuilder: (context, i) =>
+                                _buildExpenseCard(sortedItems[i]),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const _EmptyState(),
+        ),
       ),
     );
   }

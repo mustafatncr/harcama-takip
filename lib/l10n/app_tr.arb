@@ -107,5 +107,7 @@
   "excelSummarySheetName": "Özet",
   "excelSummaryCurrency": "Para Birimi",
   "excelSummaryTotal": "Toplam",
-  "exportError": "Dışa aktarma sırasında bir hata oluştu."
+  "exportError": "Dışa aktarma sırasında bir hata oluştu.",
+  "searchHint": "Harcama ara...",
+  "searchNoResults": "Sonuç bulunamadı"
 }

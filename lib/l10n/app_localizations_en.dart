@@ -331,4 +331,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportError => 'An error occurred during export.';
+
+  @override
+  String get searchHint => 'Search expenses...';
+
+  @override
+  String get searchNoResults => 'No results found';
 }

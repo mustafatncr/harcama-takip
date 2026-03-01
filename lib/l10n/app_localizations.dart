@@ -742,6 +742,10 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred during export.'**
   String get exportError;
+
+  String get searchHint;
+
+  String get searchNoResults;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

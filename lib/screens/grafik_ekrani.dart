@@ -17,7 +17,7 @@ class GrafikEkrani extends StatefulWidget {
 class _GrafikEkraniState extends State<GrafikEkrani> {
   List<Expense> _expenses = [];
   TimeFilter _filter = TimeFilter.thisMonth;
-  late String _selectedCurrency;
+  String _selectedCurrency = 'TRY';
   bool _showTrend = false;
 
   @override

@@ -337,4 +337,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchNoResults => 'No results found';
+
+  @override
+  String get trendMaxDay => 'Top Day';
+
+  @override
+  String get trendDailyAvg => 'Daily Average';
 }

@@ -109,5 +109,7 @@
   "excelSummaryTotal": "Total",
   "exportError": "An error occurred during export.",
   "searchHint": "Search expenses...",
-  "searchNoResults": "No results found"
+  "searchNoResults": "No results found",
+  "trendMaxDay": "Top Day",
+  "trendDailyAvg": "Daily Average"
 }

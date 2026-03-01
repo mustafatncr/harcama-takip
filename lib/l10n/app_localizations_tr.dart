@@ -337,4 +337,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get searchNoResults => 'Sonuç bulunamadı';
+
+  @override
+  String get trendMaxDay => 'En Yüksek Gün';
+
+  @override
+  String get trendDailyAvg => 'Günlük Ortalama';
 }

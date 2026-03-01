@@ -18,6 +18,7 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
   List<Expense> _expenses = [];
   TimeFilter _filter = TimeFilter.thisMonth;
   late String _selectedCurrency;
+  bool _showTrend = false;
 
   @override
   void initState() {
@@ -89,8 +90,263 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
   double get _totalSpending =>
       _currencyFiltered.fold(0, (sum, e) => sum + e.amount);
 
+  Map<DateTime, double> get _dailyTotals {
+    final map = <DateTime, double>{};
+    for (final e in _currencyFiltered) {
+      final day = DateTime(e.date.year, e.date.month, e.date.day);
+      map[day] = (map[day] ?? 0) + e.amount;
+    }
+    return Map.fromEntries(
+      map.entries.toList()..sort((a, b) => a.key.compareTo(b.key)),
+    );
+  }
+
   String _formatDateRange(DateTimeRange r) {
     return "${formatDate(context, r.start)}  –  ${formatDate(context, r.end)}";
+  }
+
+  String _shortDayName(int weekday, String langCode) {
+    const trDays = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
+    const enDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return (langCode == 'tr' ? trDays : enDays)[weekday - 1];
+  }
+
+  Widget _buildChartToggle(Color primary) {
+    final langCode = Localizations.localeOf(context).languageCode;
+    final donutLabel = langCode == 'tr' ? '🍩  Pasta' : '🍩  Donut';
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF0F2624),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: primary.withValues(alpha: 0.3)),
+      ),
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildToggleButton(
+            label: donutLabel,
+            selected: !_showTrend,
+            primary: primary,
+            onTap: () => setState(() => _showTrend = false),
+          ),
+          const SizedBox(width: 4),
+          _buildToggleButton(
+            label: '📊  Trend',
+            selected: _showTrend,
+            primary: primary,
+            onTap: () => setState(() => _showTrend = true),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildToggleButton({
+    required String label,
+    required bool selected,
+    required Color primary,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+        decoration: BoxDecoration(
+          color: selected ? primary.withValues(alpha: 0.22) : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          border: selected
+              ? Border.all(color: primary.withValues(alpha: 0.45))
+              : null,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected ? primary : Colors.white54,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+            fontSize: 14,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTrendView(Color primary, double screenHeight) {
+    final chartHeight = (screenHeight * 0.28).clamp(180.0, 260.0);
+    return Column(
+      children: [
+        SizedBox(height: chartHeight, child: _buildBarChart(primary)),
+        const SizedBox(height: 20),
+        _buildBarLegend(primary),
+      ],
+    );
+  }
+
+  Widget _buildBarChart(Color primary) {
+    final dailyList = _dailyTotals.entries.toList();
+    if (dailyList.isEmpty) return const SizedBox.shrink();
+
+    final maxY = dailyList.map((e) => e.value).reduce((a, b) => a > b ? a : b);
+    final useShortDay = dailyList.length <= 7;
+    final langCode = Localizations.localeOf(context).languageCode;
+    final barWidth = dailyList.length <= 7
+        ? 26.0
+        : dailyList.length <= 14
+            ? 18.0
+            : 11.0;
+
+    return BarChart(
+      BarChartData(
+        maxY: maxY * 1.25,
+        barGroups: dailyList.asMap().entries.map((entry) {
+          return BarChartGroupData(
+            x: entry.key,
+            barRods: [
+              BarChartRodData(
+                toY: entry.value.value,
+                gradient: LinearGradient(
+                  colors: [primary.withValues(alpha: 0.65), primary],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                ),
+                width: barWidth,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(6)),
+              ),
+            ],
+          );
+        }).toList(),
+        titlesData: FlTitlesData(
+          leftTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 28,
+              getTitlesWidget: (value, meta) {
+                final idx = value.toInt();
+                if (idx < 0 || idx >= dailyList.length) {
+                  return const SizedBox.shrink();
+                }
+                final date = dailyList[idx].key;
+                if (!useShortDay && date.day % 5 != 0 && date.day != 1) {
+                  return const SizedBox.shrink();
+                }
+                final label = useShortDay
+                    ? _shortDayName(date.weekday, langCode)
+                    : '${date.day}';
+                return Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    label,
+                    style: const TextStyle(color: Colors.white54, fontSize: 11),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          getDrawingHorizontalLine: (_) => FlLine(
+            color: Colors.white.withValues(alpha: 0.07),
+            strokeWidth: 1,
+          ),
+        ),
+        borderData: FlBorderData(show: false),
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            getTooltipColor: (_) => const Color(0xFF0A1F1D),
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              final date = dailyList[group.x].key;
+              return BarTooltipItem(
+                '${formatDate(context, date)}\n',
+                const TextStyle(color: Colors.white70, fontSize: 12),
+                children: [
+                  TextSpan(
+                    text: formatCurrency(context, rod.toY, _selectedCurrency),
+                    style: TextStyle(
+                      color: primary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBarLegend(Color primary) {
+    final dailyList = _dailyTotals.entries.toList();
+    if (dailyList.isEmpty) return const SizedBox.shrink();
+    final loc = AppLocalizations.of(context)!;
+    final maxEntry = dailyList.reduce((a, b) => a.value > b.value ? a : b);
+    final rangeDays = _dateRange.end.difference(_dateRange.start).inDays + 1;
+    final avg = dailyList.fold(0.0, (s, e) => s + e.value) / rangeDays;
+
+    return Column(
+      children: [
+        _buildStatRow(
+          primary,
+          Icons.bar_chart_rounded,
+          loc.trendMaxDay,
+          '${formatDate(context, maxEntry.key)}  ·  ${formatCurrency(context, maxEntry.value, _selectedCurrency)}',
+        ),
+        const SizedBox(height: 10),
+        _buildStatRow(
+          primary,
+          Icons.show_chart_rounded,
+          loc.trendDailyAvg,
+          formatCurrency(context, avg, _selectedCurrency),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatRow(
+    Color primary,
+    IconData icon,
+    String label,
+    String value,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0F2624),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: primary.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: primary, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(color: Colors.white70, fontSize: 14),
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: primary,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -99,6 +355,7 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     final totals = _categoryTotals;
     final total = _totalSpending;
     final primary = cs.primary;
+    final mq = MediaQuery.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -108,17 +365,16 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
         ),
         centerTitle: true,
         elevation: 0,
+        actions: [_buildCurrencyAction(primary)],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildCurrencySelector(primary),
+            _buildSegmentedTimeline(primary, mq.size.width),
+            const SizedBox(height: 12),
+            _buildControlRow(primary),
             const SizedBox(height: 20),
-            _buildSegmentedTimeline(primary),
-            const SizedBox(height: 20),
-            _buildDateCapsule(),
-            const SizedBox(height: 28),
             Expanded(
               child: _currencyFiltered.isEmpty
                   ? Center(
@@ -130,15 +386,17 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
                         ),
                       ),
                     )
-                  : Column(
-                      children: [
-                        _buildDonutChart(primary, totals, total),
-                        const SizedBox(height: 16),
-                        Expanded(
-                          child: _buildLegendList(primary, totals, total),
+                  : _showTrend
+                      ? _buildTrendView(primary, mq.size.height)
+                      : Column(
+                          children: [
+                            _buildDonutChart(primary, totals, total, mq.size.height),
+                            const SizedBox(height: 16),
+                            Expanded(
+                              child: _buildLegendList(primary, totals, total),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
             ),
           ],
         ),
@@ -146,34 +404,96 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     );
   }
 
-  Widget _buildCurrencySelector(Color primary) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primary.withValues(alpha: 0.4), width: 1.4),
+  Widget _buildCurrencyAction(Color primary) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: PopupMenuButton<String>(
+        initialValue: _selectedCurrency,
+        onSelected: (v) => setState(() => _selectedCurrency = v),
+        offset: const Offset(0, 48),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         color: const Color(0xFF0F2624),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: _selectedCurrency,
-          icon: Icon(Icons.expand_more, color: primary),
-          items: ["TRY", "USD", "EUR", "GBP"]
-              .map((c) => DropdownMenuItem(
-                    value: c,
-                    child: Text(
-                      c,
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
+        itemBuilder: (context) => ["TRY", "USD", "EUR", "GBP"]
+            .map((c) => PopupMenuItem(
+                  value: c,
+                  child: Text(
+                    c,
+                    style: TextStyle(
+                      color: c == _selectedCurrency ? primary : Colors.white,
+                      fontWeight: c == _selectedCurrency
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
-                  ))
-              .toList(),
-          onChanged: (v) => setState(() => _selectedCurrency = v!),
+                  ),
+                ))
+            .toList(),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border:
+                Border.all(color: primary.withValues(alpha: 0.45), width: 1.2),
+            color: primary.withValues(alpha: 0.08),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _selectedCurrency,
+                style: TextStyle(
+                  color: primary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(width: 3),
+              Icon(Icons.expand_more_rounded, color: primary, size: 16),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildSegmentedTimeline(Color primary) {
+  Widget _buildControlRow(Color primary) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildDateCapsule(),
+        const SizedBox(height: 10),
+        _buildChartToggle(primary),
+      ],
+    );
+  }
+
+  Widget _buildDateCapsule() {
+    final r = _dateRange;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        color: Colors.white.withValues(alpha: 0.06),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.calendar_today, size: 16, color: Colors.white70),
+          const SizedBox(width: 8),
+          Text(
+            _formatDateRange(r),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSegmentedTimeline(Color primary, double screenWidth) {
     return SegmentedButton<TimeFilter>(
       segments: [
         ButtonSegment(
@@ -208,7 +528,10 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
               : Colors.white70;
         }),
         padding: WidgetStateProperty.all(
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          EdgeInsets.symmetric(
+            horizontal: screenWidth < 380 ? 6.0 : 16.0,
+            vertical: screenWidth < 380 ? 10.0 : 12.0,
+          ),
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -217,63 +540,61 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
     );
   }
 
-  Widget _buildDateCapsule() {
-    final r = _dateRange;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: Colors.white.withValues(alpha: 0.06),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.calendar_today, size: 16, color: Colors.white70),
-          const SizedBox(width: 8),
-          Text(
-            _formatDateRange(r),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   Widget _buildDonutChart(
     Color primary,
     Map<String, double> totals,
     double total,
+    double screenHeight,
   ) {
+    final chartHeight = (screenHeight * 0.3).clamp(210.0, 290.0);
+    final loc = AppLocalizations.of(context)!;
     return SizedBox(
-      height: 260,
-      child: PieChart(
-        PieChartData(
-          sectionsSpace: 4,
-          centerSpaceRadius: 55,
-          startDegreeOffset: -90,
-          borderData: FlBorderData(show: false),
-          sections: totals.entries.map((entry) {
-            final percent = (entry.value / total) * 100;
-            final color = _generatePastelColor(entry.key);
-
-            return PieChartSectionData(
-              color: color,
-              value: entry.value,
-              radius: 70,
-              title: "${percent.toStringAsFixed(1)}%",
-              titleStyle: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
+      height: chartHeight,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          PieChart(
+            PieChartData(
+              sectionsSpace: 4,
+              centerSpaceRadius: 58,
+              startDegreeOffset: -90,
+              borderData: FlBorderData(show: false),
+              sections: totals.entries.map((entry) {
+                final percent = (entry.value / total) * 100;
+                final color = _generatePastelColor(entry.key);
+                return PieChartSectionData(
+                  color: color,
+                  value: entry.value,
+                  radius: 70,
+                  title: "${percent.toStringAsFixed(1)}%",
+                  titleStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                formatCurrency(context, total, _selectedCurrency),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            );
-          }).toList(),
-        ),
+              const SizedBox(height: 2),
+              Text(
+                loc.totalLabel,
+                style: const TextStyle(color: Colors.white54, fontSize: 11),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

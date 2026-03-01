@@ -746,6 +746,10 @@ abstract class AppLocalizations {
   String get searchHint;
 
   String get searchNoResults;
+
+  String get trendMaxDay;
+
+  String get trendDailyAvg;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

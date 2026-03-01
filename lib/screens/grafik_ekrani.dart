@@ -36,7 +36,7 @@ class _GrafikEkraniState extends State<GrafikEkrani> {
   }
 
   Color _generatePastelColor(String key) {
-    final hue = (key.hashCode % 360).toDouble();
+    final hue = (((key.hashCode % 360) + 360) % 360).toDouble();
     return HSLColor.fromAHSL(1, hue, 0.55, 0.55).toColor();
   }
 

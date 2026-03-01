@@ -61,7 +61,6 @@
   "appTitle": "Harcama Takip",
   "drawerReport": "Rapor",
   "reportTitle": "Rapor",
-  "reportTitle": "Rapor",
   "selectDateRange": "Tarih Aralığı Seç",
   "selectDateRangeHint": "Lütfen bir tarih aralığı seçin",
   "export": "Dışarı Aktar",
@@ -77,6 +76,8 @@
   "categoryDeleteTitle": "Kategori silinsin mi?",
   "categoryDeleteMessage": "Bu kategori ve buna bağlı tüm harcamalar silinecek. Bu işlem geri alınamaz.",
   "buttonDelete": "Sil",
+  "expenseDeleteTitle": "Harcama silinsin mi?",
+  "expenseDeleteMessage": "Bu harcama kalıcı olarak silinecek. Bu işlem geri alınamaz.",
   "exportPdf": "PDF olarak dışa aktar",
   "exportExcel": "Excel olarak dışa aktar",
   "close": "Kapat",
@@ -105,5 +106,6 @@
   "settingsLocalDataInfo": "Verileriniz yalnızca bu cihazda saklanır.",
   "excelSummarySheetName": "Özet",
   "excelSummaryCurrency": "Para Birimi",
-  "excelSummaryTotal": "Toplam"
+  "excelSummaryTotal": "Toplam",
+  "exportError": "Dışa aktarma sırasında bir hata oluştu."
 }

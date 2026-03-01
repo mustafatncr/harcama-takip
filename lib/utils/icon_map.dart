@@ -16,4 +16,5 @@ final Map<String, IconData> iconMap = {
   "pets": Icons.pets,
   "mall": Icons.local_mall,
   "gas": Icons.local_gas_station,
+  "more": Icons.more_horiz,
 };

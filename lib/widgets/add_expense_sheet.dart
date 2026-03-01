@@ -218,7 +218,10 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                       if (v == null || v.isEmpty) {
                         return AppLocalizations.of(context)!.amountRequired;
                       }
-
+                      final parsed = parseAmountByCurrency(v, _activeCurrencyCode);
+                      if (parsed <= 0) {
+                        return AppLocalizations.of(context)!.amountCannotBeZero;
+                      }
                       return null;
                     },
                   ),

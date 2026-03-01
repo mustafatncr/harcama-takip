@@ -146,6 +146,8 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   void _showExportMenu(BuildContext context, List<Expense> expenses) {
+    final scaffoldContext = context;
+
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -171,7 +173,17 @@ class _ReportScreenState extends State<ReportScreen> {
                 title: Text(AppLocalizations.of(context)!.exportPdf),
                 onTap: () async {
                   Navigator.pop(context);
-                  await ExportPdfService.exportAndShare(context, expenses);
+                  try {
+                    await ExportPdfService.exportAndShare(scaffoldContext, expenses);
+                  } catch (_) {
+                    if (!scaffoldContext.mounted) return;
+                    ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                      SnackBar(
+                        content: Text(AppLocalizations.of(scaffoldContext)!.exportError),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  }
                 },
               ),
               ListTile(
@@ -179,7 +191,17 @@ class _ReportScreenState extends State<ReportScreen> {
                 title: Text(AppLocalizations.of(context)!.exportExcel),
                 onTap: () async {
                   Navigator.pop(context);
-                  await ExportExcelService.exportAndShare(context, expenses);
+                  try {
+                    await ExportExcelService.exportAndShare(scaffoldContext, expenses);
+                  } catch (_) {
+                    if (!scaffoldContext.mounted) return;
+                    ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                      SnackBar(
+                        content: Text(AppLocalizations.of(scaffoldContext)!.exportError),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  }
                 },
               ),
               ListTile(

@@ -157,7 +157,78 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     );
   }
 
-  Future<void> _openEditSheet(Expense expense, int index) async {
+  Future<void> _confirmDeleteExpense(Expense e) async {
+    final loc = AppLocalizations.of(context)!;
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: const Color(0xFF0F2624),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+        child: Padding(
+          padding: const EdgeInsets.all(22),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                loc.expenseDeleteTitle,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                loc.expenseDeleteMessage,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 15,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(dialogContext, false),
+                    child: Text(
+                      loc.buttonCancel,
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(dialogContext, true),
+                    child: Text(
+                      loc.buttonDelete,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (confirm == true) {
+      setState(() => _items.remove(e));
+      await _saveData();
+    }
+  }
+
+  Future<void> _openEditSheet(Expense expense) async {
     final Expense? updatedExpense = await showModalBottomSheet<Expense>(
       context: context,
       isScrollControlled: true,
@@ -169,8 +240,11 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
 
     if (updatedExpense == null) return;
 
+    final actualIndex = _items.indexOf(expense);
+    if (actualIndex == -1) return;
+
     setState(() {
-      _items[index] = updatedExpense;
+      _items[actualIndex] = updatedExpense;
     });
 
     await _saveData();
@@ -286,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     );
   }
 
-  Widget _buildExpenseCard(Expense e, int index) {
+  Widget _buildExpenseCard(Expense e) {
     final primary = Theme.of(context).colorScheme.primary;
 
     final IconData iconData = iconMap[e.iconName] ?? Icons.receipt_long;
@@ -371,7 +445,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                   Icons.edit,
                   color: primary.withValues(alpha: 0.9),
                 ),
-                onPressed: () => _openEditSheet(e, index),
+                onPressed: () => _openEditSheet(e),
               ),
               const SizedBox(height: 4),
               IconButton(
@@ -382,10 +456,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                   Icons.delete_outline,
                   color: Colors.redAccent,
                 ),
-                onPressed: () {
-                  setState(() => _items.removeAt(index));
-                  _saveData();
-                },
+                onPressed: () => _confirmDeleteExpense(e),
               ),
             ],
           ),
@@ -518,7 +589,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                       itemCount: sortedItems.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, i) =>
-                          _buildExpenseCard(sortedItems[i], i),
+                          _buildExpenseCard(sortedItems[i]),
                     ),
                   ),
                 ],

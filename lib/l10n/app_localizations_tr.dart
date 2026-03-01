@@ -237,6 +237,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get buttonDelete => 'Sil';
 
   @override
+  String get expenseDeleteTitle => 'Harcama silinsin mi?';
+
+  @override
+  String get expenseDeleteMessage => 'Bu harcama kalıcı olarak silinecek. Bu işlem geri alınamaz.';
+
+  @override
   String get exportPdf => 'PDF olarak dışa aktar';
 
   @override
@@ -322,4 +328,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get excelSummaryTotal => 'Toplam';
+
+  @override
+  String get exportError => 'Dışa aktarma sırasında bir hata oluştu.';
 }

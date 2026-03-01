@@ -237,6 +237,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get buttonDelete => 'Delete';
 
   @override
+  String get expenseDeleteTitle => 'Delete expense?';
+
+  @override
+  String get expenseDeleteMessage => 'This expense will be permanently deleted. This action cannot be undone.';
+
+  @override
   String get exportPdf => 'Export as PDF';
 
   @override
@@ -322,4 +328,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get excelSummaryTotal => 'Total';
+
+  @override
+  String get exportError => 'An error occurred during export.';
 }

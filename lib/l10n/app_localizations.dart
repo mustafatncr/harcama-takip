@@ -551,6 +551,18 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get buttonDelete;
 
+  /// No description provided for @expenseDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete expense?'**
+  String get expenseDeleteTitle;
+
+  /// No description provided for @expenseDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This expense will be permanently deleted. This action cannot be undone.'**
+  String get expenseDeleteMessage;
+
   /// No description provided for @exportPdf.
   ///
   /// In en, this message translates to:
@@ -724,6 +736,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total'**
   String get excelSummaryTotal;
+
+  /// No description provided for @exportError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred during export.'**
+  String get exportError;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

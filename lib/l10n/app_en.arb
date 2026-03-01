@@ -61,7 +61,6 @@
   "appTitle": "Expense Tracker",
   "drawerReport": "Report",
   "reportTitle": "Report",
-  "reportTitle": "Report",
   "selectDateRange": "Select Date Range",
   "selectDateRangeHint": "Please select a date range",
   "export": "Export",
@@ -77,6 +76,8 @@
   "categoryDeleteTitle": "Delete category?",
   "categoryDeleteMessage": "This category and all related expenses will be deleted. This action cannot be undone.",
   "buttonDelete": "Delete",
+  "expenseDeleteTitle": "Delete expense?",
+  "expenseDeleteMessage": "This expense will be permanently deleted. This action cannot be undone.",
   "exportPdf": "Export as PDF",
   "exportExcel": "Export as Excel",
   "close": "Close",
@@ -105,5 +106,6 @@
   "settingsLocalDataInfo": "Your data is stored only on this device.",
   "excelSummarySheetName": "Summary",
   "excelSummaryCurrency": "Currency",
-  "excelSummaryTotal": "Total"
+  "excelSummaryTotal": "Total",
+  "exportError": "An error occurred during export."
 }

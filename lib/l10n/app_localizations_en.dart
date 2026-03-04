@@ -30,10 +30,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerSettings => 'Settings';
 
   @override
-  String get emptyExpenses => 'You haven\'t added any expenses yet';
+  String get emptyExpenses => 'No expenses yet';
 
   @override
-  String get emptyExpensesHint => 'Tap the + button below to add your first expense';
+  String get emptyExpensesHint => 'Add your first expense — let\'s build your monthly report and charts together 🎯';
 
   @override
   String get homeAddExpense => 'Add Expense';

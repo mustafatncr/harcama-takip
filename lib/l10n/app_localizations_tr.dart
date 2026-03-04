@@ -30,10 +30,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get drawerSettings => 'Ayarlar';
 
   @override
-  String get emptyExpenses => 'Henüz harcama eklemedin';
+  String get emptyExpenses => 'Henüz harcama yok';
 
   @override
-  String get emptyExpensesHint => 'Aşağıdaki + butonuna dokunarak ilk harcamanı ekleyebilirsin';
+  String get emptyExpensesHint => 'İlk harcamanı ekle — aylık rapor ve grafiklerini birlikte oluşturalım 🎯';
 
   @override
   String get homeAddExpense => 'Harcama Ekle';

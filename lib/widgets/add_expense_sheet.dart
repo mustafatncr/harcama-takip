@@ -109,7 +109,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       context: context,
       initialDate: _selectedDate,
       firstDate: DateTime(2020),
-      lastDate: DateTime.now(),
+      lastDate: DateTime(DateTime.now().year + 5, 12, 31),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(

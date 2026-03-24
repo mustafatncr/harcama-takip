@@ -343,4 +343,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trendDailyAvg => 'Daily Average';
+
+  @override
+  String get today => 'Today';
 }

@@ -343,4 +343,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get trendDailyAvg => 'Günlük Ortalama';
+
+  @override
+  String get today => 'Bugün';
 }

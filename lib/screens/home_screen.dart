@@ -132,6 +132,47 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
         .toList();
   }
 
+  Map<String, num> get _todayTotalsByCurrency {
+    final now = DateTime.now();
+
+    final filtered = _items.where((e) {
+      final sameDay = e.date.year == now.year &&
+          e.date.month == now.month &&
+          e.date.day == now.day;
+
+      final sameCategory =
+          _selectedCategory == AppLocalizations.of(context)!.filterAll
+              ? true
+              : e.category == _selectedCategory;
+
+      return sameDay && sameCategory;
+    });
+
+    final Map<String, num> result = {};
+
+    for (var e in filtered) {
+      result[e.currency] = (result[e.currency] ?? 0) + e.amount;
+    }
+
+    return result;
+  }
+
+  List<String> get _formattedTodayTotals {
+    final totals = _todayTotalsByCurrency;
+
+    if (totals.isEmpty) {
+      if (_settingsCurrency == null) return [];
+
+      return [
+        formatCurrency(context, 0, _settingsCurrency!),
+      ];
+    }
+
+    return totals.entries
+        .map((e) => formatCurrency(context, e.value, e.key))
+        .toList();
+  }
+
   Future<void> _openAddSheet() async {
     final currency = await StorageService.loadCurrency();
 
@@ -350,6 +391,15 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
     final cardColor = Theme.of(context).colorScheme.surface;
     const borderColor = Color(0xFF1C3A37);
     final loc = AppLocalizations.of(context)!;
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final titleStyle = Theme.of(context)
+        .textTheme
+        .titleMedium!
+        .copyWith(fontWeight: FontWeight.bold);
+    final labelStyle = Theme.of(context)
+        .textTheme
+        .bodyMedium!
+        .copyWith(fontWeight: FontWeight.w600);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -365,42 +415,46 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
           )
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                loc.thisMonth,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                loc.basedOnSelectedFilters,
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.55),
-                    ),
-              ),
-            ],
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(loc.thisMonth, style: labelStyle),
+                      const SizedBox(height: 4),
+                      ..._formattedTotals.map((text) => Text(text, style: titleStyle)),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  color: borderColor,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(loc.today, style: labelStyle),
+                      const SizedBox(height: 4),
+                      ..._formattedTodayTotals.map((text) => Text(text, style: titleStyle)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: _formattedTotals.map((text) {
-              return Text(
-                text,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(fontWeight: FontWeight.bold),
-              );
-            }).toList(),
+          const SizedBox(height: 8),
+          Text(
+            loc.basedOnSelectedFilters,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: onSurface.withValues(alpha: 0.55),
+                ),
           ),
         ],
       ),

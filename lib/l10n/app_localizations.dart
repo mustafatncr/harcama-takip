@@ -750,6 +750,8 @@ abstract class AppLocalizations {
   String get trendMaxDay;
 
   String get trendDailyAvg;
+
+  String get today;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
